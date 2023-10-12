@@ -96,13 +96,6 @@ class _MyHomePageState extends State<MyHomePage> {
       final probabilities = await _imageClassifier.processImage(image.path);
 
       return probabilities;
-
-      final sum = probabilities.values.reduce((a, b) => a + b);
-
-      probabilities.forEach((key, value) {
-        String percentage = '${(value / sum).toStringAsFixed(2)}%';
-        print([key.trim(), percentage]);
-      });
     } catch (e) {
       print('Error taking picture: $e');
     }

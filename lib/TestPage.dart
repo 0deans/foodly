@@ -20,8 +20,8 @@ class _TestPageState extends State<TestPage> {
     super.initState();
 
     final sum = widget.probabilities!.values.reduce((a, b) => a + b);
-    probabilities = widget.probabilities!.map((key, value) => MapEntry(key, (value / sum) * 100));
-    print(sum);
+    probabilities = widget.probabilities!.map((key, value) =>
+        MapEntry(key, (value / sum) * 100));
   }
 
   @override

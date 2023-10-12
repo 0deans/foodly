@@ -1,5 +1,9 @@
 import 'dart:io';
-import 'package:flutter/services.dart';
+import 'dart:math' as math;
+import 'dart:math';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart' as x;
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
 
@@ -24,7 +28,7 @@ class ImageClassifier {
   }
 
   Future<void> loadLabels() async {
-    final labelsData = await rootBundle.loadString(_labelsFileName);
+    final labelsData = await x.rootBundle.loadString(_labelsFileName);
     labels = labelsData.split('\n');
   }
 
@@ -61,6 +65,35 @@ class ImageClassifier {
 
     interpreter.run(imageMatrix, output);
 
+    //
+
+    try {
+      final segmentation  = img.Image(width: 513, height: 513);
+
+      for (int y = 0; y < 513; y++) {
+        for (int x = 0; x < 513; x++) {
+          final classes = output[0][y][x];
+          double max = -10.0;
+          for (int i = 0; i < classes.length; i++) {
+            max = classes[i] > max ? classes[i] : max;
+          }
+          final color = generateUniqueColor(classes.indexOf(max));
+          segmentation.setPixelRgb(x, y, color.red, color.green, color.blue);
+        }
+      }
+
+      final tempDir = Directory.systemTemp;
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final tempFile = File('${tempDir.path}/$timestamp.png');
+
+      List<int> pngBytes = img.encodePng(segmentation);
+      tempFile.writeAsBytesSync(pngBytes);
+
+      GallerySaver.saveImage(tempFile.path, albumName: 'test');
+    } catch (e) {
+      print("Fucking error: ${e.toString()}");
+    }
+
     final Map<String, double> probabilities = {};
 
     for (int y = 0; y < 513; y++) {
@@ -74,6 +107,15 @@ class ImageClassifier {
     }
 
     return probabilities;
+  }
+
+  Color generateUniqueColor(int classIndex) {
+    int totalClasses = 26; // Assuming there are 26 different classes (0 to 25).
+    double hue = (classIndex / totalClasses) * 360.0;
+    int red = HSVColor.fromAHSV(1.0, hue, 1.0, 1.0).toColor().red;
+    int green = HSVColor.fromAHSV(1.0, hue, 1.0, 1.0).toColor().green;
+    int blue = HSVColor.fromAHSV(1.0, hue, 1.0, 1.0).toColor().blue;
+    return Color.fromARGB(255, red, green, blue);
   }
 
   void close() {
