@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 
 import 'ImageClassifier.dart';
+import 'TestPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,9 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  void _takePicture() async {
+  Future<Map<String, double>?> _takePicture() async {
     if (!_controller.value.isInitialized) {
-      return;
+      return null;
     }
 
     try {
@@ -93,10 +94,13 @@ class _MyHomePageState extends State<MyHomePage> {
       await GallerySaver.saveImage(image.path);
 
       final probabilities = await _imageClassifier.processImage(image.path);
+
+      return probabilities;
+
       final sum = probabilities.values.reduce((a, b) => a + b);
 
       probabilities.forEach((key, value) {
-        String percentage= '${(value / sum).toStringAsFixed(2)}%';
+        String percentage = '${(value / sum).toStringAsFixed(2)}%';
         print([key.trim(), percentage]);
       });
     } catch (e) {
@@ -127,7 +131,16 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: ElevatedButton(
-                  onPressed: _takePicture,
+                  onPressed: () {
+                    _takePicture().then((value) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TestPage(probabilities: value),
+                        ),
+                      );
+                    });
+                  },
                   child: const Text('take a picture'),
                 ),
               ),
@@ -137,11 +150,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 64,
                   child: _imageFile != null
                       ? Center(
-                          child: Transform.scale(
-                            scale: 2.0,
-                            child: Image.file(File(_imageFile!.path)),
-                          ),
-                        )
+                    child: Transform.scale(
+                      scale: 2.0,
+                      child: Image.file(File(_imageFile!.path)),
+                    ),
+                  )
                       : null,
                 ),
               ),
