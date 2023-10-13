@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:foodly/acceptImageForScan.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -11,17 +12,18 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final bool _loading = true;
-  late File _image;
+  late String _image = '';
   final imagePicker = ImagePicker();
 
-  _loadImage_gallery() async {
+  _loadImageGallery() async {
     var image = await imagePicker.pickImage(source: ImageSource.gallery);
     if(image == null) {
       return;
     }
     else {
-      _image = File(image.path);
+      _image = image.path.toString();
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => AcceptImage(selectedImage: _image)));
     }
   }
 
@@ -60,7 +62,7 @@ class _HomeState extends State<Home> {
               height: 80,
               padding: const EdgeInsets.symmetric(vertical: 7,horizontal: 15),
               child: ElevatedButton(
-                onPressed: _loadImage_gallery,
+                onPressed: _loadImageGallery,
                 style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
                 child: Text('Gallery', style: GoogleFonts.roboto(fontSize: 25, fontWeight: FontWeight.w500)),
               ),
@@ -85,7 +87,6 @@ class _HomeState extends State<Home> {
                 child: Text('Settings', style: GoogleFonts.roboto(fontSize: 25, fontWeight: FontWeight.w500)),
               ),
             ),
-            _loading == false ? Container(height: 200, width: 200, child: Image.file(_image),) : Container()
           ],
         ),
       ),
