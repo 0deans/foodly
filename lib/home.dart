@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
     var w = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(title: Text('Foodly', style: GoogleFonts.autourOne(fontSize: 25))),
-      body: Container(
+      body: SizedBox(
         height: h,
         width: w,
         child: Column(
