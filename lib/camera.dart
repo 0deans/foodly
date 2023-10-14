@@ -18,7 +18,7 @@ class _CameraState extends State<Camera> {
 
     _controller = CameraController(
       cameras.first,
-      ResolutionPreset.ultraHigh,
+      ResolutionPreset.high,
     );
 
     _controller.initialize().then((_) {
@@ -45,12 +45,42 @@ class _CameraState extends State<Camera> {
 
   @override
   Widget build(BuildContext context) {
+    var h = MediaQuery.of(context).size.height;
+    var w = MediaQuery.of(context).size.width;
+
     if (!_isInitialized) {
       return const Center(child: CircularProgressIndicator());
     }
 
     return Scaffold(
-      body: CameraPreview(_controller),
+      body: SizedBox(
+        height: h,
+        width: w,
+        child: Column(
+          children: [
+            Expanded(
+                child: Container(
+              width: w,
+              padding: const EdgeInsets.only(top: 25),
+              child: CameraPreview(_controller),
+            )),
+            Container(
+              padding: const EdgeInsets.all(10),
+              width: 80,
+              height: 80,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40))),
+                child: Image.asset('assets/images/iconCamera.png',
+                    fit: BoxFit.cover),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

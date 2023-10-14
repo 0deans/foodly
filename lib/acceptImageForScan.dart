@@ -25,7 +25,8 @@ class _AcceptImageState extends State<AcceptImage> {
           children: [
             Expanded(
               child: Container(
-                padding: const EdgeInsets.only(top: 50),
+                width: w,
+                padding: const EdgeInsets.only(top: 25),
                 child: Image.file(
                   File(widget.selectedImage),
                   fit: BoxFit.cover,
@@ -33,23 +34,47 @@ class _AcceptImageState extends State<AcceptImage> {
               ),
             ),
             Container(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.only(top: 15, bottom: 15),
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Container(
+                      SizedBox(
                         width: 50,
                         height: 50,
-                        color: Colors.grey,
-                        child: Image.asset('assets/images/iconCancel.png'),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/');
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 80, 80, 80),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50))),
+                          child: Image.asset('assets/images/iconCancel.png',
+                              color: Colors.white,
+                              height: 25,
+                              width: 25,
+                              fit: BoxFit.cover),
+                        ),
                       ),
-                      Container(
+                      SizedBox(
                         width: 50,
                         height: 50,
-                        color: Colors.grey,
-                        child: Image.asset('assets/images/iconAllow.png'),
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 80, 80, 80),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50))),
+                          child: Image.asset('assets/images/iconAllow.png',
+                              color: Colors.white,
+                              height: 25,
+                              width: 25,
+                              fit: BoxFit.cover),
+                        ),
                       )
                     ],
                   ),
