@@ -1,6 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
+import 'acceptImageForScan.dart';
+
 class Camera extends StatefulWidget {
   const Camera({super.key});
 
@@ -31,12 +33,17 @@ class _CameraState extends State<Camera> {
     });
   }
 
-  Future<void> _takePhoto(BuildContext context) async {
+  Future<void> _takePhoto() async {
     if (!_controller.value.isInitialized) {
       return;
     }
 
-    await _controller.takePicture();
+    _controller.takePicture().then((image) {
+      if (image != null) {
+        Navigator.push(context,
+          MaterialPageRoute(builder: (context) => AcceptImage(selectedImage: image.path)));
+      }
+    });
   }
 
   @override
@@ -77,7 +84,7 @@ class _CameraState extends State<Camera> {
                 width: 80,
                 padding: const EdgeInsets.all(10),
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _takePhoto,
                     style: ElevatedButton.styleFrom(
                       primary: const Color.fromARGB(200, 255, 0, 0),
                         shape: RoundedRectangleBorder(

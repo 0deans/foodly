@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:foodly/mealDetails.dart';
 
 class AcceptImage extends StatefulWidget {
   final String selectedImage;
@@ -43,7 +44,7 @@ class _AcceptImageState extends State<AcceptImage> {
                       InkWell(
                         borderRadius: BorderRadius.circular(25),
                         onTap: () {
-                          Navigator.pushNamed(context, '/');
+                          Navigator.pop(context);
                         },
                         child: const DecoratedBox(
                           decoration: BoxDecoration(
@@ -64,6 +65,7 @@ class _AcceptImageState extends State<AcceptImage> {
                         splashColor: Colors.cyan,
                           borderRadius: BorderRadius.circular(25),
                           onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MealDetails(imagePath: widget.selectedImage)));
                           },
                           child: const DecoratedBox(
                             decoration: BoxDecoration(

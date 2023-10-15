@@ -7,25 +7,22 @@ class ImageClassifier {
   late Interpreter interpreter;
   late List<String> labels;
 
-  final String _labelsFileName = 'assets/labels.txt';
-  final String _modelFileName = 'assets/model.tflite';
-
-  ImageClassifier() {
-    loadLabels();
-    loadModel();
-  }
+  final String _labelsPath = 'assets/labels.txt';
+  final String _modelPath = 'assets/model.tflite';
 
   Future<void> loadModel() async {
-    try {
-      interpreter = await Interpreter.fromAsset(_modelFileName);
-    } catch (e) {
-      print('Unable to create interpreter, Caught Exception: ${e.toString()}');
-    }
+    final interpreterOptions = InterpreterOptions();
+    interpreterOptions.threads = 4;
+    interpreter = await Interpreter.fromAsset(
+      _modelPath,
+      options: InterpreterOptions()..threads = 4,
+    );
   }
 
   Future<void> loadLabels() async {
-    final labelsData = await rootBundle.loadString(_labelsFileName);
+    final labelsData = await rootBundle.loadString(_labelsPath);
     labels = labelsData.split('\n');
+    print('initLabels');
   }
 
   Future<Map<String, double>> processImage(String imagePath) async {
@@ -59,9 +56,13 @@ class ImageClassifier {
       });
     });
 
+    final runs = DateTime.now().millisecondsSinceEpoch;
     interpreter.run(imageMatrix, output);
+    final run = DateTime.now().millisecondsSinceEpoch - runs;
 
+    print('Time to run inference: $run ms');
     final Map<String, double> probabilities = {};
+
 
     for (int y = 0; y < 513; y++) {
       for (int x = 0; x < 513; x++) {
