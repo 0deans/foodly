@@ -31,6 +31,14 @@ class _CameraState extends State<Camera> {
     });
   }
 
+  Future<void> _takePhoto(BuildContext context) async {
+    if (!_controller.value.isInitialized) {
+      return;
+    }
+
+    await _controller.takePicture();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -65,19 +73,20 @@ class _CameraState extends State<Camera> {
               child: CameraPreview(_controller),
             )),
             Container(
-              padding: const EdgeInsets.all(10),
-              width: 80,
-              height: 80,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40))),
-                child: Image.asset('assets/images/iconCamera.png',
-                    fit: BoxFit.cover),
-              ),
-            )
+                height: 80,
+                width: 80,
+                padding: const EdgeInsets.all(10),
+                child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color.fromARGB(200, 255, 0, 0),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(40))),
+                    child: Center(
+                        child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.white, shape: BoxShape.circle),
+                    ))))
           ],
         ),
       ),

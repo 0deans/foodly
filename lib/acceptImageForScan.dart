@@ -40,42 +40,46 @@ class _AcceptImageState extends State<AcceptImage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/');
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 80, 80, 80),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50))),
-                          child: Image.asset('assets/images/iconCancel.png',
-                              color: Colors.white,
-                              height: 25,
-                              width: 25,
-                              fit: BoxFit.cover),
-                        ),
+                      InkWell(
+                        borderRadius: BorderRadius.circular(25),
+                        onTap: () {
+                          Navigator.pushNamed(context, '/');
+                        },
+                        child: const DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 80, 80, 80),
+                            shape: BoxShape.circle
+                          ),
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Icon(
+                              Icons.close,
+                              size: 30,
+                            ),
+                          ),
+                        )
                       ),
-                      SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 80, 80, 80),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50))),
-                          child: Image.asset('assets/images/iconAllow.png',
-                              color: Colors.white,
-                              height: 25,
-                              width: 25,
-                              fit: BoxFit.cover),
-                        ),
-                      )
+                      InkWell(
+                        splashColor: Colors.cyan,
+                          borderRadius: BorderRadius.circular(25),
+                          onTap: () {
+                          },
+                          child: const DecoratedBox(
+                            decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 80, 80, 80),
+                                shape: BoxShape.circle
+                            ),
+                            child: SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: Icon(
+                                Icons.done,
+                                size: 30,
+                              ),
+                            ),
+                          )
+                      ),
                     ],
                   ),
                 ))
