@@ -40,8 +40,10 @@ class _CameraState extends State<Camera> {
 
     _controller.takePicture().then((image) {
       if (image != null) {
-        Navigator.push(context,
-          MaterialPageRoute(builder: (context) => AcceptImage(selectedImage: image.path)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AcceptImage(selectedImage: image.path)));
       }
     });
   }
@@ -74,26 +76,29 @@ class _CameraState extends State<Camera> {
         child: Column(
           children: [
             Expanded(
-                child: Container(
-              width: w,
-              padding: const EdgeInsets.only(top: 25),
-              child: CameraPreview(_controller),
-            )),
-            Container(
-                height: 80,
-                width: 80,
-                padding: const EdgeInsets.all(10),
-                child: ElevatedButton(
-                    onPressed: _takePhoto,
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color.fromARGB(200, 255, 0, 0),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40))),
-                    child: Center(
-                        child: Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.white, shape: BoxShape.circle),
-                    ))))
+              child: Container(
+                width: w,
+                padding: const EdgeInsets.only(top: 25),
+                child: CameraPreview(_controller),
+              ),
+            ),
+            InkWell(
+              onTap: _takePhoto,
+              child: Container(
+                height: 50,
+                width: 50,
+                margin: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.photo_camera,
+                  size: 40,
+                  color: Colors.black38,
+                ),
+              ),
+            ),
           ],
         ),
       ),
