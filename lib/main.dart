@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:foodly/acceptImageForScan.dart';
 import 'home.dart';
 import 'camera.dart';
 

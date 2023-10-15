@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-import 'acceptImageForScan.dart';
+import 'accept_image.dart';
 
 class Camera extends StatefulWidget {
   const Camera({super.key});
@@ -41,9 +41,11 @@ class _CameraState extends State<Camera> {
     _controller.takePicture().then((image) {
       if (image != null) {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => AcceptImage(selectedImage: image.path)));
+          context,
+          MaterialPageRoute(
+            builder: (context) => AcceptImage(selectedImage: image.path),
+          ),
+        );
       }
     });
   }

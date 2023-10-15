@@ -27,18 +27,24 @@ class _MealDetailsState extends State<MealDetails> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Scaffold(
-        body: ListView(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: Image.file(File(widget.imagePath)),
+      body: ListView(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Image.file(
+                File(widget.imagePath),
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
