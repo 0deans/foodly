@@ -1,32 +1,17 @@
 import 'dart:io';
-import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
 
-class ImageClassifier {
-  late Interpreter interpreter;
-  late List<String> labels;
+class Classifier {
+  late Interpreter _interpreter;
+  final List<String> labels;
 
-  final String _labelsPath = 'assets/labels.txt';
-  final String _modelPath = 'assets/model.tflite';
-
-  Future<void> loadModel() async {
-    final interpreterOptions = InterpreterOptions();
-    interpreterOptions.threads = 4;
-    interpreter = await Interpreter.fromAsset(
-      _modelPath,
-      options: InterpreterOptions()..threads = 4,
-    );
+  Classifier(int address, this.labels) {
+    _interpreter = Interpreter.fromAddress(address);
   }
 
-  Future<void> loadLabels() async {
-    final labelsData = await rootBundle.loadString(_labelsPath);
-    labels = labelsData.split('\n');
-    print('initLabels');
-  }
-
-  Future<Map<String, double>> processImage(String imagePath) async {
-    final imageData = File(imagePath).readAsBytesSync();
+  Map<String, double> classify(String imageFilePath) {
+    final imageData = File(imageFilePath).readAsBytesSync();
     var image = img.decodeImage(imageData);
 
     final imageInput = img.copyResize(
@@ -56,13 +41,9 @@ class ImageClassifier {
       });
     });
 
-    final runs = DateTime.now().millisecondsSinceEpoch;
-    interpreter.run(imageMatrix, output);
-    final run = DateTime.now().millisecondsSinceEpoch - runs;
+    _interpreter.run(imageMatrix, output);
 
-    print('Time to run inference: $run ms');
     final Map<String, double> probabilities = {};
-
 
     for (int y = 0; y < 513; y++) {
       for (int x = 0; x < 513; x++) {
@@ -75,9 +56,5 @@ class ImageClassifier {
     }
 
     return probabilities;
-  }
-
-  void close() {
-    interpreter.close();
   }
 }
