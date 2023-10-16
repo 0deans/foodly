@@ -3,7 +3,7 @@ import 'package:foodly/history.dart';
 import 'home.dart';
 import 'camera.dart';
 
-void main() async{
+void main() async {
   runApp(const MyApp());
 }
 
@@ -13,8 +13,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(brightness: Brightness.dark,
-      primaryColor: Colors.grey),
+      theme: ThemeData(
+        brightness: Brightness.dark,
+      ),
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {

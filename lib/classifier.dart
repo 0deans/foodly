@@ -1,6 +1,10 @@
 import 'dart:io';
+import 'dart:math';
+import 'dart:ui';
 import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
+
+import 'colors.dart';
 
 class Classifier {
   late Interpreter _interpreter;
@@ -10,7 +14,7 @@ class Classifier {
     _interpreter = Interpreter.fromAddress(address);
   }
 
-  Map<String, double> classify(String imageFilePath) {
+  (Map<String, double>, img.Image) classify(String imageFilePath) {
     final imageData = File(imageFilePath).readAsBytesSync();
     var image = img.decodeImage(imageData);
 
@@ -55,6 +59,29 @@ class Classifier {
       }
     }
 
-    return probabilities;
+    final segmentation  = img.Image(width: 513, height: 513);
+
+    for (int y = 0; y < 513; y++) {
+      for (int x = 0; x < 513; x++) {
+        final classes = output[0][y][x];
+        double max = -10.0;
+        for (int i = 0; i < classes.length; i++) {
+          max = classes[i] > max ? classes[i] : max;
+        }
+        final color = Color(categoryColors[classes.indexOf(max)]);
+        segmentation.setPixelRgb(x, y, color.red, color.green, color.blue);
+      }
+    }
+
+    return (probabilities, segmentation);
+  }
+
+  Color _generateRandomColor(int seed) {
+    final random = Random(seed);
+    final r = random.nextInt(256);
+    final g = random.nextInt(256);
+    final b = random.nextInt(256);
+
+    return Color.fromARGB(255, r, g, b);
   }
 }
