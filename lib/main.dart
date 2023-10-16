@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodly/history.dart';
 import 'home.dart';
 import 'camera.dart';
 
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const Home(),
         '/camera': (context) => const Camera(),
+        '/History': (context) => const History(),
       },
     );
   }

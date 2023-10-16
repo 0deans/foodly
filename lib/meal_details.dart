@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MealDetails extends StatefulWidget {
   final String imagePath;
@@ -73,9 +74,17 @@ class _MealDetailsState extends State<MealDetails> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(className.capitalize()),
-                      const SizedBox(height: 25),
-                      Text('${(probability! * 100).toStringAsFixed(2)}%'),
+                      Text(
+                        className.capitalize(),
+                        style: GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      Text(
+                        '${(probability! * 100).toStringAsFixed(2)}%',
+                        style: GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ],
                   );
                 }).toList(),

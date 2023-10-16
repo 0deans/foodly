@@ -96,7 +96,9 @@ class _HomeState extends State<Home> {
               height: 80,
               padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 15),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/History');
+                },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
