@@ -25,9 +25,8 @@ class _AcceptImageState extends State<AcceptImage> {
         child: Column(
           children: [
             Expanded(
-              child: Container(
+              child: SizedBox(
                 width: w,
-                padding: const EdgeInsets.only(top: 25),
                 child: Image.file(
                   File(widget.selectedImage),
                   fit: BoxFit.cover,

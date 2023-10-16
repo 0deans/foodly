@@ -78,26 +78,28 @@ class _CameraState extends State<Camera> {
         child: Column(
           children: [
             Expanded(
-              child: Container(
+              child: SizedBox(
                 width: w,
-                padding: const EdgeInsets.only(top: 25),
                 child: CameraPreview(_controller),
               ),
             ),
-            InkWell(
-              onTap: _takePhoto,
-              child: Container(
-                height: 50,
-                width: 50,
-                margin: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.photo_camera,
-                  size: 40,
-                  color: Colors.black38,
+            Container(
+              height: 50,
+              width: 50,
+              margin: const EdgeInsets.all(10),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(25),
+                onTap: _takePhoto,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.photo_camera,
+                    size: 40,
+                    color: Colors.black38,
+                  ),
                 ),
               ),
             ),
