@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:foodly/history.dart';
-import 'package:foodly/settings.dart';
+import 'package:foodly/pages/history.dart';
+import 'package:foodly/pages/settings.dart';
 import 'package:foodly/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
-import 'home.dart';
-import 'camera.dart';
+import 'package:foodly/pages/home.dart';
+import 'package:foodly/pages/camera.dart';
 
 void main() async {
   runApp(

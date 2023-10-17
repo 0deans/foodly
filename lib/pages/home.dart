@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foodly/accept_image.dart';
+import 'package:foodly/pages/accept_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 

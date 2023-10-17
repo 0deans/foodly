@@ -1,7 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:foodly/meal_details.dart';
+import 'package:foodly/pages/meal_details.dart';
 
 class AcceptImage extends StatefulWidget {
   final String selectedImage;

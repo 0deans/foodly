@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'dart:math';
 import 'dart:ui';
 import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
-
 import 'colors.dart';
 
 class Classifier {
@@ -59,7 +57,7 @@ class Classifier {
       }
     }
 
-    final segmentation  = img.Image(width: 513, height: 513);
+    final segmentation = img.Image(width: 513, height: 513);
 
     for (int y = 0; y < 513; y++) {
       for (int x = 0; x < 513; x++) {
@@ -74,14 +72,5 @@ class Classifier {
     }
 
     return (probabilities, segmentation);
-  }
-
-  Color _generateRandomColor(int seed) {
-    final random = Random(seed);
-    final r = random.nextInt(256);
-    final g = random.nextInt(256);
-    final b = random.nextInt(256);
-
-    return Color.fromARGB(255, r, g, b);
   }
 }
