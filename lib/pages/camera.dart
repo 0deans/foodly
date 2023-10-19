@@ -10,17 +10,38 @@ class Camera extends StatefulWidget {
   State<Camera> createState() => _CameraState();
 }
 
-class _CameraState extends State<Camera> {
+class _CameraState extends State<Camera> with WidgetsBindingObserver {
   late CameraController _controller;
   bool _isInitialized = false;
 
-  Future<void> initCamera() async {
+  Future<void> _initCamera() async {
     WidgetsFlutterBinding.ensureInitialized();
     final cameras = await availableCameras();
 
+    _initCameraController(cameras.first);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final CameraController cameraController = _controller;
+
+    if (!cameraController.value.isInitialized) {
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive) {
+      cameraController.dispose();
+    } else if (state == AppLifecycleState.resumed) {
+      _initCameraController(cameraController.description);
+    }
+  }
+
+  Future<void> _initCameraController(
+      CameraDescription cameraDescription) async {
     _controller = CameraController(
-      cameras.first,
+      cameraDescription,
       ResolutionPreset.high,
+      enableAudio: false,
     );
 
     _controller.initialize().then((_) {
@@ -38,27 +59,28 @@ class _CameraState extends State<Camera> {
       return;
     }
 
+    _controller.setFlashMode(FlashMode.off);
     _controller.takePicture().then((image) {
-      if (image != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AcceptImage(selectedImage: image.path),
-          ),
-        );
-      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AcceptImage(selectedImage: image.path),
+        ),
+      );
     });
   }
 
   @override
   void initState() {
     super.initState();
-    initCamera();
+    WidgetsBinding.instance.addObserver(this);
+    _initCamera();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
