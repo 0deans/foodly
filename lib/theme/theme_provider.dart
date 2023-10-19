@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/theme/theme.dart';
+import 'package:foodly/utils/database_provider.dart';
 
 class ThemeProvider with ChangeNotifier {
   ThemeData _themeData = lightMode;
@@ -11,11 +12,20 @@ class ThemeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleTheme() {
+  void toggleTheme() async {
+    final db = await DatabaseProvider().database;
     if (_themeData == lightMode) {
       themeData = darkMode;
+      db.update(
+        'settings',
+        {'theme': 'dark'},
+      );
     } else {
       themeData = lightMode;
+      db.update(
+        'settings',
+        {'theme': 'light'},
+      );
     }
   }
 }
