@@ -1,17 +1,18 @@
 import 'dart:isolate';
+import 'dart:typed_data';
 
 import 'classifier.dart';
 
 class IsolateData {
   int interpreterAddress;
   List<String> labels;
-  String imageFilePath;
+  Uint8List imageBytes;
   SendPort responsePort;
 
   IsolateData({
     required this.interpreterAddress,
     required this.labels,
-    required this.imageFilePath,
+    required this.imageBytes,
     required this.responsePort,
   });
 }
@@ -44,7 +45,7 @@ class IsolateUtils {
         isolateData.interpreterAddress,
         isolateData.labels,
       );
-      final result = classifier.classify(isolateData.imageFilePath);
+      final result = classifier.classify(isolateData.imageBytes);
       isolateData.responsePort.send(result);
     }
   }

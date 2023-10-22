@@ -63,11 +63,12 @@ class _AcceptImageState extends State<AcceptImage> {
                       splashColor: Colors.cyan,
                       borderRadius: BorderRadius.circular(25),
                       onTap: () {
+                        final image = File(widget.selectedImage).readAsBytesSync();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => MealDetails(
-                              imagePath: widget.selectedImage,
+                              imageBytes: image,
                             ),
                           ),
                         );

@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
@@ -12,9 +12,8 @@ class Classifier {
     _interpreter = Interpreter.fromAddress(address);
   }
 
-  (Map<String, double>, img.Image) classify(String imageFilePath) {
-    final imageData = File(imageFilePath).readAsBytesSync();
-    var image = img.decodeImage(imageData);
+  (Map<String, double>, img.Image) classify(Uint8List imageBytes) {
+    var image = img.decodeImage(imageBytes);
 
     final imageInput = img.copyResize(
       image!,
@@ -45,19 +44,8 @@ class Classifier {
 
     _interpreter.run(imageMatrix, output);
 
-    final Map<String, double> probabilities = {};
-
-    for (int y = 0; y < 513; y++) {
-      for (int x = 0; x < 513; x++) {
-        for (int i = 0; i < labels.length; i++) {
-          final label = labels[i];
-          final probability = output[0][y][x][i];
-          probabilities[label] = (probabilities[label] ?? 0) + probability;
-        }
-      }
-    }
-
     final segmentation = img.Image(width: 513, height: 513);
+    Map<String, double> probabilities = {};
 
     for (int y = 0; y < 513; y++) {
       for (int x = 0; x < 513; x++) {
@@ -68,8 +56,22 @@ class Classifier {
         }
         final color = Color(categoryColors[classes.indexOf(max)]);
         segmentation.setPixelRgb(x, y, color.red, color.green, color.blue);
+
+        for (int i = 0; i < labels.length; i++) {
+          final label = labels[i];
+          final probability = output[0][y][x][i];
+          probabilities[label] = (probabilities[label] ?? 0) + probability;
+        }
       }
     }
+
+    final sum = probabilities.values.reduce((a, b) => a + b);
+    probabilities = probabilities.map(
+      (key, value) => MapEntry(
+        key,
+        (value / sum),
+      ),
+    );
 
     return (probabilities, segmentation);
   }

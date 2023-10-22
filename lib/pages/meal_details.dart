@@ -9,9 +9,9 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 
 class MealDetails extends StatefulWidget {
-  final String imagePath;
+  final Uint8List imageBytes;
 
-  const MealDetails({super.key, required this.imagePath});
+  const MealDetails({super.key, required this.imageBytes});
 
   @override
   State<MealDetails> createState() => _MealDetailsState();
@@ -19,12 +19,12 @@ class MealDetails extends StatefulWidget {
 
 class _MealDetailsState extends State<MealDetails> {
   final IsolateUtils _isolateUtils = IsolateUtils();
-  late Map<String, (int, double)> _probabilities = {};
+  late Map<String, Inference> _probabilities = {};
   late Uint8List _image;
   late bool _isLoading;
   bool _showMask = false;
 
-  initialize() async {
+  _initialize() async {
     final interpreter = await Interpreter.fromAsset(
       'assets/model.tflite',
       options: InterpreterOptions()..threads = Platform.numberOfProcessors,
@@ -36,7 +36,7 @@ class _MealDetailsState extends State<MealDetails> {
 
     ReceivePort responsePort = ReceivePort();
     final isolateData = IsolateData(
-      imageFilePath: widget.imagePath,
+      imageBytes: widget.imageBytes,
       interpreterAddress: interpreter.address,
       labels: labels,
       responsePort: responsePort.sendPort,
@@ -54,21 +54,16 @@ class _MealDetailsState extends State<MealDetails> {
     interpreter.close();
     _isolateUtils.dispose();
 
-    final sum = result.values.reduce((a, b) => a + b);
-    result = result.map((key, value) => MapEntry(key, (value / sum)));
-
     result.forEach((key, value) {
       final index = result.keys.toList().indexOf(key);
       final color = categoryColors[index];
-      _probabilities[key] = (color, value);
+      _probabilities[key] = Inference(color, value);
     });
 
     _probabilities = Map.fromEntries(
       _probabilities.entries.toList()
-        ..sort((e1, e2) {
-          var (_, first) = e1.value;
-          var (_, second) = e2.value;
-          return second.compareTo(first);
+        ..sort((a, b) {
+          return b.value.prob.compareTo(a.value.prob);
         }),
     );
 
@@ -81,7 +76,7 @@ class _MealDetailsState extends State<MealDetails> {
   void initState() {
     super.initState();
     _isLoading = true;
-    initialize();
+    _initialize();
   }
 
   @override
@@ -118,8 +113,8 @@ class _MealDetailsState extends State<MealDetails> {
                 child: Stack(
                   children: [
                     Positioned.fill(
-                      child: Image.file(
-                        File(widget.imagePath),
+                      child: Image.memory(
+                        widget.imageBytes,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -157,7 +152,7 @@ class _MealDetailsState extends State<MealDetails> {
               },
               child: Center(
                 child: Text(
-                  "Show food groups",
+                  '${_showMask ? "Hide" : "Show"} food groups',
                   style: GoogleFonts.roboto(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -176,8 +171,8 @@ class _MealDetailsState extends State<MealDetails> {
             child: Column(
               children: [
                 ..._probabilities.keys.toList().map((className) {
-                  var (color, probability) =
-                      _probabilities[className] as (int, double);
+                  final inference = _probabilities[className]!;
+
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -186,7 +181,8 @@ class _MealDetailsState extends State<MealDetails> {
                         style: GoogleFonts.roboto(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: _showMask ? Color(color) : Colors.white,
+                          color:
+                              _showMask ? Color(inference.color) : Colors.white,
                           shadows: <Shadow>[
                             const Shadow(
                               offset: Offset(1.0, 1.0),
@@ -200,11 +196,12 @@ class _MealDetailsState extends State<MealDetails> {
                         height: 25,
                       ),
                       Text(
-                        '${(probability * 100).toStringAsFixed(2)}%',
+                        '${(inference.prob * 100).toStringAsFixed(2)}%',
                         style: GoogleFonts.roboto(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: _showMask ? Color(color) : Colors.white,
+                          color:
+                              _showMask ? Color(inference.color) : Colors.white,
                           shadows: <Shadow>[
                             const Shadow(
                               offset: Offset(1.0, 1.0),
@@ -225,6 +222,13 @@ class _MealDetailsState extends State<MealDetails> {
       ),
     );
   }
+}
+
+class Inference {
+  final int color;
+  final double prob;
+
+  Inference(this.color, this.prob);
 }
 
 extension Capitalize on String {
