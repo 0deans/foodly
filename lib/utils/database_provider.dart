@@ -31,8 +31,11 @@ class DatabaseProvider {
   }
 
   Future<void> create(Database database, int version) async {
-    return database.execute(
+    await database.execute(
       'CREATE TABLE settings (id INTEGER PRIMARY KEY, theme TEXT, language TEXT)',
+    );
+    await database.execute(
+      "CREATE TABLE scan_history (id INTEGER PRIMARY KEY, image BLOB, createdAt TEXT)",
     );
   }
 }

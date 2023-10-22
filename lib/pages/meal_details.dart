@@ -7,6 +7,7 @@ import 'package:foodly/utils/isolate_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
+import 'package:foodly/utils/database_provider.dart';
 
 class MealDetails extends StatefulWidget {
   final Uint8List imageBytes;
@@ -65,6 +66,15 @@ class _MealDetailsState extends State<MealDetails> {
         ..sort((a, b) {
           return b.value.prob.compareTo(a.value.prob);
         }),
+    );
+
+    final db = await DatabaseProvider().database;
+    db.insert(
+      'scan_history',
+      {
+        'image': widget.imageBytes,
+        'createdAt': DateTime.now().toIso8601String(),
+      },
     );
 
     setState(() {
