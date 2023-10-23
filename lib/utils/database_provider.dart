@@ -23,19 +23,28 @@ class DatabaseProvider {
     final path = await fullPath;
     var database = await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: create,
+      onUpgrade: onUpgrade,
       singleInstance: true,
     );
     return database;
   }
 
-  Future<void> create(Database database, int version) async {
-    await database.execute(
+  Future<void> create(Database db, int version) async {
+    await db.execute(
       'CREATE TABLE settings (id INTEGER PRIMARY KEY, theme TEXT, language TEXT)',
     );
-    await database.execute(
+    await db.execute(
       "CREATE TABLE scan_history (id INTEGER PRIMARY KEY, image BLOB, createdAt TEXT)",
     );
+  }
+
+  Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < newVersion) {
+      await db.execute(
+        "CREATE TABLE scan_history (id INTEGER PRIMARY KEY, image BLOB, createdAt TEXT)",
+      );
+    }
   }
 }

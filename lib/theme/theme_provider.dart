@@ -4,28 +4,18 @@ import 'package:foodly/utils/database_provider.dart';
 
 class ThemeProvider with ChangeNotifier {
   ThemeData _themeData = lightMode;
+  bool _isAuto = false;
 
   ThemeData get themeData => _themeData;
+  bool get isAuto => _isAuto;
 
   set themeData(ThemeData themeData) {
     _themeData = themeData;
     notifyListeners();
   }
 
-  void toggleTheme() async {
-    final db = await DatabaseProvider().database;
-    if (_themeData == lightMode) {
-      themeData = darkMode;
-      db.update(
-        'settings',
-        {'theme': 'dark'},
-      );
-    } else {
-      themeData = lightMode;
-      db.update(
-        'settings',
-        {'theme': 'light'},
-      );
-    }
+  set isAuto(bool value) {
+    _isAuto = value;
+    notifyListeners();
   }
 }

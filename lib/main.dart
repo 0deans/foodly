@@ -11,29 +11,50 @@ import 'package:foodly/pages/camera.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  var dispatcher = SchedulerBinding.instance.platformDispatcher;
   final db = await DatabaseProvider().database;
-
   final themeProvider = ThemeProvider();
 
   final result = await db.query('settings');
-  if (result.isEmpty) {
-    var brightness =
-        SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    bool isDarkMode = brightness == Brightness.dark;
 
-    await db.insert(
-      'settings',
-      {
-        'theme': isDarkMode ? 'dark' : 'light',
-        'language': 'us',
-      },
-    );
+  var brightness = dispatcher.platformBrightness;
+  bool isDarkMode = brightness == Brightness.dark;
 
-    themeProvider.themeData = isDarkMode ? darkMode : lightMode;
-  } else {
-    final theme = result.first['theme'];
-    themeProvider.themeData = theme == 'dark' ? darkMode : lightMode;
+  switch (result.first['theme']) {
+    case 'light':
+      themeProvider.themeData = lightMode;
+      break;
+    case 'dark':
+      themeProvider.themeData = darkMode;
+      break;
+    case 'auto':
+      themeProvider.isAuto = true;
+      themeProvider.themeData = isDarkMode ? darkMode : lightMode;
+      break;
+    default:
+      await db.insert(
+        'settings',
+        {
+          'theme': isDarkMode ? 'dark' : 'light',
+          'language': 'us',
+        },
+      );
+
+      themeProvider.themeData = isDarkMode ? darkMode : lightMode;
   }
+
+  dispatcher.onPlatformBrightnessChanged = () {
+    if (!themeProvider.isAuto) {
+      return;
+    }
+
+    var brightness = dispatcher.platformBrightness;
+    if (brightness == Brightness.dark) {
+      themeProvider.themeData = darkMode;
+    } else {
+      themeProvider.themeData = lightMode;
+    }
+  };
 
   runApp(
     ChangeNotifierProvider(
