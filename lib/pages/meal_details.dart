@@ -11,8 +11,9 @@ import 'package:foodly/utils/database_provider.dart';
 
 class MealDetails extends StatefulWidget {
   final Uint8List imageBytes;
+  final bool? saveToHistory;
 
-  const MealDetails({super.key, required this.imageBytes});
+  const MealDetails({super.key, required this.imageBytes, this.saveToHistory});
 
   @override
   State<MealDetails> createState() => _MealDetailsState();
@@ -68,14 +69,16 @@ class _MealDetailsState extends State<MealDetails> {
         }),
     );
 
-    final db = await DatabaseProvider().database;
-    db.insert(
-      'scan_history',
-      {
-        'image': widget.imageBytes,
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-    );
+    if (widget.saveToHistory ?? false) {
+      final db = await DatabaseProvider().database;
+      db.insert(
+        'scan_history',
+        {
+          'image': widget.imageBytes,
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+      );
+    }
 
     setState(() {
       _isLoading = false;

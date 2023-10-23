@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/models/scan_history.dart';
-
 import 'package:foodly/utils/database_provider.dart';
+import 'package:intl/intl.dart';
+
+import 'meal_details.dart';
 
 class History extends StatefulWidget {
   const History({super.key});
@@ -71,21 +73,49 @@ class _HistoryState extends State<History> {
         child: ListView(
           children: [
             ..._scanHistories.map((history) {
-              return Container(
-                margin: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  top: 40,
-                  bottom: 20,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Image.memory(
-                      history.image,
-                      fit: BoxFit.cover,
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MealDetails(
+                        imageBytes: history.image,
+                      ),
                     ),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    top: 40,
+                    bottom: 20,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white10,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(6),
+                          topRight: Radius.circular(6),
+                        ),
+                        child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: Image.memory(
+                            history.image,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        DateFormat.yMMMMEEEEd()
+                            .add_Hm()
+                            .format(history.createdAt),
+                      ),
+                    ],
                   ),
                 ),
               );

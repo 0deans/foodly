@@ -64,6 +64,7 @@ class _AcceptImageState extends State<AcceptImage> {
                       borderRadius: BorderRadius.circular(25),
                       onTap: () {
                         final image = File(widget.selectedImage).readAsBytesSync();
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
