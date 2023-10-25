@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:foodly/pages/meal_details.dart';
+import 'package:foodly/widgets/icon_circle_button.dart';
 
 class AcceptImage extends StatefulWidget {
   final String selectedImage;
@@ -18,6 +19,7 @@ class _AcceptImageState extends State<AcceptImage> {
     var w = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade900,
       body: SizedBox(
         height: h,
         width: w,
@@ -39,29 +41,18 @@ class _AcceptImageState extends State<AcceptImage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    InkWell(
-                      borderRadius: BorderRadius.circular(25),
+                    IconCircleButton(
+                      size: 50,
+                      iconSize: 30,
+                      iconData: Icons.close,
                       onTap: () {
                         Navigator.pop(context);
                       },
-                      child: const DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 80, 80, 80),
-                          shape: BoxShape.circle,
-                        ),
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Icon(
-                            Icons.close,
-                            size: 30,
-                          ),
-                        ),
-                      ),
                     ),
-                    InkWell(
-                      splashColor: Colors.cyan,
-                      borderRadius: BorderRadius.circular(25),
+                    IconCircleButton(
+                      size: 50,
+                      iconSize: 30,
+                      iconData: Icons.done,
                       onTap: () {
                         final image = File(widget.selectedImage).readAsBytesSync();
 
@@ -75,20 +66,6 @@ class _AcceptImageState extends State<AcceptImage> {
                           ),
                         );
                       },
-                      child: const DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 80, 80, 80),
-                          shape: BoxShape.circle,
-                        ),
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Icon(
-                            Icons.done,
-                            size: 30,
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),

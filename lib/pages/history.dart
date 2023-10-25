@@ -88,12 +88,19 @@ class _HistoryState extends State<History> {
                   margin: const EdgeInsets.only(
                     left: 20,
                     right: 20,
-                    top: 40,
-                    bottom: 20,
+                    top: 30,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white10,
+                    color: Theme.of(context).colorScheme.primary,
                     borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Column(
                     children: [
@@ -110,16 +117,21 @@ class _HistoryState extends State<History> {
                           ),
                         ),
                       ),
-                      Text(
-                        DateFormat.yMMMMEEEEd()
-                            .add_Hm()
-                            .format(history.createdAt),
+                      Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Text(
+                          DateFormat.yMMMMEEEEd()
+                              .add_Hm()
+                              .format(history.createdAt),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       ),
                     ],
                   ),
                 ),
               );
             }).toList(),
+            const SizedBox(height: 20),
           ],
         ),
       ),

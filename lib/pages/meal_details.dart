@@ -2,9 +2,11 @@ import 'dart:io';
 import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:foodly/theme/theme_provider.dart';
 import 'package:foodly/utils/colors.dart';
 import 'package:foodly/utils/isolate_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'package:foodly/utils/database_service.dart';
@@ -97,7 +99,9 @@ class _MealDetailsState extends State<MealDetails> {
     if (_isLoading) {
       return const Scaffold(
         body: Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: Colors.blue,
+          ),
         ),
       );
     }
@@ -117,8 +121,12 @@ class _MealDetailsState extends State<MealDetails> {
       body: ListView(
         children: [
           Container(
-            margin:
-                const EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 20),
+            margin: const EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 40,
+              bottom: 20,
+            ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: AspectRatio(
@@ -152,7 +160,9 @@ class _MealDetailsState extends State<MealDetails> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
               border: Border.all(
-                color: _showMask ? Colors.lightBlue : Colors.white10,
+                color: _showMask
+                    ? Colors.lightBlue
+                    : Theme.of(context).colorScheme.primary,
                 width: 3.0,
               ),
             ),
@@ -179,7 +189,7 @@ class _MealDetailsState extends State<MealDetails> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              color: Colors.white10,
+              color: Theme.of(context).colorScheme.primary,
             ),
             child: Column(
               children: [
@@ -194,15 +204,11 @@ class _MealDetailsState extends State<MealDetails> {
                         style: GoogleFonts.roboto(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color:
-                              _showMask ? Color(inference.color) : Colors.white,
-                          shadows: <Shadow>[
-                            const Shadow(
-                              offset: Offset(1.0, 1.0),
-                              blurRadius: 3.0,
-                              color: Colors.black,
-                            ),
-                          ],
+                          color: _showMask
+                              ? Color(inference.color)
+                              : Provider.of<ThemeProvider>(context).isDark
+                                  ? Colors.white
+                                  : Colors.black,
                         ),
                       ),
                       const SizedBox(
@@ -213,15 +219,11 @@ class _MealDetailsState extends State<MealDetails> {
                         style: GoogleFonts.roboto(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color:
-                              _showMask ? Color(inference.color) : Colors.white,
-                          shadows: <Shadow>[
-                            const Shadow(
-                              offset: Offset(1.0, 1.0),
-                              blurRadius: 3.0,
-                              color: Colors.black,
-                            ),
-                          ],
+                          color: _showMask
+                              ? Color(inference.color)
+                              : Provider.of<ThemeProvider>(context).isDark
+                                  ? Colors.white
+                                  : Colors.black,
                         ),
                       ),
                     ],

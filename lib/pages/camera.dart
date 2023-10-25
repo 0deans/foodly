@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:foodly/widgets/icon_circle_button.dart';
 
 import 'accept_image.dart';
 
@@ -90,10 +91,15 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
     var w = MediaQuery.of(context).size.width;
 
     if (!_isInitialized) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Colors.blue,
+        ),
+      );
     }
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade900,
       body: SizedBox(
         height: h,
         width: w,
@@ -109,20 +115,10 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
               height: 50,
               width: 50,
               margin: const EdgeInsets.all(10),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(25),
+              child: IconCircleButton(
+                iconSize: 30,
+                iconData: Icons.photo_camera,
                 onTap: _takePhoto,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.photo_camera,
-                    size: 40,
-                    color: Colors.black38,
-                  ),
-                ),
               ),
             ),
           ],

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:foodly/theme/theme_provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
-import '../theme/theme.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -49,7 +45,6 @@ class _SettingsState extends State<Settings> {
         backgroundColor: Colors.black12,
         centerTitle: true,
       ),
-      backgroundColor: Theme.of(context).colorScheme.background,
       body: ListView(
         children: [
           const SizedBox(
@@ -58,30 +53,26 @@ class _SettingsState extends State<Settings> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Text(
+              Text(
                 'Theme',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
               ToggleButtons(
                 isSelected: isSelected,
-                fillColor: Colors.white,
-                selectedColor: Colors.black,
-                textStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
+                fillColor: Theme.of(context).colorScheme.primary,
+                selectedColor: Provider.of<ThemeProvider>(context).isDark
+                    ? Colors.white
+                    : Colors.black,
+                textStyle: Theme.of(context).textTheme.bodyMedium,
                 renderBorder: true,
-                borderColor: Colors.white,
-                selectedBorderColor: Colors.white,
+                borderColor: Theme.of(context).colorScheme.primary,
+                selectedBorderColor: Theme.of(context).colorScheme.primary,
                 borderWidth: 2,
                 borderRadius: BorderRadius.circular(6),
                 onPressed: _select,
                 children: ThemeMode.values.map((mode) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Text(mode.name),
                   );
                 }).toList(),
