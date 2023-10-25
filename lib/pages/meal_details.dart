@@ -7,7 +7,7 @@ import 'package:foodly/utils/isolate_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
-import 'package:foodly/utils/database_provider.dart';
+import 'package:foodly/utils/database_service.dart';
 
 class MealDetails extends StatefulWidget {
   final Uint8List imageBytes;
@@ -70,7 +70,7 @@ class _MealDetailsState extends State<MealDetails> {
     );
 
     if (widget.saveToHistory ?? false) {
-      final db = await DatabaseProvider().database;
+      final db = await DatabaseService().database;
       db.insert(
         'scan_history',
         {

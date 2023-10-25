@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/models/scan_history.dart';
-import 'package:foodly/utils/database_provider.dart';
+import 'package:foodly/utils/database_service.dart';
 import 'package:intl/intl.dart';
 
 import 'meal_details.dart';
@@ -17,7 +17,7 @@ class _HistoryState extends State<History> {
   late List<ScanHistory> _scanHistories;
 
   _initialize() async {
-    final db = await DatabaseProvider().database;
+    final db = await DatabaseService().database;
 
     final List<Map<String, dynamic>> maps = await db.query(
       'scan_history',

@@ -1,38 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:foodly/pages/history.dart';
 import 'package:foodly/pages/settings.dart';
-import 'package:foodly/theme/theme.dart';
 import 'package:foodly/theme/theme_provider.dart';
-import 'package:foodly/utils/database_provider.dart';
+import 'package:foodly/utils/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:foodly/pages/home.dart';
 import 'package:foodly/pages/camera.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final db = await DatabaseProvider().database;
 
-  final themeProvider = ThemeProvider();
+  late ThemeProvider themeProvider;
+  final db = await DatabaseService().database;
 
   final result = await db.query('settings');
-  if (result.isEmpty) {
-    var brightness =
-        SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    bool isDarkMode = brightness == Brightness.dark;
+  if (result.isNotEmpty) {
+    final themeMode = switch (result.first['theme']) {
+      'light' => ThemeMode.light,
+      'dark' => ThemeMode.dark,
+      _ => ThemeMode.system
+    };
 
-    await db.insert(
-      'settings',
-      {
-        'theme': isDarkMode ? 'dark' : 'light',
-        'language': 'us',
-      },
-    );
-
-    themeProvider.themeData = isDarkMode ? darkMode : lightMode;
+    themeProvider = ThemeProvider(themeMode);
   } else {
-    final theme = result.first['theme'];
-    themeProvider.themeData = theme == 'dark' ? darkMode : lightMode;
+    await db.insert('settings', {
+      'theme': 'system',
+      'language': 'en',
+    });
+
+    themeProvider = ThemeProvider(ThemeMode.system);
   }
 
   runApp(

@@ -70,6 +70,7 @@ class _AcceptImageState extends State<AcceptImage> {
                           MaterialPageRoute(
                             builder: (context) => MealDetails(
                               imageBytes: image,
+                              saveToHistory: true,
                             ),
                           ),
                         );

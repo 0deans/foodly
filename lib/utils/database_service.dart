@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class DatabaseProvider {
+class DatabaseService {
   Database? _database;
 
   Future<Database> get database async {
@@ -30,11 +30,11 @@ class DatabaseProvider {
     return database;
   }
 
-  Future<void> create(Database database, int version) async {
-    await database.execute(
+  Future<void> create(Database db, int version) async {
+    await db.execute(
       'CREATE TABLE settings (id INTEGER PRIMARY KEY, theme TEXT, language TEXT)',
     );
-    await database.execute(
+    await db.execute(
       "CREATE TABLE scan_history (id INTEGER PRIMARY KEY, image BLOB, createdAt TEXT)",
     );
   }
