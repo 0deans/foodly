@@ -22,25 +22,8 @@ class _SettingsState extends State<Settings> {
         isSelected[index] = index == newIndex;
       }
 
-      // Change the theme or isAuto based on the selected index
       final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-      switch (newIndex) {
-        case 0:
-          themeProvider.themeData = lightMode;
-          themeProvider.isAuto = false;
-          break;
-        case 1:
-          themeProvider.themeData = darkMode;
-          themeProvider.isAuto = false;
-          break;
-        case 2:
-          var dispatcher = SchedulerBinding.instance.platformDispatcher;
-          var brightness = dispatcher.platformBrightness;
-          bool isDarkMode = brightness == Brightness.dark;
-          themeProvider.themeData = isDarkMode ? darkMode : lightMode;
-          themeProvider.isAuto = true;
-          break;
-      }
+      themeProvider.setThemeMode(ThemeMode.values[newIndex]);
     });
   }
 
@@ -49,17 +32,7 @@ class _SettingsState extends State<Settings> {
     super.initState();
 
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    final theme = themeProvider.themeData;
-    final isAuto = themeProvider.isAuto;
-
-    int selectedIndex = 0;
-    if (isAuto) {
-      selectedIndex = 2;
-    } else if(theme == darkMode) {
-      selectedIndex = 1;
-    }
-
-    isSelected[selectedIndex] = true;
+    isSelected[themeProvider.themeMode.index] = true;
   }
 
   @override
@@ -106,10 +79,10 @@ class _SettingsState extends State<Settings> {
                 borderWidth: 2,
                 borderRadius: BorderRadius.circular(6),
                 onPressed: _select,
-                children: ['Light', 'Dark', 'Auto'].map((name) {
+                children: ThemeMode.values.map((mode) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(name),
+                    child: Text(mode.name),
                   );
                 }).toList(),
               ),

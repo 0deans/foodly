@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class DatabaseProvider {
+class DatabaseService {
   Database? _database;
 
   Future<Database> get database async {
@@ -23,9 +23,8 @@ class DatabaseProvider {
     final path = await fullPath;
     var database = await openDatabase(
       path,
-      version: 2,
+      version: 1,
       onCreate: create,
-      onUpgrade: onUpgrade,
       singleInstance: true,
     );
     return database;
@@ -38,13 +37,5 @@ class DatabaseProvider {
     await db.execute(
       "CREATE TABLE scan_history (id INTEGER PRIMARY KEY, image BLOB, createdAt TEXT)",
     );
-  }
-
-  Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < newVersion) {
-      await db.execute(
-        "CREATE TABLE scan_history (id INTEGER PRIMARY KEY, image BLOB, createdAt TEXT)",
-      );
-    }
   }
 }
