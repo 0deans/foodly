@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodly/models/scan_history.dart';
 import 'package:foodly/utils/database_service.dart';
 import 'package:intl/intl.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'meal_details.dart';
 
 class History extends StatefulWidget {
@@ -54,6 +54,8 @@ class _HistoryState extends State<History> {
 
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
+    final _appLocal = AppLocalizations.of(context)!;
+
 
     return Scaffold(
       appBar: AppBar(
@@ -63,7 +65,7 @@ class _HistoryState extends State<History> {
           },
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Text('History'),
+        title: Text(_appLocal.history),
         backgroundColor: Colors.black12,
         centerTitle: true,
       ),

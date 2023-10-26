@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -33,6 +34,8 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    final _appLocal = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -41,7 +44,7 @@ class _SettingsState extends State<Settings> {
           },
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Text('Settings'),
+        title: Text(_appLocal.settings),
         backgroundColor: Colors.black12,
         centerTitle: true,
       ),

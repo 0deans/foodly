@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodly/pages/accept_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -47,6 +48,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
+    final _appLocal = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SizedBox(
@@ -66,14 +68,14 @@ class _HomeState extends State<Home> {
               style: GoogleFonts.autourOne(fontSize: 25),
             ),
             const SizedBox(height: 40),
-            buildButton('Camera', () {
+            buildButton(_appLocal.camera, () {
               Navigator.pushNamed(context, '/camera');
             }),
-            buildButton('Gallery', _loadImageGallery),
-            buildButton('History', () {
+            buildButton(_appLocal.gallery, _loadImageGallery),
+            buildButton(_appLocal.history, () {
               Navigator.pushNamed(context, '/history');
             }),
-            buildButton('Settings', () {
+            buildButton(_appLocal.settings, () {
               Navigator.pushNamed(context, '/settings');
             }),
           ],
