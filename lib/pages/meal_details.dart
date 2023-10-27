@@ -14,10 +14,10 @@ import 'package:foodly/utils/database_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MealDetails extends StatefulWidget {
-  final Uint8List imageBytes;
+  final String imagePath;
   final bool? saveToHistory;
 
-  const MealDetails({super.key, required this.imageBytes, this.saveToHistory});
+  const MealDetails({super.key, required this.imagePath, this.saveToHistory});
 
   @override
   State<MealDetails> createState() => _MealDetailsState();
@@ -46,7 +46,7 @@ class _MealDetailsState extends State<MealDetails> {
 
     ReceivePort responsePort = ReceivePort();
     final isolateData = IsolateData(
-      imageBytes: widget.imageBytes,
+      imageBytes: File(widget.imagePath).readAsBytesSync(),
       interpreterAddress: interpreter.address,
       labels: labels,
       responsePort: responsePort.sendPort,
@@ -82,7 +82,7 @@ class _MealDetailsState extends State<MealDetails> {
       db.insert(
         'scan_history',
         {
-          'image': widget.imageBytes,
+          'imagePath': widget.imagePath,
           'createdAt': DateTime.now().toIso8601String(),
         },
       );
@@ -148,8 +148,8 @@ class _MealDetailsState extends State<MealDetails> {
                 child: Stack(
                   children: [
                     Positioned.fill(
-                      child: Image.memory(
-                        widget.imageBytes,
+                      child: Image.file(
+                        File(widget.imagePath),
                         fit: BoxFit.cover,
                       ),
                     ),

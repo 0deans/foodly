@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:foodly/pages/meal_details.dart';
 import 'package:foodly/widgets/icon_circle_button.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class AcceptImage extends StatefulWidget {
-  final String selectedImage;
+  final XFile selectedImage;
 
   const AcceptImage({Key? key, required this.selectedImage}) : super(key: key);
 
@@ -13,6 +16,26 @@ class AcceptImage extends StatefulWidget {
 }
 
 class _AcceptImageState extends State<AcceptImage> {
+
+  Future<String> saveImage(List<int> imageData) async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+
+    Directory imageDir = Directory("${appDocDir.path}/images");
+    if (!imageDir.existsSync()) {
+      imageDir.createSync(recursive: true);
+    }
+
+    Uuid uuid = const Uuid();
+    String uniqueFileName = uuid.v4();
+
+    String imagePath = "${imageDir.path}/$uniqueFileName.png";
+
+    File imageFile = File(imagePath);
+    await imageFile.writeAsBytes(imageData);
+
+    return imagePath;
+  }
+
   @override
   Widget build(BuildContext context) {
     var h = MediaQuery.of(context).size.height;
@@ -29,7 +52,7 @@ class _AcceptImageState extends State<AcceptImage> {
               child: SizedBox(
                 width: w,
                 child: Image.file(
-                  File(widget.selectedImage),
+                  File(widget.selectedImage.path),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -54,17 +77,18 @@ class _AcceptImageState extends State<AcceptImage> {
                       iconSize: 30,
                       iconData: Icons.done,
                       onTap: () {
-                        final image = File(widget.selectedImage).readAsBytesSync();
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MealDetails(
-                              imageBytes: image,
-                              saveToHistory: true,
+                        final bytes = File(widget.selectedImage.path).readAsBytesSync();
+                        saveImage(bytes).then((path) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MealDetails(
+                                imagePath: path,
+                                saveToHistory: true,
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        });
                       },
                     ),
                   ],

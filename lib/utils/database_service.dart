@@ -35,7 +35,7 @@ class DatabaseService {
       'CREATE TABLE settings (id INTEGER PRIMARY KEY, theme TEXT, language TEXT)',
     );
     await db.execute(
-      "CREATE TABLE scan_history (id INTEGER PRIMARY KEY, image BLOB, createdAt TEXT)",
+      "CREATE TABLE scan_history (id INTEGER PRIMARY KEY, imagePath TEXT, createdAt TEXT)",
     );
   }
 }

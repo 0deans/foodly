@@ -1,6 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:foodly/widgets/icon_circle_button.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'accept_image.dart';
 
@@ -14,6 +16,7 @@ class Camera extends StatefulWidget {
 class _CameraState extends State<Camera> with WidgetsBindingObserver {
   late CameraController _controller;
   bool _isInitialized = false;
+  bool _isCameraAccessDenied = false;
 
   Future<void> _initCamera() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +55,14 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
       setState(() {
         _isInitialized = true;
       });
+    }).catchError((error) {
+      if (error is CameraException) {
+        if (error.code == 'CameraAccessDenied') {
+          setState(() {
+            _isCameraAccessDenied = true;
+          });
+        }
+      }
     });
   }
 
@@ -65,7 +76,7 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AcceptImage(selectedImage: image.path),
+          builder: (context) => AcceptImage(selectedImage: image),
         ),
       );
     });
@@ -89,6 +100,50 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
+
+    final appLocal = AppLocalizations.of(context)!;
+
+    if (_isCameraAccessDenied) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              appLocal.cameraPermissionError,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
+              child: ElevatedButton(
+                onPressed: () async {
+                  final status = await Permission.camera.request();
+                  if (status == PermissionStatus.granted) {
+                    setState(() {
+                      _isCameraAccessDenied = false;
+                      _initCamera();
+                    });
+                  } else {
+                    openAppSettings().then((_) {
+                      Navigator.pop(context);
+                    });
+                  }
+                },
+                style: Theme.of(context).elevatedButtonTheme.style,
+                child: Text(
+                  appLocal.grantAccess,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     if (!_isInitialized) {
       return const Center(

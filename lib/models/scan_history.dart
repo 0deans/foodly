@@ -2,19 +2,19 @@ import 'dart:typed_data';
 
 class ScanHistory {
   final int id;
-  final Uint8List image;
+  final String imagePath;
   final DateTime createdAt;
 
   const ScanHistory({
     required this.id,
-    required this.image,
+    required this.imagePath,
     required this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'image': image,
+      'image': imagePath,
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -22,7 +22,7 @@ class ScanHistory {
   factory ScanHistory.fromMap(Map<String, dynamic> map) {
     return ScanHistory(
       id: map['id'],
-      image: map['image'],
+      imagePath: map['imagePath'],
       createdAt: DateTime.parse(map['createdAt']),
     );
   }

@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => AcceptImage(selectedImage: image.path),
+            builder: (context) => AcceptImage(selectedImage: image),
           ),
         );
       }

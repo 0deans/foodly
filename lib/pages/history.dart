@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:foodly/models/scan_history.dart';
 import 'package:foodly/pages/meal_details.dart';
@@ -27,6 +28,12 @@ class _HistoryState extends State<History> {
       _fetchPage(pageKey);
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchPage(int pageKey) async {
@@ -89,7 +96,7 @@ class _HistoryState extends State<History> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => MealDetails(
-                        imageBytes: item.image,
+                        imagePath: item.imagePath,
                       ),
                     ),
                   );
@@ -122,8 +129,8 @@ class _HistoryState extends State<History> {
                         ),
                         child: AspectRatio(
                           aspectRatio: 16 / 9,
-                          child: Image.memory(
-                            item.image,
+                          child: Image.file(
+                            File(item.imagePath),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -139,6 +146,15 @@ class _HistoryState extends State<History> {
                       ),
                     ],
                   ),
+                ),
+              );
+            },
+            noItemsFoundIndicatorBuilder: (context) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 40),
+                child: Text(
+                  appLocal.noItemsFound,
+                  textAlign: TextAlign.center,
                 ),
               );
             },
