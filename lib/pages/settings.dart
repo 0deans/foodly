@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodly/providers/locale_provider.dart';
 import 'package:foodly/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -35,6 +36,8 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     final _appLocal = AppLocalizations.of(context)!;
+    final provider = Provider.of<LocaleProvider>(context);
+    final locale = provider.locale;
 
     return Scaffold(
       appBar: AppBar(
@@ -50,38 +53,84 @@ class _SettingsState extends State<Settings> {
       ),
       body: ListView(
         children: [
-          const SizedBox(
-            height: 40,
+          Container(
+            margin: const EdgeInsets.only(
+              top: 20,
+              left: 20,
+              right: 20,
+              bottom: 10,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  _appLocal.theme,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                ToggleButtons(
+                  isSelected: isSelected,
+                  fillColor: Theme.of(context).colorScheme.primary,
+                  selectedColor: Provider.of<ThemeProvider>(context).isDark
+                      ? Colors.white
+                      : Colors.black,
+                  textStyle: Theme.of(context).textTheme.bodyMedium,
+                  renderBorder: true,
+                  borderColor: Theme.of(context).colorScheme.primary,
+                  selectedBorderColor: Theme.of(context).colorScheme.primary,
+                  borderWidth: 2,
+                  borderRadius: BorderRadius.circular(6),
+                  onPressed: _select,
+                  children: ThemeMode.values.map((mode) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Text(mode.name),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text(
-                'Theme',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              ToggleButtons(
-                isSelected: isSelected,
-                fillColor: Theme.of(context).colorScheme.primary,
-                selectedColor: Provider.of<ThemeProvider>(context).isDark
-                    ? Colors.white
-                    : Colors.black,
-                textStyle: Theme.of(context).textTheme.bodyMedium,
-                renderBorder: true,
-                borderColor: Theme.of(context).colorScheme.primary,
-                selectedBorderColor: Theme.of(context).colorScheme.primary,
-                borderWidth: 2,
-                borderRadius: BorderRadius.circular(6),
-                onPressed: _select,
-                children: ThemeMode.values.map((mode) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(mode.name),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  _appLocal.language,
+                ),
+                Container(
+                    width: 60,
+                    decoration: const BoxDecoration(
+                      color: Colors.cyan,
+                    ),
+                    child: Center(
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          value: locale,
+                          items: AppLocalizations.supportedLocales
+                              .map((nextLocale) {
+                            return DropdownMenuItem(
+                              value: nextLocale,
+                              onTap: () {
+                                final provider = Provider.of<LocaleProvider>(
+                                    context,
+                                    listen: false);
+                                provider.setLocale(nextLocale);
+                              },
+                              child: Center(
+                                child: Text(
+                                  nextLocale.toString(),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (_) {},
+                        ),
+                      ),
+                    ))
+              ],
+            ),
+          )
         ],
       ),
     );

@@ -3,5 +3,11 @@
   "camera": "Camera",
   "gallery": "Gallery",
   "history": "History",
-  "settings": "Settings"
+  "settings": "Settings",
+  "theme": "Theme",
+  "language": "Language",
+  "mealDetails": "Meal details",
+  "show": "Show",
+  "hide": "Hide",
+  "foodGroups": "food groups"
 }

@@ -3,5 +3,11 @@
   "camera": "Камера",
   "gallery": "Галерея",
   "history": "Історія",
-  "settings": "Налаштування"
+  "settings": "Налаштування",
+  "mealDetails": "Деталі їжі",
+  "theme": "Тема",
+  "language": "Мова",
+  "show": "Показати",
+  "hide": "Приховати",
+  "foodGroups": "групи їжі"
 }

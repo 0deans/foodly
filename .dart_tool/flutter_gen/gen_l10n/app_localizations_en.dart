@@ -15,4 +15,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get mealDetails => 'Meal details';
+
+  @override
+  String get show => 'Show';
+
+  @override
+  String get hide => 'Hide';
+
+  @override
+  String get foodGroups => 'food groups';
 }

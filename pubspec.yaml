@@ -76,11 +76,9 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/model.tflite
-    - assets/labels.txt
+    - assets/labels_en.txt
+    - assets/labels_uk.txt
     - assets/images/logo.png
-    - assets/images/iconCancel.png
-    - assets/images/iconAllow.png
-    - assets/images/iconCamera.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

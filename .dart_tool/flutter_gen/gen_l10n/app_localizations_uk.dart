@@ -15,4 +15,22 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get settings => 'Налаштування';
+
+  @override
+  String get theme => 'Тема';
+
+  @override
+  String get language => 'Мова';
+
+  @override
+  String get mealDetails => 'Деталі їжі';
+
+  @override
+  String get show => 'Показати';
+
+  @override
+  String get hide => 'Приховати';
+
+  @override
+  String get foodGroups => 'групи їжі';
 }

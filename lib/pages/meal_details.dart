@@ -10,6 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'package:foodly/utils/database_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../providers/locale_provider.dart';
 
 class MealDetails extends StatefulWidget {
   final Uint8List imageBytes;
@@ -33,7 +36,11 @@ class _MealDetailsState extends State<MealDetails> {
       'assets/model.tflite',
       options: InterpreterOptions()..threads = Platform.numberOfProcessors,
     );
-    final labelsData = await rootBundle.loadString('assets/labels.txt');
+
+    //final labelsData = await rootBundle.loadString('assets/labels_en.txt');
+    final labelsData = LocaleProvider().getLocale()
+        ? await rootBundle.loadString('assets/labels_en.txt')
+        : await rootBundle.loadString('assets/labels_uk.txt');
     final labels = labelsData.split('\n');
 
     await _isolateUtils.start();
@@ -96,6 +103,8 @@ class _MealDetailsState extends State<MealDetails> {
 
   @override
   Widget build(BuildContext context) {
+    final _appLocal = AppLocalizations.of(context)!;
+
     if (_isLoading) {
       return const Scaffold(
         body: Center(
@@ -114,7 +123,7 @@ class _MealDetailsState extends State<MealDetails> {
           },
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Text('Meal details'),
+        title: Text(_appLocal.mealDetails),
         backgroundColor: Colors.black12,
         centerTitle: true,
       ),
@@ -175,7 +184,7 @@ class _MealDetailsState extends State<MealDetails> {
               },
               child: Center(
                 child: Text(
-                  '${_showMask ? "Hide" : "Show"} food groups',
+                  '${_showMask ? _appLocal.hide : _appLocal.show} ${_appLocal.foodGroups}',
                   style: GoogleFonts.roboto(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
