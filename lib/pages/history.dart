@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/models/scan_history.dart';
+import 'package:foodly/pages/meal_details.dart';
 import 'package:foodly/providers/locale_provider.dart';
 import 'package:foodly/utils/database_service.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'meal_details.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class History extends StatefulWidget {
   const History({super.key});
@@ -15,45 +16,49 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
-  late bool _isLoading;
-  late List<ScanHistory> _scanHistories;
+  static const _pageSize = 3;
 
-  _initialize() async {
-    final db = await DatabaseService().database;
-
-    final List<Map<String, dynamic>> maps = await db.query(
-      'scan_history',
-      orderBy: 'createdAt DESC',
-      limit: 10,
-    );
-
-    _scanHistories = List.generate(
-      maps.length,
-      (index) => ScanHistory.fromMap(maps[index]),
-    );
-
-    setState(() {
-      _isLoading = false;
-    });
-  }
+  final PagingController<int, ScanHistory> _pagingController =
+      PagingController(firstPageKey: 0);
 
   @override
   void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
     super.initState();
-    _isLoading = true;
-    _initialize();
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      final db = await DatabaseService().database;
+
+      final List<Map<String, dynamic>> maps = await db.query(
+        'scan_history',
+        orderBy: 'createdAt DESC',
+        limit: _pageSize,
+        offset: pageKey,
+      );
+
+      final newItems = List.generate(
+        maps.length,
+        (index) => ScanHistory.fromMap(maps[index]),
+      );
+
+      final isLastPage = newItems.length < _pageSize;
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + newItems.length;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
     final appLocal = AppLocalizations.of(context)!;
@@ -74,16 +79,17 @@ class _HistoryState extends State<History> {
       body: SizedBox(
         width: w,
         height: h,
-        child: ListView(
-          children: [
-            ..._scanHistories.map((history) {
+        child: PagedListView<int, ScanHistory>(
+          pagingController: _pagingController,
+          builderDelegate: PagedChildBuilderDelegate<ScanHistory>(
+            itemBuilder: (context, item, index) {
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => MealDetails(
-                        imageBytes: history.image,
+                        imageBytes: item.image,
                       ),
                     ),
                   );
@@ -92,7 +98,8 @@ class _HistoryState extends State<History> {
                   margin: const EdgeInsets.only(
                     left: 20,
                     right: 20,
-                    top: 30,
+                    top: 15,
+                    bottom: 15,
                   ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primary,
@@ -116,7 +123,7 @@ class _HistoryState extends State<History> {
                         child: AspectRatio(
                           aspectRatio: 16 / 9,
                           child: Image.memory(
-                            history.image,
+                            item.image,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -126,7 +133,7 @@ class _HistoryState extends State<History> {
                         child: Text(
                           DateFormat.yMMMMEEEEd(
                             localeProvider.locale.languageCode,
-                          ).add_Hm().format(history.createdAt),
+                          ).add_Hm().format(item.createdAt),
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
@@ -134,9 +141,8 @@ class _HistoryState extends State<History> {
                   ),
                 ),
               );
-            }).toList(),
-            const SizedBox(height: 20),
-          ],
+            },
+          ),
         ),
       ),
     );
