@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:foodly/providers/locale_provider.dart';
 import 'package:foodly/theme/theme_provider.dart';
 import 'package:foodly/utils/colors.dart';
 import 'package:foodly/utils/isolate_utils.dart';
@@ -11,8 +12,6 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'package:foodly/utils/database_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../providers/locale_provider.dart';
 
 class MealDetails extends StatefulWidget {
   final Uint8List imageBytes;
@@ -29,6 +28,7 @@ class _MealDetailsState extends State<MealDetails> {
   late Map<String, Inference> _probabilities = {};
   late Uint8List _image;
   late bool _isLoading;
+  late bool _isEnglish;
   bool _showMask = false;
 
   _initialize() async {
@@ -37,8 +37,7 @@ class _MealDetailsState extends State<MealDetails> {
       options: InterpreterOptions()..threads = Platform.numberOfProcessors,
     );
 
-    //final labelsData = await rootBundle.loadString('assets/labels_en.txt');
-    final labelsData = LocaleProvider().getLocale()
+    final labelsData = _isEnglish
         ? await rootBundle.loadString('assets/labels_en.txt')
         : await rootBundle.loadString('assets/labels_uk.txt');
     final labels = labelsData.split('\n');
@@ -98,6 +97,12 @@ class _MealDetailsState extends State<MealDetails> {
   void initState() {
     super.initState();
     _isLoading = true;
+
+    _isEnglish = Provider.of<LocaleProvider>(
+      context,
+      listen: false,
+    ).getLocale();
+
     _initialize();
   }
 

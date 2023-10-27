@@ -33,4 +33,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get foodGroups => 'food groups';
+
+  @override
+  String get system => 'system';
+
+  @override
+  String get light => 'light';
+
+  @override
+  String get dark => 'dark';
 }

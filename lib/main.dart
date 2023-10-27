@@ -11,9 +11,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final db = await DatabaseService().database;
 
   late ThemeProvider themeProvider;
-  final db = await DatabaseService().database;
+  late LocaleProvider localeProvider;
 
   final result = await db.query('settings');
   if (result.isNotEmpty) {
@@ -24,6 +25,9 @@ void main() async {
     };
 
     themeProvider = ThemeProvider(themeMode);
+    localeProvider = LocaleProvider(
+      Locale((result.first['language'] as String?) ?? 'en'),
+    );
   } else {
     await db.insert('settings', {
       'theme': 'system',
@@ -31,11 +35,15 @@ void main() async {
     });
 
     themeProvider = ThemeProvider(ThemeMode.system);
+    localeProvider = LocaleProvider(const Locale('en'));
   }
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => themeProvider,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => themeProvider),
+        ChangeNotifierProvider(create: (context) => localeProvider),
+      ],
       child: const MyApp(),
     ),
   );
@@ -45,24 +53,20 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-      create: (context) => LocaleProvider(),
-      builder: (context, child) {
-        final provider = Provider.of<LocaleProvider>(context);
-
-        return MaterialApp(
-          theme: Provider.of<ThemeProvider>(context).themeData,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: provider.locale,
-          debugShowCheckedModeBanner: false,
-          initialRoute: '/',
-          routes: {
-            '/': (context) => const Home(),
-            '/camera': (context) => const Camera(),
-            '/history': (context) => const History(),
-            '/settings': (context) => const Settings(),
-          },
-        );
-      });
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: Provider.of<ThemeProvider>(context).themeData,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: Provider.of<LocaleProvider>(context).locale,
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const Home(),
+        '/camera': (context) => const Camera(),
+        '/history': (context) => const History(),
+        '/settings': (context) => const Settings(),
+      },
+    );
+  }
 }

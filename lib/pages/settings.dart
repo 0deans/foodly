@@ -14,17 +14,6 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   final List<bool> isSelected = [false, false, false];
 
-  _select(int newIndex) {
-    setState(() {
-      for (int index = 0; index < isSelected.length; index++) {
-        isSelected[index] = index == newIndex;
-      }
-
-      final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-      themeProvider.setThemeMode(ThemeMode.values[newIndex]);
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -35,9 +24,16 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    final _appLocal = AppLocalizations.of(context)!;
-    final provider = Provider.of<LocaleProvider>(context);
-    final locale = provider.locale;
+    final localeProvider = Provider.of<LocaleProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    final appLocal = AppLocalizations.of(context)!;
+
+    final Map<String, String> localizedThemeMode = {
+      'system': appLocal.system,
+      'light': appLocal.light,
+      'dark': appLocal.dark
+    };
 
     return Scaffold(
       appBar: AppBar(
@@ -47,45 +43,35 @@ class _SettingsState extends State<Settings> {
           },
           icon: const Icon(Icons.arrow_back),
         ),
-        title: Text(_appLocal.settings),
+        title: Text(appLocal.settings),
         backgroundColor: Colors.black12,
         centerTitle: true,
       ),
       body: ListView(
         children: [
           Container(
-            margin: const EdgeInsets.only(
-              top: 20,
-              left: 20,
-              right: 20,
-              bottom: 10,
-            ),
+            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  _appLocal.theme,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                ToggleButtons(
-                  isSelected: isSelected,
-                  fillColor: Theme.of(context).colorScheme.primary,
-                  selectedColor: Provider.of<ThemeProvider>(context).isDark
-                      ? Colors.white
-                      : Colors.black,
-                  textStyle: Theme.of(context).textTheme.bodyMedium,
-                  renderBorder: true,
-                  borderColor: Theme.of(context).colorScheme.primary,
-                  selectedBorderColor: Theme.of(context).colorScheme.primary,
-                  borderWidth: 2,
-                  borderRadius: BorderRadius.circular(6),
-                  onPressed: _select,
-                  children: ThemeMode.values.map((mode) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(mode.name),
-                    );
-                  }).toList(),
+                Text(appLocal.theme),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    style: Theme.of(context).textTheme.bodySmall,
+                    value: themeProvider.themeMode,
+                    alignment: Alignment.centerRight,
+                    items: ThemeMode.values.map((mode) {
+                      return DropdownMenuItem(
+                        value: mode,
+                        child: Center(
+                          child: Text(localizedThemeMode[mode.name]!),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (themeMode) {
+                      themeProvider.setThemeMode(themeMode!);
+                    },
+                  ),
                 ),
               ],
             ),
@@ -95,42 +81,29 @@ class _SettingsState extends State<Settings> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  _appLocal.language,
-                ),
-                Container(
-                    width: 60,
-                    decoration: const BoxDecoration(
-                      color: Colors.cyan,
-                    ),
-                    child: Center(
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton(
-                          value: locale,
-                          items: AppLocalizations.supportedLocales
-                              .map((nextLocale) {
-                            return DropdownMenuItem(
-                              value: nextLocale,
-                              onTap: () {
-                                final provider = Provider.of<LocaleProvider>(
-                                    context,
-                                    listen: false);
-                                provider.setLocale(nextLocale);
-                              },
-                              child: Center(
-                                child: Text(
-                                  nextLocale.toString(),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (_) {},
+                Text(appLocal.language),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    style: Theme.of(context).textTheme.bodySmall,
+                    value: localeProvider.locale,
+                    items: AppLocalizations.supportedLocales.map((nextLocale) {
+                      return DropdownMenuItem(
+                        value: nextLocale,
+                        child: Center(
+                          child: Text(
+                            nextLocale.toString(),
+                          ),
                         ),
-                      ),
-                    ))
+                      );
+                    }).toList(),
+                    onChanged: (locale) {
+                      localeProvider.setLocale(locale!);
+                    },
+                  ),
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

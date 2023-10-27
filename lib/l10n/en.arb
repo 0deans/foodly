@@ -9,5 +9,8 @@
   "mealDetails": "Meal details",
   "show": "Show",
   "hide": "Hide",
-  "foodGroups": "food groups"
+  "foodGroups": "food groups",
+  "system": "system",
+  "light": "light",
+  "dark": "dark"
 }

@@ -33,4 +33,13 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get foodGroups => 'групи їжі';
+
+  @override
+  String get system => 'системна';
+
+  @override
+  String get light => 'світла';
+
+  @override
+  String get dark => 'темна';
 }

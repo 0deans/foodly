@@ -152,6 +152,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'food groups'**
   String get foodGroups;
+
+  /// No description provided for @system.
+  ///
+  /// In en, this message translates to:
+  /// **'system'**
+  String get system;
+
+  /// No description provided for @light.
+  ///
+  /// In en, this message translates to:
+  /// **'light'**
+  String get light;
+
+  /// No description provided for @dark.
+  ///
+  /// In en, this message translates to:
+  /// **'dark'**
+  String get dark;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
