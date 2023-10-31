@@ -36,8 +36,8 @@ class _SettingsState extends State<Settings> {
     };
 
     final Map<String, String> localizedLangMode = {
-      "en": appLocal.en,
-      "uk": appLocal.uk
+      "en": "English",
+      "uk": "Українська"
     };
 
     return Scaffold(
