@@ -93,6 +93,7 @@ class _SettingsState extends State<Settings> {
                   child: DropdownButton(
                     style: Theme.of(context).textTheme.bodySmall,
                     value: localeProvider.locale,
+                    alignment: Alignment.centerRight,
                     items: AppLocalizations.supportedLocales.map((nextLocale) {
                       return DropdownMenuItem(
                         value: nextLocale,
