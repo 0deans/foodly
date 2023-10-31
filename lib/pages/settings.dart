@@ -35,6 +35,11 @@ class _SettingsState extends State<Settings> {
       'dark': appLocal.dark
     };
 
+    final Map<String, String> localizedLangMode = {
+      "en": appLocal.en,
+      "uk": appLocal.uk
+    };
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -64,7 +69,9 @@ class _SettingsState extends State<Settings> {
                       return DropdownMenuItem(
                         value: mode,
                         child: Center(
-                          child: Text(localizedThemeMode[mode.name]!),
+                          child: Text(
+                            localizedThemeMode[mode.name]!,
+                          ),
                         ),
                       );
                     }).toList(),
@@ -91,7 +98,7 @@ class _SettingsState extends State<Settings> {
                         value: nextLocale,
                         child: Center(
                           child: Text(
-                            nextLocale.toString(),
+                            localizedLangMode[nextLocale.toString()]!,
                           ),
                         ),
                       );
