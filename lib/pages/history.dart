@@ -4,6 +4,7 @@ import 'package:foodly/models/scan_history.dart';
 import 'package:foodly/pages/meal_details.dart';
 import 'package:foodly/providers/locale_provider.dart';
 import 'package:foodly/utils/database_service.dart';
+import 'package:foodly/widgets/popup_history.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -137,11 +138,28 @@ class _HistoryState extends State<History> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(6),
-                        child: Text(
-                          DateFormat.yMMMMEEEEd(
-                            localeProvider.locale.languageCode,
-                          ).add_Hm().format(item.createdAt),
-                          style: Theme.of(context).textTheme.bodySmall,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              DateFormat.yMMMMEEEEd(
+                                localeProvider.locale.languageCode,
+                              ).add_Hm().format(item.createdAt),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            SafeArea(
+                              child: PopupButton(
+                                removeCallback: () {
+                                  setState(() {
+                                    final oldList = _pagingController.itemList;
+                                    final newList = oldList!..removeAt(index);
+                                    _pagingController.itemList = newList;
+                                  });
+                                },
+                                item: item,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
