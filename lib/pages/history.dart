@@ -76,7 +76,7 @@ class _HistoryState extends State<History> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/');
+            Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back),
         ),

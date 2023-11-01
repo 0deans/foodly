@@ -44,7 +44,7 @@ class _SettingsState extends State<Settings> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/');
+            Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back),
         ),

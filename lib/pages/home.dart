@@ -54,9 +54,7 @@ class _HomeState extends State<Home> {
       body: SizedBox(
         height: h,
         width: w,
-        child: WillPopScope(
-          onWillPop: () async => false,
-          child: Column(
+        child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
@@ -83,7 +81,6 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
