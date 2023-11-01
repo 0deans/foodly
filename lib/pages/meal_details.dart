@@ -17,7 +17,11 @@ class MealDetails extends StatefulWidget {
   final String imagePath;
   final bool? saveToHistory;
 
-  const MealDetails({super.key, required this.imagePath, this.saveToHistory});
+  const MealDetails({
+    super.key,
+    required this.imagePath,
+    this.saveToHistory,
+  });
 
   @override
   State<MealDetails> createState() => _MealDetailsState();

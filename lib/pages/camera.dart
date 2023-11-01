@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:foodly/widgets/icon_circle_button.dart';
@@ -27,16 +29,14 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final CameraController cameraController = _controller;
-
-    if (!cameraController.value.isInitialized) {
+    if (!_controller.value.isInitialized) {
       return;
     }
 
     if (state == AppLifecycleState.inactive) {
-      cameraController.dispose();
+      _controller.dispose();
     } else if (state == AppLifecycleState.resumed) {
-      _initCameraController(cameraController.description);
+      _initCameraController(_controller.description);
     }
   }
 
@@ -73,12 +73,13 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
 
     _controller.setFlashMode(FlashMode.off);
     _controller.takePicture().then((image) {
+      _controller.pausePreview();
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => AcceptImage(selectedImage: image),
         ),
-      );
+      ).then((_) => _controller.resumePreview());
     });
   }
 

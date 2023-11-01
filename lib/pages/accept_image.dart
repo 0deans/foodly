@@ -9,7 +9,10 @@ import 'package:uuid/uuid.dart';
 class AcceptImage extends StatefulWidget {
   final XFile selectedImage;
 
-  const AcceptImage({Key? key, required this.selectedImage}) : super(key: key);
+  const AcceptImage({
+    Key? key,
+    required this.selectedImage,
+  }) : super(key: key);
 
   @override
   State<AcceptImage> createState() => _AcceptImageState();
@@ -78,16 +81,15 @@ class _AcceptImageState extends State<AcceptImage> {
                       iconData: Icons.done,
                       onTap: () {
                         saveImage(widget.selectedImage.path).then((path) {
-                          Navigator.of(context)
-                            ..pop()
-                            ..push(
-                              MaterialPageRoute(
-                                builder: (context) => MealDetails(
-                                  imagePath: path,
-                                  saveToHistory: true,
-                                ),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MealDetails(
+                                imagePath: path,
+                                saveToHistory: true,
                               ),
-                            );
+                            ),
+                          ).then((_) => Navigator.pop(context));
                         });
                       },
                     ),
