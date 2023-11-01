@@ -48,37 +48,40 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
-    final _appLocal = AppLocalizations.of(context)!;
+    final appLocal = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SizedBox(
         height: h,
         width: w,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              height: 275,
-              width: 275,
-              padding: const EdgeInsets.only(top: 10),
-              child: Image.asset('assets/images/logo.png'),
-            ),
-            Text(
-              'Foodly',
-              style: GoogleFonts.autourOne(fontSize: 25),
-            ),
-            const SizedBox(height: 40),
-            buildButton(_appLocal.camera, () {
-              Navigator.pushNamed(context, '/camera');
-            }),
-            buildButton(_appLocal.gallery, _loadImageGallery),
-            buildButton(_appLocal.history, () {
-              Navigator.pushNamed(context, '/history');
-            }),
-            buildButton(_appLocal.settings, () {
-              Navigator.pushNamed(context, '/settings');
-            }),
-          ],
+        child: WillPopScope(
+          onWillPop: () async => false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 275,
+                width: 275,
+                padding: const EdgeInsets.only(top: 10),
+                child: Image.asset('assets/images/logo.png'),
+              ),
+              Text(
+                'Foodly',
+                style: GoogleFonts.autourOne(fontSize: 25),
+              ),
+              const SizedBox(height: 40),
+              buildButton(appLocal.camera, () {
+                Navigator.pushNamed(context, '/camera');
+              }),
+              buildButton(appLocal.gallery, _loadImageGallery),
+              buildButton(appLocal.history, () {
+                Navigator.pushNamed(context, '/history');
+              }),
+              buildButton(appLocal.settings, () {
+                Navigator.pushNamed(context, '/settings');
+              }),
+            ],
+          ),
         ),
       ),
     );

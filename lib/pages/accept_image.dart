@@ -16,8 +16,7 @@ class AcceptImage extends StatefulWidget {
 }
 
 class _AcceptImageState extends State<AcceptImage> {
-
-  Future<String> saveImage(List<int> imageData) async {
+  Future<String> saveImage(String imagePath) async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
 
     Directory imageDir = Directory("${appDocDir.path}/images");
@@ -28,12 +27,13 @@ class _AcceptImageState extends State<AcceptImage> {
     Uuid uuid = const Uuid();
     String uniqueFileName = uuid.v4();
 
-    String imagePath = "${imageDir.path}/$uniqueFileName.png";
+    String destinationPath = "${imageDir.path}/$uniqueFileName.png";
 
-    File imageFile = File(imagePath);
+    File imageFile = File(destinationPath);
+    final imageData = File(imagePath).readAsBytesSync();
     await imageFile.writeAsBytes(imageData);
 
-    return imagePath;
+    return destinationPath;
   }
 
   @override
@@ -77,17 +77,17 @@ class _AcceptImageState extends State<AcceptImage> {
                       iconSize: 30,
                       iconData: Icons.done,
                       onTap: () {
-                        final bytes = File(widget.selectedImage.path).readAsBytesSync();
-                        saveImage(bytes).then((path) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MealDetails(
-                                imagePath: path,
-                                saveToHistory: true,
+                        saveImage(widget.selectedImage.path).then((path) {
+                          Navigator.of(context)
+                            ..pop()
+                            ..push(
+                              MaterialPageRoute(
+                                builder: (context) => MealDetails(
+                                  imagePath: path,
+                                  saveToHistory: true,
+                                ),
                               ),
-                            ),
-                          );
+                            );
                         });
                       },
                     ),
