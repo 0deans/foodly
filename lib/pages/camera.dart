@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:foodly/widgets/icon_circle_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'accept_image.dart';
 
 class Camera extends StatefulWidget {
@@ -17,6 +16,7 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
   late CameraController _controller;
   bool _isInitialized = false;
   bool _isCameraAccessDenied = false;
+  bool _isFlash = false;
 
   Future<void> _initCamera() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -71,7 +71,7 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
       return;
     }
 
-    _controller.setFlashMode(FlashMode.off);
+    _controller.setFlashMode(_isFlash ? FlashMode.always : FlashMode.off);
     _controller.takePicture().then((image) {
       Navigator.push(
         context,
@@ -166,15 +166,40 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
                 child: CameraPreview(_controller),
               ),
             ),
-            Container(
-              height: 50,
-              width: 50,
-              margin: const EdgeInsets.all(10),
-              child: IconCircleButton(
-                iconSize: 30,
-                iconData: Icons.photo_camera,
-                onTap: _takePhoto,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: IconCircleButton(
+                    iconSize: 20,
+                    iconData: _isFlash ? Icons.flash_on : Icons.flash_off,
+                    onTap: () {
+                      setState(() {
+                        _isFlash = !_isFlash;
+                      });
+                    },
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  width: 50,
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 40,
+                  ),
+                  child: IconCircleButton(
+                    iconSize: 30,
+                    iconData: Icons.photo_camera,
+                    onTap: _takePhoto,
+                  ),
+                ),
+                const SizedBox(
+                  width: 40,
+                  height: 30,
+                )
+              ],
             ),
           ],
         ),
