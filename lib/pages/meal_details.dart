@@ -17,7 +17,11 @@ class MealDetails extends StatefulWidget {
   final String imagePath;
   final bool? saveToHistory;
 
-  const MealDetails({super.key, required this.imagePath, this.saveToHistory});
+  const MealDetails({
+    super.key,
+    required this.imagePath,
+    this.saveToHistory,
+  });
 
   @override
   State<MealDetails> createState() => _MealDetailsState();
@@ -108,7 +112,7 @@ class _MealDetailsState extends State<MealDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final _appLocal = AppLocalizations.of(context)!;
+    final appLocal = AppLocalizations.of(context)!;
 
     if (_isLoading) {
       return const Scaffold(
@@ -124,11 +128,11 @@ class _MealDetailsState extends State<MealDetails> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/');
+            Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back),
         ),
-        title: Text(_appLocal.mealDetails),
+        title: Text(appLocal.mealDetails),
         backgroundColor: Colors.black12,
         centerTitle: true,
       ),
@@ -189,7 +193,7 @@ class _MealDetailsState extends State<MealDetails> {
               },
               child: Center(
                 child: Text(
-                  '${_showMask ? _appLocal.hide : _appLocal.show} ${_appLocal.foodGroups}',
+                  '${_showMask ? appLocal.hide : appLocal.show} ${appLocal.foodGroups}',
                   style: GoogleFonts.roboto(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
