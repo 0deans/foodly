@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:foodly/models/scan_history.dart';
 import 'package:foodly/utils/database_service.dart';
@@ -58,6 +60,12 @@ class _PopupButtonState extends State<PopupButton> {
                       where: 'id = ?',
                       whereArgs: [widget.item.id],
                     );
+
+                    final file = File(widget.item.imagePath);
+                    if (file.existsSync()) {
+                      file.deleteSync();
+                    }
+
                     widget.removeCallback();
                   });
                   Navigator.pop(context);

@@ -71,9 +71,14 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
       return;
     }
 
-    _controller.setFlashMode(_isFlash ? FlashMode.always : FlashMode.off);
     _controller.takePicture().then((image) {
       _controller.pausePreview();
+
+      setState(() {
+        _controller.setFlashMode(FlashMode.off);
+        _isFlash = false;
+      });
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -180,6 +185,7 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
                       setState(() {
                         _isFlash = !_isFlash;
                       });
+                      _controller.setFlashMode(_isFlash ? FlashMode.torch : FlashMode.off);
                     },
                   ),
                 ),
