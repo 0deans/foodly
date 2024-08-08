@@ -1,0 +1,21 @@
+{
+  "@@locale": "en",
+  "camera": "Camera",
+  "gallery": "Gallery",
+  "history": "History",
+  "settings": "Settings",
+  "theme": "Theme",
+  "language": "Language",
+  "mealDetails": "Meal details",
+  "show": "Show",
+  "hide": "Hide",
+  "foodGroups": "food groups",
+  "system": "System",
+  "light": "Light",
+  "dark": "Dark",
+  "noItemsFound": "History is empty: it's time to scan something",
+  "cameraPermissionError": "To use the camera, you need to grant permission to the app.",
+  "grantAccess": "Grant access",
+  "saveToGallery": "Save to gallery",
+  "removeFromHistory": "Delete"
+}
