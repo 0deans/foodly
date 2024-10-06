@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:foodly/widgets/icon_circle_button.dart';
@@ -185,7 +183,8 @@ class _CameraState extends State<Camera> with WidgetsBindingObserver {
                       setState(() {
                         _isFlash = !_isFlash;
                       });
-                      _controller.setFlashMode(_isFlash ? FlashMode.torch : FlashMode.off);
+                      _controller.setFlashMode(
+                          _isFlash ? FlashMode.torch : FlashMode.off);
                     },
                   ),
                 ),
