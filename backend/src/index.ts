@@ -1,8 +1,8 @@
 import { serve } from "@hono/node-server";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Hono } from "hono";
-import { hash } from "@node-rs/argon2";
-import { signupSchema } from "./schemas";
+import { hash, verify } from "@node-rs/argon2";
+import { loginSchema, signupSchema } from "./schemas";
 
 const app = new Hono();
 const prisma = new PrismaClient();
@@ -64,6 +64,46 @@ app.post("/signup", async (c) => {
 		throw e;
 	}
 });
+
+app.post("/login", async (c) => {
+	const body = await c.req.parseBody();
+	const form = loginSchema.safeParse(body);
+
+	if (!form.success) {
+		return c.json({ error: form.error.flatten() }, 400);
+	}
+
+	const { email, password } = form.data;
+
+	const user = await prisma.user.findUnique({
+		where: {
+			email: email,
+		},
+	});
+
+	if (!user) {
+		return c.json({ error: "Invalid email or password" }, 400);
+	}
+
+	const isValidPassword = await verify(user.password, password);
+	if (!isValidPassword) {
+		return c.json({ error: "Invalid email or password" }, 400);
+	}
+
+	// TODO: Generate Session and return it
+});
+
+app.post("/logout", async (c) => {
+	// TODO: Destroy Session (use auth middleware)
+});
+
+app.post('/reset-password/:token', async (c) => {
+	const token = c.req.param('token');
+
+	// TODO: Implement me, also create a schema for this
+});
+
+
 
 const port = 3000;
 console.log(`Server is running on port ${port}`);
