@@ -1,13 +1,74 @@
 import { serve } from "@hono/node-server";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, Session, User } from "@prisma/client";
 import { Hono } from "hono";
 import { hash, verify } from "@node-rs/argon2";
 import { loginSchema, signupSchema } from "./schemas";
+import { createMiddleware } from "hono/factory";
 
-const app = new Hono();
+type Env = {
+	Variables: {
+		user: User | null;
+		session: Session | null;
+	};
+};
+
+const app = new Hono<Env>();
 const prisma = new PrismaClient();
+const SEVEN_DAYS_MS = 1000 * 60 * 60 * 24 * 7;
 
-app.get("/", (c) => {
+const authMiddleware = createMiddleware<Env>(async (c, next) => {
+	const authHeader = c.req.header("Authorization");
+	if (!authHeader || !authHeader.startsWith("Bearer ")) {
+		return c.json({ error: "Unauthorized" }, 401);
+	}
+
+	const token = authHeader.split(" ")[1];
+	const sessionWithUser = await prisma.session.findUnique({
+		where: { id: token },
+		include: { user: true },
+	});
+
+	if (!sessionWithUser) {
+		return c.json({ error: "Unauthorized" }, 401);
+	}
+
+	if (sessionWithUser.expiresAt < new Date()) {
+		await prisma.session.delete({
+			where: { id: token },
+		});
+
+		return c.json({ error: "Unauthorized" }, 401);
+	}
+
+	const activePeriodExpirationDate = new Date(
+		sessionWithUser.expiresAt.getTime() - SEVEN_DAYS_MS / 2
+	);
+
+	if (activePeriodExpirationDate < new Date()) {
+		sessionWithUser.expiresAt = new Date(Date.now() + SEVEN_DAYS_MS);
+		await prisma.session.update({
+			where: { id: token },
+			data: { expiresAt: sessionWithUser.expiresAt },
+		});
+
+		c.header(
+			"X-New-Session-ExpiresAt",
+			sessionWithUser.expiresAt.toISOString()
+		);
+	}
+
+	const { user, ...sessionWithoutUser } = sessionWithUser;
+	c.set("user", user);
+	c.set("session", sessionWithoutUser);
+
+	await next();
+});
+
+app.get("/", authMiddleware, (c) => {
+	const user = c.get("user");
+	const session = c.get("session");
+	console.log(user, session);
+
 	return c.text("Hello Hono!");
 });
 
@@ -90,20 +151,31 @@ app.post("/login", async (c) => {
 		return c.json({ error: "Invalid email or password" }, 400);
 	}
 
-	// TODO: Generate Session and return it
+	const session = await prisma.session.create({
+		data: {
+			userId: user.id,
+			expiresAt: new Date(Date.now() + SEVEN_DAYS_MS),
+		},
+	});
+
+	return c.json({ session });
 });
 
-app.post("/logout", async (c) => {
-	// TODO: Destroy Session (use auth middleware)
+app.post("/logout", authMiddleware, async (c) => {
+	const session = c.get("session")!;
+
+	await prisma.session.delete({
+		where: { id: session.id },
+	});
+
+	return c.json({ message: "Logged out" });
 });
 
-app.post('/reset-password/:token', async (c) => {
-	const token = c.req.param('token');
+app.post("/reset-password/:token", async (c) => {
+	const token = c.req.param("token");
 
 	// TODO: Implement me, also create a schema for this
 });
-
-
 
 const port = 3000;
 console.log(`Server is running on port ${port}`);
