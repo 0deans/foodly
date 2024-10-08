@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodly/pages/sign_up.dart';
 import 'package:foodly/pages/history.dart';
 import 'package:foodly/pages/settings.dart';
 import 'package:foodly/providers/locale_provider.dart';
@@ -60,9 +61,10 @@ class MyApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       locale: Provider.of<LocaleProvider>(context).locale,
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/auth',
       routes: {
         '/': (context) => const Home(),
+        '/auth': (context) => const SignUp(),
         '/camera': (context) => const Camera(),
         '/history': (context) => const History(),
         '/settings': (context) => const Settings(),
