@@ -186,6 +186,23 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ],
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Ink.image(
+                    width: 56,
+                    height: 56,
+                    image: const AssetImage(
+                      'assets/images/google.png',
+                    ),
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () => {},
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

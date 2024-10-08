@@ -61,10 +61,10 @@ class MyApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       locale: Provider.of<LocaleProvider>(context).locale,
       debugShowCheckedModeBanner: false,
-      initialRoute: '/auth',
+      initialRoute: '/signup',
       routes: {
         '/': (context) => const Home(),
-        '/auth': (context) => const SignUp(),
+        '/signup': (context) => const SignUp(),
         '/camera': (context) => const Camera(),
         '/history': (context) => const History(),
         '/settings': (context) => const Settings(),

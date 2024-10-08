@@ -84,6 +84,7 @@ flutter:
     - assets/labels_en.txt
     - assets/labels_uk.txt
     - assets/images/logo.png
+    - assets/images/google.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
