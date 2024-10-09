@@ -2,7 +2,12 @@ import { serve } from "@hono/node-server";
 import { Prisma, PrismaClient, Session, User } from "@prisma/client";
 import { Hono } from "hono";
 import { hash, verify } from "@node-rs/argon2";
-import { loginSchema, signupSchema } from "./schemas";
+import {
+	loginSchema,
+	resetPasswordRequestSchema,
+	resetPasswordSchema,
+	signupSchema,
+} from "./schemas";
 import { createMiddleware } from "hono/factory";
 
 type Env = {
@@ -171,10 +176,94 @@ app.post("/logout", authMiddleware, async (c) => {
 	return c.json({ message: "Logged out" });
 });
 
+app.post("/reset-password", async (c) => {
+	const body = await c.req.parseBody();
+	const form = resetPasswordRequestSchema.safeParse(body);
+
+	if (!form.success) {
+		return c.json({ error: form.error.flatten() }, 400);
+	}
+
+	const { email } = form.data;
+	const user = await prisma.user.findUnique({
+		where: { email },
+	});
+
+	if (!user) {
+		return c.json({ error: "User not found" }, 404);
+	}
+
+	const tokenId = crypto.randomUUID();
+	const tokenHashBuffer = await crypto.subtle.digest(
+		"SHA-256",
+		new TextEncoder().encode(tokenId)
+	);
+	const tokenHash = Array.from(new Uint8Array(tokenHashBuffer))
+		.map((b) => b.toString(16).padStart(2, "0"))
+		.join("");
+
+	await prisma.passwordResetToken.create({
+		data: {
+			tokenHash: tokenHash,
+			userId: user.id,
+			expiresAt: new Date(Date.now() + 1000 * 60 * 15), // 15 minutes
+		},
+	});
+
+	// TODO: Send email with the tokenId
+
+	// For now, just return the token
+	return c.json({ token: tokenId });
+});
+
 app.post("/reset-password/:token", async (c) => {
+	const body = await c.req.parseBody();
+	const form = resetPasswordSchema.safeParse(body);
 	const token = c.req.param("token");
 
-	// TODO: Implement me, also create a schema for this
+	if (!form.success) {
+		return c.json({ error: form.error.flatten() }, 400);
+	}
+
+	const tokenHashBuffer = await crypto.subtle.digest(
+		"SHA-256",
+		new TextEncoder().encode(token)
+	);
+	const tokenHash = Array.from(new Uint8Array(tokenHashBuffer))
+		.map((b) => b.toString(16).padStart(2, "0"))
+		.join("");
+
+	const passwordResetToken = await prisma.passwordResetToken.findUnique({
+		where: { tokenHash: tokenHash },
+	});
+
+	if (!passwordResetToken || passwordResetToken.expiresAt < new Date()) {
+		return c.json({ error: "Invalid token" }, 400);
+	}
+
+	await prisma.passwordResetToken.delete({
+		where: { tokenHash: passwordResetToken.tokenHash },
+	});
+
+	const { password } = form.data;
+	const passwordHash = await hash(password, {
+		// recommended minimum parameters
+		memoryCost: 19456,
+		timeCost: 2,
+		outputLen: 32,
+		parallelism: 1,
+	});
+
+	await prisma.session.deleteMany({
+		where: { userId: passwordResetToken.userId },
+	});
+
+	await prisma.user.update({
+		where: { id: passwordResetToken.userId },
+		data: { password: passwordHash },
+	});
+
+	return c.json({ message: "Password updated" });
 });
 
 const port = 3000;
