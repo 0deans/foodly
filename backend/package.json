@@ -1,18 +1,25 @@
 {
-  "name": "backend",
-  "scripts": {
-    "dev": "tsx watch src/index.ts"
-  },
-  "dependencies": {
-    "@hono/node-server": "^1.13.1",
-    "@node-rs/argon2": "^2.0.0",
-    "@prisma/client": "^5.20.0",
-    "hono": "^4.6.3",
-    "zod": "^3.23.8"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.17",
-    "prisma": "^5.20.0",
-    "tsx": "^4.7.1"
-  }
+	"name": "backend",
+	"scripts": {
+		"dev": "tsx watch src/index.tsx",
+		"email": "email dev --dir ./src/emails",
+		"email:build": "email build --dir ./src/emails"
+	},
+	"dependencies": {
+		"@hono/node-server": "^1.13.1",
+		"@node-rs/argon2": "^2.0.0",
+		"@prisma/client": "^5.20.0",
+		"@react-email/components": "^0.0.25",
+		"hono": "^4.6.3",
+		"nodemailer": "^6.9.15",
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"@types/node": "^20.11.17",
+		"@types/nodemailer": "^6.4.16",
+		"@types/react": "^18.3.11",
+		"prisma": "^5.20.0",
+		"react-email": "3.0.1",
+		"tsx": "^4.7.1"
+	}
 }

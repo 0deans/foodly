@@ -9,6 +9,9 @@ import {
 	signupSchema,
 } from "./schemas";
 import { createMiddleware } from "hono/factory";
+import nodemailer from "nodemailer";
+import { render } from "@react-email/components";
+import DropboxResetPasswordEmail from "./emails/reset-password";
 
 type Env = {
 	Variables: {
@@ -19,6 +22,11 @@ type Env = {
 
 const app = new Hono<Env>();
 const prisma = new PrismaClient();
+const transporter = nodemailer.createTransport({
+	host: "localhost",
+	port: 1025,
+	secure: false,
+});
 const SEVEN_DAYS_MS = 1000 * 60 * 60 * 24 * 7;
 
 const authMiddleware = createMiddleware<Env>(async (c, next) => {
@@ -210,10 +218,15 @@ app.post("/reset-password", async (c) => {
 		},
 	});
 
-	// TODO: Send email with the tokenId
+	const emailHtml = await render(<DropboxResetPasswordEmail />);
+	await transporter.sendMail({
+		from: "sender@example.com",
+		to: email,
+		subject: "Reset password",
+		html: emailHtml,
+	});
 
-	// For now, just return the token
-	return c.json({ token: tokenId });
+	return c.json({ message: "Email sent" });
 });
 
 app.post("/reset-password/:token", async (c) => {

@@ -24,5 +24,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# build
+.react-email/
+build
+dist
+
 # misc
 .DS_Store
