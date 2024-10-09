@@ -38,7 +38,7 @@ class _SignUpState extends State<SignUp> {
                   height: 20,
                 ),
                 const TextFormFieldCustom(
-                  labelText: "Display name",
+                  labelText: "Enter display name",
                 ),
                 const SizedBox(
                   height: 15,
@@ -50,7 +50,7 @@ class _SignUpState extends State<SignUp> {
                   height: 15,
                 ),
                 const TextFormFieldCustom(
-                  labelText: "Password",
+                  labelText: "Enter password",
                 ),
                 const SizedBox(
                   height: 15,

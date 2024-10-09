@@ -44,7 +44,7 @@ class _SignInState extends State<SignIn> {
                   height: 15,
                 ),
                 const TextFormFieldCustom(
-                  labelText: "Password",
+                  labelText: "Enter your password",
                 ),
                 const SizedBox(
                   height: 15,
