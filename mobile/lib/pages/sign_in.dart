@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+class SignIn extends StatefulWidget {
+  const SignIn({Key? key}) : super(key: key);
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  State<SignIn> createState() => _SignInState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +20,7 @@ class _SignUpState extends State<SignUp> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  "Sign Up",
+                  "Sign In",
                   style: TextStyle(
                     fontSize: 34,
                     fontWeight: FontWeight.bold,
@@ -32,7 +32,7 @@ class _SignUpState extends State<SignUp> {
                 TextFormField(
                   cursorColor: Colors.black,
                   decoration: InputDecoration(
-                    labelText: "Display name",
+                    labelText: "Enter your email",
                     labelStyle: const TextStyle(
                       color: Colors.black54,
                     ),
@@ -60,7 +60,7 @@ class _SignUpState extends State<SignUp> {
                 TextFormField(
                   cursorColor: Colors.black,
                   decoration: InputDecoration(
-                    labelText: "Email",
+                    labelText: "Enter your password",
                     labelStyle: const TextStyle(
                       color: Colors.black54,
                     ),
@@ -83,57 +83,6 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(
                   height: 15,
-                ),
-                TextFormField(
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    labelText: "Password",
-                    labelStyle: const TextStyle(
-                      color: Colors.black54,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        width: 2,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        width: 2,
-                      ),
-                    ),
-                    floatingLabelStyle: const TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextFormField(
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    labelText: "Confirm password",
-                    labelStyle: const TextStyle(
-                      color: Colors.black54,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        width: 2,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        width: 2,
-                      ),
-                    ),
-                    floatingLabelStyle: const TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 15),
@@ -148,7 +97,7 @@ class _SignUpState extends State<SignUp> {
                       backgroundColor: Colors.green.shade600,
                     ),
                     child: const Text(
-                      "Sign Up",
+                      "Sign In",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -170,7 +119,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     Text(
-                      "or continue with",
+                      "or sign in with",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.black45,

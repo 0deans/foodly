@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodly/pages/sign_in.dart';
 import 'package:foodly/pages/sign_up.dart';
 import 'package:foodly/pages/history.dart';
 import 'package:foodly/pages/settings.dart';
@@ -61,9 +62,10 @@ class MyApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       locale: Provider.of<LocaleProvider>(context).locale,
       debugShowCheckedModeBanner: false,
-      initialRoute: '/signup',
+      initialRoute: '/signin',
       routes: {
         '/': (context) => const Home(),
+        '/signin': (context) => const SignIn(),
         '/signup': (context) => const SignUp(),
         '/camera': (context) => const Camera(),
         '/history': (context) => const History(),
