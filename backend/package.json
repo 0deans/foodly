@@ -2,7 +2,7 @@
 	"name": "backend",
 	"scripts": {
 		"dev": "tsx watch src/index.tsx",
-		"email": "email dev --dir ./src/emails",
+		"email": "email dev --dir ./src/emails --port 3050",
 		"email:build": "email build --dir ./src/emails"
 	},
 	"dependencies": {
@@ -10,6 +10,7 @@
 		"@node-rs/argon2": "^2.0.0",
 		"@prisma/client": "^5.20.0",
 		"@react-email/components": "^0.0.25",
+		"dotenv": "^16.4.5",
 		"hono": "^4.6.3",
 		"nodemailer": "^6.9.15",
 		"zod": "^3.23.8"

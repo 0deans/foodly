@@ -11,7 +11,9 @@ import {
 import { createMiddleware } from "hono/factory";
 import nodemailer from "nodemailer";
 import { render } from "@react-email/components";
-import DropboxResetPasswordEmail from "./emails/reset-password";
+import ResetPasswordEmail from "./emails/reset-password";
+import { serveStatic } from "@hono/node-server/serve-static";
+import dotenv from "dotenv";
 
 type Env = {
 	Variables: {
@@ -20,6 +22,7 @@ type Env = {
 	};
 };
 
+dotenv.config();
 const app = new Hono<Env>();
 const prisma = new PrismaClient();
 const transporter = nodemailer.createTransport({
@@ -77,18 +80,7 @@ const authMiddleware = createMiddleware<Env>(async (c, next) => {
 	await next();
 });
 
-app.get("/", authMiddleware, (c) => {
-	const user = c.get("user");
-	const session = c.get("session");
-	console.log(user, session);
-
-	return c.text("Hello Hono!");
-});
-
-app.get("/user", (c) => {
-	const users = prisma.user.findMany();
-	return c.json({ users });
-});
+app.use("/*", serveStatic({ root: "./public" }));
 
 interface UserResponseDTO {
 	id: string;
@@ -218,12 +210,21 @@ app.post("/reset-password", async (c) => {
 		},
 	});
 
-	const emailHtml = await render(<DropboxResetPasswordEmail />);
+	const resetLink = `http://localhost:3000/reset-password/${tokenId}`;
+	const emailHtml = await render(
+		<ResetPasswordEmail resetPasswordLink={resetLink} />
+	);
+	const emailText = await render(
+		<ResetPasswordEmail resetPasswordLink={resetLink} />,
+		{ plainText: true }
+	);
+
 	await transporter.sendMail({
 		from: "sender@example.com",
 		to: email,
 		subject: "Reset password",
 		html: emailHtml,
+		text: emailText,
 	});
 
 	return c.json({ message: "Email sent" });
@@ -279,7 +280,7 @@ app.post("/reset-password/:token", async (c) => {
 	return c.json({ message: "Password updated" });
 });
 
-const port = 3000;
+const port = parseInt(process.env.PORT || "3000", 10);
 console.log(`Server is running on port ${port}`);
 
 serve({
