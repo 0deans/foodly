@@ -1,92 +1,25 @@
-import { serve } from "@hono/node-server";
-import { Prisma, PrismaClient, Session, User } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { Hono } from "hono";
-import { hash, verify } from "@node-rs/argon2";
 import {
 	loginSchema,
 	resetPasswordRequestSchema,
 	resetPasswordSchema,
 	signupSchema,
-} from "./schemas";
-import { createMiddleware } from "hono/factory";
-import nodemailer from "nodemailer";
+} from "../schemas";
+import { hash, verify } from "@node-rs/argon2";
+import { authMiddleware } from "../middlewares/auth";
 import { render } from "@react-email/components";
-import ResetPasswordEmail from "./emails/reset-password";
-import { serveStatic } from "@hono/node-server/serve-static";
-import dotenv from "dotenv";
+import ResetPasswordEmail from "../emails/reset-password";
+import {
+	argonOptions,
+	RESET_PASSWORD_EXPIRES_IN_MS,
+	SESSION_EXPIRES_IN_MS,
+} from "../utils/constants";
+import transporter from "../services/email";
+import { UserResponseDTO } from "../types";
 
-type Env = {
-	Variables: {
-		user: User | null;
-		session: Session | null;
-	};
-};
-
-dotenv.config();
-const app = new Hono<Env>();
+const app = new Hono();
 const prisma = new PrismaClient();
-const transporter = nodemailer.createTransport({
-	host: "localhost",
-	port: 1025,
-	secure: false,
-});
-const SEVEN_DAYS_MS = 1000 * 60 * 60 * 24 * 7;
-
-const authMiddleware = createMiddleware<Env>(async (c, next) => {
-	const authHeader = c.req.header("Authorization");
-	if (!authHeader || !authHeader.startsWith("Bearer ")) {
-		return c.json({ error: "Unauthorized" }, 401);
-	}
-
-	const token = authHeader.split(" ")[1];
-	const sessionWithUser = await prisma.session.findUnique({
-		where: { id: token },
-		include: { user: true },
-	});
-
-	if (!sessionWithUser) {
-		return c.json({ error: "Unauthorized" }, 401);
-	}
-
-	if (sessionWithUser.expiresAt < new Date()) {
-		await prisma.session.delete({
-			where: { id: token },
-		});
-
-		return c.json({ error: "Unauthorized" }, 401);
-	}
-
-	const activePeriodExpirationDate = new Date(
-		sessionWithUser.expiresAt.getTime() - SEVEN_DAYS_MS / 2
-	);
-
-	if (activePeriodExpirationDate < new Date()) {
-		sessionWithUser.expiresAt = new Date(Date.now() + SEVEN_DAYS_MS);
-		await prisma.session.update({
-			where: { id: token },
-			data: { expiresAt: sessionWithUser.expiresAt },
-		});
-
-		c.header(
-			"X-New-Session-ExpiresAt",
-			sessionWithUser.expiresAt.toISOString()
-		);
-	}
-
-	const { user, ...sessionWithoutUser } = sessionWithUser;
-	c.set("user", user);
-	c.set("session", sessionWithoutUser);
-
-	await next();
-});
-
-app.use("/*", serveStatic({ root: "./public" }));
-
-interface UserResponseDTO {
-	id: string;
-	name: string | null;
-	email: string;
-}
 
 app.post("/signup", async (c) => {
 	const body = await c.req.parseBody();
@@ -97,13 +30,7 @@ app.post("/signup", async (c) => {
 	}
 
 	const { name, email, password } = form.data;
-	const passwordHash = await hash(password, {
-		// recommended minimum parameters
-		memoryCost: 19456,
-		timeCost: 2,
-		outputLen: 32,
-		parallelism: 1,
-	});
+	const passwordHash = await hash(password, argonOptions);
 
 	try {
 		const user = await prisma.user.create({
@@ -140,7 +67,6 @@ app.post("/login", async (c) => {
 	}
 
 	const { email, password } = form.data;
-
 	const user = await prisma.user.findUnique({
 		where: {
 			email: email,
@@ -159,7 +85,7 @@ app.post("/login", async (c) => {
 	const session = await prisma.session.create({
 		data: {
 			userId: user.id,
-			expiresAt: new Date(Date.now() + SEVEN_DAYS_MS),
+			expiresAt: new Date(Date.now() + SESSION_EXPIRES_IN_MS),
 		},
 	});
 
@@ -206,18 +132,14 @@ app.post("/reset-password", async (c) => {
 		data: {
 			tokenHash: tokenHash,
 			userId: user.id,
-			expiresAt: new Date(Date.now() + 1000 * 60 * 15), // 15 minutes
+			expiresAt: new Date(Date.now() + RESET_PASSWORD_EXPIRES_IN_MS),
 		},
 	});
 
-	const resetLink = `http://localhost:3000/reset-password/${tokenId}`;
-	const emailHtml = await render(
-		<ResetPasswordEmail resetPasswordLink={resetLink} />
-	);
-	const emailText = await render(
-		<ResetPasswordEmail resetPasswordLink={resetLink} />,
-		{ plainText: true }
-	);
+	const resetLink = `${process.env.FRONTEND_URL}/reset-password/${tokenId}`;
+	const component = ResetPasswordEmail({ resetPasswordLink: resetLink });
+	const emailHtml = await render(component);
+	const emailText = await render(component, { plainText: true });
 
 	await transporter.sendMail({
 		from: "sender@example.com",
@@ -260,13 +182,7 @@ app.post("/reset-password/:token", async (c) => {
 	});
 
 	const { password } = form.data;
-	const passwordHash = await hash(password, {
-		// recommended minimum parameters
-		memoryCost: 19456,
-		timeCost: 2,
-		outputLen: 32,
-		parallelism: 1,
-	});
+	const passwordHash = await hash(password, argonOptions);
 
 	await prisma.session.deleteMany({
 		where: { userId: passwordResetToken.userId },
@@ -280,10 +196,4 @@ app.post("/reset-password/:token", async (c) => {
 	return c.json({ message: "Password updated" });
 });
 
-const port = parseInt(process.env.PORT || "3000", 10);
-console.log(`Server is running on port ${port}`);
-
-serve({
-	fetch: app.fetch,
-	port,
-});
+export default app;

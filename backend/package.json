@@ -1,7 +1,7 @@
 {
 	"name": "backend",
 	"scripts": {
-		"dev": "tsx watch src/index.tsx",
+		"dev": "tsx watch src/index.ts",
 		"email": "email dev --dir ./src/emails --port 3050",
 		"email:build": "email build --dir ./src/emails"
 	},

@@ -4,7 +4,6 @@ import {
 	Container,
 	Head,
 	Html,
-	Img,
 	Preview,
 	Section,
 	Text,
@@ -13,8 +12,6 @@ import {
 interface ResetPasswordEmailProps {
 	resetPasswordLink: string;
 }
-
-const baseUrl = process.env.PUBLIC_URL ?? "http://localhost:3000";
 
 export const ResetPasswordEmail = ({
 	resetPasswordLink,
@@ -25,14 +22,7 @@ export const ResetPasswordEmail = ({
 			<Preview>Foodly reset your password</Preview>
 			<Body style={main}>
 				<Container style={container}>
-					<Section style={logo}>
-						<Img
-							src={`${baseUrl}/logo.png`}
-							width="64"
-							height="64"
-							alt="Foodly"
-						/>
-					</Section>
+					<Section style={logo}>Foodly</Section>
 					<Section style={content}>
 						<Text>
 							Someone recently requested a password change for
@@ -75,10 +65,12 @@ const container: React.CSSProperties = {
 };
 
 const logo: React.CSSProperties = {
-	display: "flex",
-	justifyContent: "center",
-	alignItems: "center",
 	paddingTop: "20px",
+	textAlign: "center",
+	width: "100%",
+	fontSize: "24px",
+	color: "#007ee6",
+	fontWeight: "bold",
 };
 
 const content: React.CSSProperties = {
