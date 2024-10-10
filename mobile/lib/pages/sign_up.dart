@@ -22,10 +22,8 @@ class _SignUpState extends State<SignUp> {
       body: Form(
         child: Center(
           child: Container(
-            margin: const EdgeInsets.only(left: 20, right: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            child: ListView(
               children: [
                 const Text(
                   "Sign Up",
@@ -33,6 +31,7 @@ class _SignUpState extends State<SignUp> {
                     fontSize: 34,
                     fontWeight: FontWeight.bold,
                   ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(
                   height: 20,
@@ -70,6 +69,37 @@ class _SignUpState extends State<SignUp> {
                   height: 10,
                 ),
                 const SocialButtons(),
+                const SizedBox(
+                  height: 50,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Do you have an account?",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/signin');
+                      },
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      child: const Text(
+                        " Sign In",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           ),

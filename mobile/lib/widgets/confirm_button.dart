@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class ConfirmButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
+  final Color? color;
 
   const ConfirmButton({
     super.key,
     required this.onPressed,
     required this.text,
+    this.color,
   });
 
   @override
@@ -22,7 +24,7 @@ class ConfirmButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          backgroundColor: Colors.green.shade600,
+          backgroundColor: color ?? Colors.green.shade600,
         ),
         child: Text(
           text,

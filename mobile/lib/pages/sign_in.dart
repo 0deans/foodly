@@ -22,7 +22,7 @@ class _SignInState extends State<SignIn> {
       body: Form(
         child: Center(
           child: Container(
-            margin: const EdgeInsets.only(left: 20, right: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,9 +49,27 @@ class _SignInState extends State<SignIn> {
                 const SizedBox(
                   height: 15,
                 ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/forgot-password');
+                  },
+                  child: const Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "Forgot password?",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                ),
                 ConfirmButton(
                   onPressed: _signIn,
                   text: 'Sign In',
+                ),
+                const SizedBox(
+                  height: 15,
                 ),
                 const SizedBox(
                   height: 20,
@@ -61,6 +79,34 @@ class _SignInState extends State<SignIn> {
                   height: 10,
                 ),
                 const SocialButtons(),
+                const SizedBox(
+                  height: 50,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "If you don't have an account?",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/signup');
+                      },
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      child: const Text(
+                        " Sign Up",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

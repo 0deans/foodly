@@ -4,6 +4,7 @@ import 'package:foodly/pages/sign_in.dart';
 import 'package:foodly/pages/sign_up.dart';
 import 'package:foodly/pages/history.dart';
 import 'package:foodly/pages/settings.dart';
+import 'package:foodly/pages/welcome.dart';
 import 'package:foodly/providers/locale_provider.dart';
 import 'package:foodly/theme/theme_provider.dart';
 import 'package:foodly/utils/database_service.dart';
@@ -63,9 +64,10 @@ class MyApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       locale: Provider.of<LocaleProvider>(context).locale,
       debugShowCheckedModeBanner: false,
-      initialRoute: '/signin',
+      initialRoute: '/',
       routes: {
-        '/': (context) => const Home(),
+        '/': (context) => const Welcome(),
+        '/home': (context) => const Home(),
         '/signin': (context) => const SignIn(),
         '/signup': (context) => const SignUp(),
         '/profile': (context) => const Profile(),
