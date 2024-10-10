@@ -17,6 +17,7 @@ import {
 } from "../utils/constants";
 import transporter from "../services/email";
 import { UserResponseDTO } from "../types";
+import { sha256HexDigest } from "../utils";
 
 const app = new Hono();
 const prisma = new PrismaClient();
@@ -120,13 +121,7 @@ app.post("/reset-password", async (c) => {
 	}
 
 	const tokenId = crypto.randomUUID();
-	const tokenHashBuffer = await crypto.subtle.digest(
-		"SHA-256",
-		new TextEncoder().encode(tokenId)
-	);
-	const tokenHash = Array.from(new Uint8Array(tokenHashBuffer))
-		.map((b) => b.toString(16).padStart(2, "0"))
-		.join("");
+	const tokenHash = await sha256HexDigest(tokenId);
 
 	await prisma.passwordResetToken.create({
 		data: {
@@ -161,14 +156,7 @@ app.post("/reset-password/:token", async (c) => {
 		return c.json({ error: form.error.flatten() }, 400);
 	}
 
-	const tokenHashBuffer = await crypto.subtle.digest(
-		"SHA-256",
-		new TextEncoder().encode(token)
-	);
-	const tokenHash = Array.from(new Uint8Array(tokenHashBuffer))
-		.map((b) => b.toString(16).padStart(2, "0"))
-		.join("");
-
+	const tokenHash = await sha256HexDigest(token);
 	const passwordResetToken = await prisma.passwordResetToken.findUnique({
 		where: { tokenHash: tokenHash },
 	});
