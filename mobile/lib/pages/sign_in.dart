@@ -51,7 +51,7 @@ class _SignInState extends State<SignIn> {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, '/forgot-password');
+                    Navigator.pushReplacementNamed(context, '/forgot-password');
                   },
                   child: const Align(
                     alignment: Alignment.centerRight,
@@ -93,7 +93,7 @@ class _SignInState extends State<SignIn> {
                     ),
                     InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, '/signup');
+                        Navigator.pushReplacementNamed(context, '/signup');
                       },
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,

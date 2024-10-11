@@ -23,84 +23,90 @@ class _SignUpState extends State<SignUp> {
         child: Center(
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
-            child: ListView(
-              children: [
-                const Text(
-                  "Sign Up",
-                  style: TextStyle(
-                    fontSize: 34,
-                    fontWeight: FontWeight.bold,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 20,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const TextFormFieldCustom(
-                  labelText: "Enter display name",
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const TextFormFieldCustom(
-                  labelText: "Enter your email",
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const TextFormFieldCustom(
-                  labelText: "Enter password",
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const TextFormFieldCustom(
-                  labelText: "Confirm password",
-                ),
-                ConfirmButton(
-                  text: "Sign Up",
-                  onPressed: _signUp,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const OrDivider(),
-                const SizedBox(
-                  height: 10,
-                ),
-                const SocialButtons(),
-                const SizedBox(
-                  height: 50,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Do you have an account?",
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
+                  const Text(
+                    "Sign Up",
+                    style: TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
                     ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/signin');
-                      },
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      child: const Text(
-                        " Sign In",
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const TextFormFieldCustom(
+                    labelText: "Enter display name",
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  const TextFormFieldCustom(
+                    labelText: "Enter your email",
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  const TextFormFieldCustom(
+                    labelText: "Enter password",
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  const TextFormFieldCustom(
+                    labelText: "Confirm password",
+                  ),
+                  ConfirmButton(
+                    text: "Sign Up",
+                    onPressed: _signUp,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const OrDivider(),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const SocialButtons(),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Do you have an account?",
                         style: TextStyle(
-                          color: Colors.blue,
                           fontSize: 16,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushReplacementNamed(context, '/signin');
+                        },
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        child: const Text(
+                          " Sign In",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
