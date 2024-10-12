@@ -4,9 +4,12 @@ import { Hono } from "hono";
 import { Env } from "./types";
 import auth from "./routes/auth";
 import user from "./routes/user";
+import { cors } from "hono/cors";
 
 dotenv.config();
 const app = new Hono<Env>();
+
+app.use(cors());
 
 app.route("/auth", auth);
 app.route("/user", user);
