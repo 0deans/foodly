@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, User } from "@prisma/client";
 import { Hono } from "hono";
 import {
 	loginSchema,
@@ -15,12 +15,20 @@ import {
 	RESET_PASSWORD_EXPIRES_IN_MS,
 	SESSION_EXPIRES_IN_MS,
 } from "../utils/constants";
-import transporter from "../services/email";
-import { UserResponseDTO } from "../types";
 import { sha256HexDigest } from "../utils";
+import transporter from "../services/email";
+import prisma from "../services/db";
+import {
+	ArcticFetchError,
+	generateCodeVerifier,
+	generateState,
+	OAuth2RequestError,
+} from "arctic";
+import { google } from "../services/oauth";
+import { getCookie, setCookie } from "hono/cookie";
+import { GoogleUser } from "../types";
 
 const app = new Hono();
-const prisma = new PrismaClient();
 
 app.post("/signup", async (c) => {
 	const body = await c.req.parseBody();
@@ -34,7 +42,7 @@ app.post("/signup", async (c) => {
 	const passwordHash = await hash(password, argonOptions);
 
 	try {
-		const user = await prisma.user.create({
+		await prisma.user.create({
 			data: {
 				name: name,
 				email: email,
@@ -42,13 +50,7 @@ app.post("/signup", async (c) => {
 			},
 		});
 
-		const userResponse: UserResponseDTO = {
-			id: user.id,
-			name: user.name,
-			email: user.email,
-		};
-
-		return c.json({ user: userResponse });
+		return c.json({ message: "User created" });
 	} catch (e) {
 		if (e instanceof Prisma.PrismaClientKnownRequestError) {
 			if (e.code === "P2002") {
@@ -78,7 +80,9 @@ app.post("/login", async (c) => {
 		return c.json({ error: "Invalid email or password" }, 400);
 	}
 
-	const isValidPassword = await verify(user.password, password);
+	const isValidPassword = !!user.password
+		? await verify(user.password, password)
+		: false;
 	if (!isValidPassword) {
 		return c.json({ error: "Invalid email or password" }, 400);
 	}
@@ -91,6 +95,105 @@ app.post("/login", async (c) => {
 	});
 
 	return c.json({ session });
+});
+
+app.get("/google", async (c) => {
+	const state = generateState();
+	const codeVerifier = generateCodeVerifier();
+	const url = google.createAuthorizationURL(state, codeVerifier, [
+		"email",
+		"profile",
+		"openid",
+	]);
+
+	setCookie(c, "state", state, {
+		path: "/",
+		secure: process.env.NODE_ENV === "production",
+		httpOnly: true,
+		maxAge: 60 * 10, // 10 minutes
+		sameSite: "lax",
+	});
+
+	setCookie(c, "codeVerifier", codeVerifier, {
+		path: "/",
+		secure: process.env.NODE_ENV === "production",
+		httpOnly: true,
+		maxAge: 60 * 10, // 10 minutes
+		sameSite: "lax",
+	});
+
+	return c.redirect(url.toString(), 302);
+});
+
+app.get("/google/callback", async (c) => {
+	const { state, code } = c.req.query();
+	const storedState = getCookie(c, "state");
+	const storedCodeVerifier = getCookie(c, "codeVerifier");
+
+	if (!code || !storedState || !storedCodeVerifier || state !== storedState) {
+		return c.json({ error: "Invalid state or code" }, 400);
+	}
+
+	try {
+		const tokens = await google.validateAuthorizationCode(
+			code,
+			storedCodeVerifier
+		);
+
+		const response = await fetch(
+			"https://openidconnect.googleapis.com/v1/userinfo",
+			{
+				headers: {
+					Authorization: `Bearer ${tokens.accessToken()}`,
+				},
+			}
+		);
+		const googleUser = (await response.json()) as GoogleUser;
+
+		const existingAccount = await prisma.connection.findFirst({
+			where: {
+				provider: "google",
+				providerUserId: googleUser.sub,
+			},
+		});
+
+		let createdUser: User | null = null;
+		if (!existingAccount) {
+			createdUser = await prisma.user.create({
+				data: {
+					email: googleUser.email,
+					name: googleUser.name,
+					Connections: {
+						create: {
+							provider: "google",
+							providerUserId: googleUser.sub,
+						},
+					},
+				},
+			});
+		}
+
+		const session = await prisma.session.create({
+			data: {
+				userId: createdUser?.id ?? existingAccount!.userId,
+				expiresAt: new Date(Date.now() + SESSION_EXPIRES_IN_MS),
+			},
+		});
+
+		return c.json({ session });
+	} catch (e) {
+		if (
+			e instanceof OAuth2RequestError &&
+			e.message === "bad_verification_code"
+		) {
+			return c.json({ error: "Invalid code" }, 400);
+		} else if (e instanceof Prisma.PrismaClientKnownRequestError) {
+			if (e.code === "P2002") {
+				return c.json({ error: "Email already exists" }, 400);
+			}
+		}
+		throw e;
+	}
 });
 
 app.post("/logout", authMiddleware, async (c) => {

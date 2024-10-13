@@ -14,14 +14,15 @@ datasource db {
 }
 
 model User {
-  id                 String               @id @default(uuid())
-  email              String               @unique
-  name               String?
-  password           String
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  Session            Session[]
-  PasswordResetToken PasswordResetToken[]
+  id                  String               @id @default(uuid())
+  email               String               @unique
+  name                String?
+  password            String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  Sessions            Session[]
+  PasswordResetTokens PasswordResetToken[]
+  Connections         Connection[]
 }
 
 model Session {
@@ -36,4 +37,14 @@ model PasswordResetToken {
   userId    String
   expiresAt DateTime
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Connection {
+  id             String @id @default(uuid())
+  provider       String
+  providerUserId String
+  userId         String
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])
 }

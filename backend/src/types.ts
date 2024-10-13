@@ -12,3 +12,12 @@ export interface UserResponseDTO {
 	name: string | null;
 	email: string;
 }
+
+export interface GoogleUser {
+	sub: string;
+	name: string;
+	given_name: string;
+	picture: string;
+	email: string;
+	email_verified: boolean;
+}
