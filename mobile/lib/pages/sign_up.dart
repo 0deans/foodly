@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodly/providers/auth_provider.dart';
 import 'package:foodly/widgets/confirm_button.dart';
 import 'package:foodly/widgets/or_divider.dart';
 import 'package:foodly/widgets/social_buttons.dart';
@@ -12,14 +13,29 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  void _signUp() {
-    debugPrint('Sign up');
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailContriller = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final _authProvider = AuthProvider();
+
+  final _formKey = GlobalKey<FormState>();
+
+  void _handleForm() {
+    if (_formKey.currentState!.validate()) {
+      _authProvider.signUp(context, _nameController.text, _emailContriller.text,
+          _passwordController.text);
+
+      debugPrint('Sign up');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
+        key: _formKey,
         child: Center(
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -41,30 +57,34 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(
                     height: 20,
                   ),
-                  const TextFormFieldCustom(
+                  TextFormFieldCustom(
                     labelText: "Enter display name",
+                    controller: _nameController,
                   ),
                   const SizedBox(
                     height: 15,
                   ),
-                  const TextFormFieldCustom(
+                  TextFormFieldCustom(
                     labelText: "Enter your email",
+                    controller: _emailContriller,
                   ),
                   const SizedBox(
                     height: 15,
                   ),
-                  const TextFormFieldCustom(
+                  TextFormFieldCustom(
                     labelText: "Enter password",
+                    controller: _passwordController,
                   ),
                   const SizedBox(
                     height: 15,
                   ),
-                  const TextFormFieldCustom(
+                  TextFormFieldCustom(
                     labelText: "Confirm password",
+                    controller: _confirmPasswordController,
                   ),
                   ConfirmButton(
                     text: "Sign Up",
-                    onPressed: _signUp,
+                    onPressed: _handleForm,
                   ),
                   const SizedBox(
                     height: 20,
