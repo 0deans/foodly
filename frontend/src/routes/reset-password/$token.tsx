@@ -58,34 +58,45 @@ function ResetPassword() {
 	});
 
 	return (
-		<form onSubmit={onSubmit} className="flex max-w-96 flex-col space-y-2">
-			<div className="flex flex-col">
-				<label htmlFor="password">Password</label>
-				<input
-					id="password"
-					type="text"
-					{...register('password')}
-					className="rounded-md border border-gray-600 p-2"
-				/>
-				<p className="text-red-500">{errors.password?.message}</p>
-			</div>
+		<main className="flex h-full flex-col items-center justify-center space-y-4">
+			<h1 className="text-2xl font-semibold">Reset Password</h1>
+			<p className="max-w-80 text-sm font-medium text-gray-500">
+				Reset your password here. After submitting, you'll be logged out from all devices.
+			</p>
 
-			<div className="flex flex-col">
-				<label htmlFor="confirmPassword">Confirm Password</label>
-				<input
-					id="confirmPassword"
-					type="text"
-					{...register('confirmPassword')}
-					className="rounded-md border border-gray-600 p-2"
-				/>
-				<p className="text-red-500">{errors.confirmPassword?.message}</p>
-			</div>
+			<form onSubmit={onSubmit} className="flex w-full max-w-80 flex-col space-y-4">
+				<div className="flex flex-col space-y-1">
+					<label htmlFor="password" className="font-medium">
+						Password
+					</label>
+					<input
+						id="password"
+						type="password"
+						{...register('password')}
+						className="rounded-md border border-gray-700 bg-transparent p-2"
+					/>
+					<p className="text-red-500">{errors.password?.message}</p>
+				</div>
 
-			<button type="submit" className="rounded-md bg-blue-400 p-2 font-medium text-white">
-				Submit
-			</button>
-			<p className="text-red-500">{errors.root?.message}</p>
-			<p className="text-green-500">{message}</p>
-		</form>
+				<div className="flex flex-col space-y-1">
+					<label htmlFor="confirmPassword" className="font-medium">
+						Confirm Password
+					</label>
+					<input
+						id="confirmPassword"
+						type="password"
+						{...register('confirmPassword')}
+						className="rounded-md border border-gray-600 bg-transparent p-2"
+					/>
+					<p className="text-red-500">{errors.confirmPassword?.message}</p>
+				</div>
+
+				<button type="submit" className="rounded-md bg-white p-2 font-medium text-gray-900">
+					Submit
+				</button>
+				{errors.root && <p className="text-red-500">{errors.root.message}</p>}
+				<p className="text-green-500">{message}</p>
+			</form>
+		</main>
 	);
 }
