@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodly/providers/auth_provider.dart';
 import 'package:foodly/widgets/confirm_button.dart';
 import 'package:foodly/widgets/or_divider.dart';
 import 'package:foodly/widgets/social_buttons.dart';
@@ -12,14 +13,23 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  void _signIn() {
-    debugPrint('Sign in');
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final _authProvider = AuthProvider();
+
+  final _formKey = GlobalKey<FormState>();
+  
+  void _handleForm(){
+    if(_formKey.currentState!.validate()){
+      _authProvider.signIn(context, _emailController.text, _passwordController.text);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
+        key: _formKey,
         child: Center(
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -37,14 +47,16 @@ class _SignInState extends State<SignIn> {
                 const SizedBox(
                   height: 20,
                 ),
-                const TextFormFieldCustom(
+                TextFormFieldCustom(
                   labelText: "Enter your email",
+                  controller: _emailController,
                 ),
                 const SizedBox(
                   height: 15,
                 ),
-                const TextFormFieldCustom(
+                TextFormFieldCustom(
                   labelText: "Enter your password",
+                  controller: _passwordController,
                 ),
                 const SizedBox(
                   height: 15,
@@ -65,7 +77,7 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
                 ConfirmButton(
-                  onPressed: _signIn,
+                  onPressed: _handleForm,
                   text: 'Sign In',
                 ),
                 const SizedBox(

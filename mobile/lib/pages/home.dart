@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/pages/accept_image.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -30,7 +29,7 @@ class _HomeState extends State<Home> {
 
   Widget buildButton(String text, VoidCallback onPressed) {
     return Container(
-      width: double.infinity,
+      width: MediaQuery.of(context).size.width * 0.5,
       height: 80,
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
       child: ElevatedButton(
@@ -46,41 +45,42 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    var h = MediaQuery.of(context).size.height;
-    var w = MediaQuery.of(context).size.width;
     final appLocal = AppLocalizations.of(context)!;
 
     return Scaffold(
-      body: SizedBox(
-        height: h,
-        width: w,
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                height: 275,
-                width: 275,
-                padding: const EdgeInsets.only(top: 10),
-                child: Image.asset('assets/images/logo.png'),
-              ),
-              Text(
-                'Foodly',
-                style: GoogleFonts.autourOne(fontSize: 25),
-              ),
-              const SizedBox(height: 40),
-              buildButton(appLocal.camera, () {
-                Navigator.pushNamed(context, '/camera');
-              }),
-              buildButton(appLocal.gallery, _loadImageGallery),
-              buildButton(appLocal.history, () {
-                Navigator.pushNamed(context, '/history');
-              }),
-              buildButton(appLocal.settings, () {
-                Navigator.pushNamed(context, '/settings');
-              }),
-            ],
+      appBar: AppBar(
+        title: const Text(
+          'Home',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
           ),
         ),
-      );
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            },
+            icon: const Icon(Icons.account_circle,),
+            tooltip: 'Profile',
+          ),
+        ],
+      ),
+      body: Wrap(
+        children: [
+          buildButton(appLocal.camera, () {
+            Navigator.pushNamed(context, '/camera');
+          }),
+          buildButton(appLocal.gallery, _loadImageGallery),
+          buildButton(appLocal.history, () {
+            Navigator.pushNamed(context, '/history');
+          }),
+          buildButton(appLocal.settings, () {
+            Navigator.pushNamed(context, '/settings');
+          }),
+        ],
+      ),
+    );
   }
 }

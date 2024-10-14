@@ -9,12 +9,14 @@ class AuthWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authService = Provider.of<AuthProvider>(context);
-
-    if (authService.isAuth!) {
-      return const Home();
-    } else {
-      return const Welcome();
-    }
+    return Consumer<AuthProvider>(builder: 
+      (context, authProvider, _) {
+        if (authProvider.isAuth!) {
+          return const Home();
+        } else {
+          return const Welcome();
+        }
+      }
+    );
   }
 }

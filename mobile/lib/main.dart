@@ -4,7 +4,6 @@ import 'package:foodly/pages/sign_in.dart';
 import 'package:foodly/pages/sign_up.dart';
 import 'package:foodly/pages/history.dart';
 import 'package:foodly/pages/settings.dart';
-import 'package:foodly/pages/welcome.dart';
 import 'package:foodly/providers/auth_provider.dart';
 import 'package:foodly/providers/locale_provider.dart';
 import 'package:foodly/theme/theme_provider.dart';
@@ -44,6 +43,8 @@ void main() async {
     themeProvider = ThemeProvider(ThemeMode.system);
     localeProvider = LocaleProvider(const Locale('en'));
   }
+
+  await authProvider.autoLogin();
 
   runApp(
     MultiProvider(

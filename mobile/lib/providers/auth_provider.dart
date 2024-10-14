@@ -1,15 +1,57 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthProvider with ChangeNotifier {
-  String? _token;
-  Object? _user;
+
+
   final _storage = const FlutterSecureStorage();
+  String? _token;
+  // Object? _user;
+  bool? isAuth = false;
 
-  bool? get isAuth => _token != null;
+  Future<void> autoLogin() async {
+    final token = await _storage.read(key: 'token');
 
-  void signIn() {}
+    if (token != null) {
+      _token = token;
+      isAuth = true;
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> signIn(
+      BuildContext context, String email, String password) async {
+    final url = Uri.parse('http://10.0.2.2:3000/auth/login');
+
+    try {
+      var request = http.MultipartRequest('POST', url)
+        ..fields['email'] = email
+        ..fields['password'] = password;
+
+      final response = await request.send();
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final date = await response.stream.bytesToString();
+
+        final dataJson = await jsonDecode(date);
+        _token = dataJson['session']['id'];
+
+        await _storage.write(key: 'token', value: _token!);
+
+        if (context.mounted) Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        throw Exception('Failed to sign in. Try again later');
+      }
+
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
 
   Future<void> signUp(
       BuildContext context, String name, String email, String password) async {
@@ -23,13 +65,13 @@ class AuthProvider with ChangeNotifier {
 
       final response = await request.send();
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        if (context.mounted) Navigator.pushReplacementNamed(context, '/signin');
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          context.mounted) {
+        Navigator.pushReplacementNamed(context, '/signin');
       } else {
         throw Exception('Failed to sign up');
       }
-
-      notifyListeners();
     } catch (error) {
       rethrow;
     }
