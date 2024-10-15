@@ -4,6 +4,7 @@ import 'package:foodly/widgets/confirm_button.dart';
 import 'package:foodly/widgets/or_divider.dart';
 import 'package:foodly/widgets/social_buttons.dart';
 import 'package:foodly/widgets/text_form_field_custom.dart';
+import 'package:provider/provider.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -15,13 +16,20 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final _authProvider = AuthProvider();
+  late AuthProvider _authProvider;
 
   final _formKey = GlobalKey<FormState>();
-  
-  void _handleForm(){
-    if(_formKey.currentState!.validate()){
-      _authProvider.signIn(context, _emailController.text, _passwordController.text);
+
+  @override
+  void initState() {
+    super.initState();
+    _authProvider = Provider.of<AuthProvider>(context, listen: false);
+  }
+
+  void _handleForm() {
+    if (_formKey.currentState!.validate()) {
+      _authProvider.signIn(
+          context, _emailController.text, _passwordController.text);
     }
   }
 

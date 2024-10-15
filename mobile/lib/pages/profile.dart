@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:foodly/providers/auth_provider.dart';
 import 'package:foodly/widgets/button_row.dart';
+import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -9,8 +11,23 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  late AuthProvider authPrivder;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authPrivder = Provider.of<AuthProvider>(context);
+    authPrivder.getUser();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (authPrivder.user == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -46,16 +63,16 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  'Joe Doe',
-                  style: TextStyle(
+                Text(
+                  authPrivder.user!['name'] ?? '',
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const Text(
-                  'text@gmail.com',
-                  style: TextStyle(
+                Text(
+                  authPrivder.user!['email'] ?? '',
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black54,
                   ),
@@ -99,7 +116,7 @@ class _ProfileState extends State<Profile> {
               title: 'Sign out',
               textColor: Colors.red,
               visibleIconLeft: false,
-              onPressed: () {},
+              onPressed: () => authPrivder.signOut(context),
             ),
           ],
         ),

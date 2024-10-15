@@ -5,22 +5,21 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthProvider with ChangeNotifier {
-
-
   final _storage = const FlutterSecureStorage();
   String? _token;
-  // Object? _user;
+  Map<String, String>? user;
   bool? isAuth = false;
 
   Future<void> autoLogin() async {
     final token = await _storage.read(key: 'token');
 
+    debugPrint(token.toString());
+
     if (token != null) {
       _token = token;
       isAuth = true;
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 
   Future<void> signIn(
@@ -46,8 +45,6 @@ class AuthProvider with ChangeNotifier {
       } else {
         throw Exception('Failed to sign in. Try again later');
       }
-
-      notifyListeners();
     } catch (error) {
       rethrow;
     }
@@ -71,6 +68,49 @@ class AuthProvider with ChangeNotifier {
         Navigator.pushReplacementNamed(context, '/signin');
       } else {
         throw Exception('Failed to sign up');
+      }
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> signOut(BuildContext context) async {
+    try {
+      await _storage.delete(key: 'token');
+      _token = null;
+      isAuth = false;
+      user = null;
+
+      if (context.mounted) Navigator.pushReplacementNamed(context, '/signin');
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> getUser() async {
+    if (user != null || _token == null) return;
+
+    final url = Uri.parse('http://10.0.2.2:3000/user');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $_token',
+        },
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final dataJson = await jsonDecode(response.body);
+
+        user = {
+          'name': dataJson['user']['name'],
+          'email': dataJson['user']['email'],
+        };
+
+        notifyListeners();
+      } else {
+        throw Exception('Failed to get user data');
       }
     } catch (error) {
       rethrow;
