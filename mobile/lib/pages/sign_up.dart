@@ -5,6 +5,7 @@ import 'package:foodly/widgets/or_divider.dart';
 import 'package:foodly/widgets/social_buttons.dart';
 import 'package:foodly/widgets/text_form_field_custom.dart';
 import 'package:provider/provider.dart';
+import 'package:foodly/validators/form_validators.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -67,6 +68,7 @@ class _SignUpState extends State<SignUp> {
                   TextFormFieldCustom(
                     labelText: "Enter display name",
                     controller: _nameController,
+                    validator: (value) => nameValidator(value),
                   ),
                   const SizedBox(
                     height: 15,
@@ -74,6 +76,7 @@ class _SignUpState extends State<SignUp> {
                   TextFormFieldCustom(
                     labelText: "Enter your email",
                     controller: _emailContriller,
+                    validator: (value) => emailValidator(value),
                   ),
                   const SizedBox(
                     height: 15,
@@ -81,6 +84,7 @@ class _SignUpState extends State<SignUp> {
                   TextFormFieldCustom(
                     labelText: "Enter password",
                     controller: _passwordController,
+                    validator: (value) => passwordValidator(value),
                   ),
                   const SizedBox(
                     height: 15,
@@ -88,6 +92,8 @@ class _SignUpState extends State<SignUp> {
                   TextFormFieldCustom(
                     labelText: "Confirm password",
                     controller: _confirmPasswordController,
+                    validator: (value) => confirmPasswordValidator(
+                        value, _passwordController.text),
                   ),
                   ConfirmButton(
                     text: "Sign Up",

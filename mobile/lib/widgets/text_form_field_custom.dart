@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class TextFormFieldCustom extends StatefulWidget {
   final TextEditingController? controller;
   final String labelText;
+  final FormFieldValidator validator;
 
   const TextFormFieldCustom({
     super.key,
     this.controller,
     required this.labelText,
+    required this.validator,
   });
 
   @override
@@ -24,6 +26,10 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
         labelStyle: const TextStyle(
           color: Colors.black54,
         ),
+        errorStyle: const TextStyle(
+          color: Colors.red,
+          fontSize: 14,
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(
@@ -36,11 +42,27 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
             width: 2,
           ),
         ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            width: 2,
+            color: Colors.red,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            width: 2,
+            color: Colors.red,
+          ),
+        ),
         floatingLabelStyle: const TextStyle(
           color: Colors.black,
         ),
       ),
       controller: widget.controller,
+      validator: widget.validator,
+      autovalidateMode: AutovalidateMode.onUnfocus,
     );
   }
 }
