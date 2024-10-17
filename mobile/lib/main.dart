@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodly/pages/forgot_password.dart';
 import 'package:foodly/pages/profile.dart';
 import 'package:foodly/pages/sign_in.dart';
 import 'package:foodly/pages/sign_up.dart';
@@ -71,9 +72,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const AuthWrapper(),
       routes: {
-        '/home': (context) => const Home(),
         '/signin': (context) => const SignIn(),
         '/signup': (context) => const SignUp(),
+        '/forgot_password': (context) => const ForgotPassword(), 
+        '/home': (context) => const Home(),
         '/profile': (context) => const Profile(),
         '/camera': (context) => const Camera(),
         '/history': (context) => const History(),

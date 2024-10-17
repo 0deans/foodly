@@ -9,15 +9,14 @@ class AuthProvider with ChangeNotifier {
   String? _token;
   Map<String, String>? user;
   bool? isAuth = false;
-
+  
   Future<void> autoLogin() async {
     final token = await _storage.read(key: 'token');
-
-    debugPrint(token.toString());
 
     if (token != null) {
       _token = token;
       isAuth = true;
+
       notifyListeners();
     }
   }

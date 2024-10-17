@@ -30,6 +30,7 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
           color: Colors.red,
           fontSize: 14,
         ),
+        errorMaxLines: 2,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(

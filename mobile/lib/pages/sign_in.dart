@@ -74,8 +74,10 @@ class _SignInState extends State<SignIn> {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, '/forgot-password');
+                    Navigator.pushNamed(context, '/forgot_password');
                   },
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
                   child: const Align(
                     alignment: Alignment.centerRight,
                     child: Text(

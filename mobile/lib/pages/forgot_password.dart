@@ -1,0 +1,143 @@
+import 'package:flutter/material.dart';
+import 'package:foodly/validators/form_validators.dart';
+import 'package:foodly/widgets/confirm_button.dart';
+
+class ForgotPassword extends StatefulWidget {
+  const ForgotPassword({Key? key}) : super(key: key);
+
+  @override
+  State<ForgotPassword> createState() => _ForgotPasswordState();
+}
+
+class _ForgotPasswordState extends State<ForgotPassword> {
+  final TextEditingController _emailContriller = TextEditingController();
+  bool _isValidate = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                "Forgot password?",
+                style: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: const Text(
+                  "No worries, we'll send you a link to reset your password.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              TextField(
+                cursorColor: Colors.black,
+                onChanged: (value) {
+                  setState(() {
+                    _isValidate = emailValidator(value) != null;
+                  });
+                },
+                controller: _emailContriller,
+                decoration: InputDecoration(
+                  labelText: 'Enter your email',
+                  errorText: _isValidate
+                      ? emailValidator(_emailContriller.text)
+                      : null,
+                  labelStyle: const TextStyle(
+                    color: Colors.black54,
+                  ),
+                  errorStyle: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                  ),
+                  errorMaxLines: 2,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(
+                      width: 2,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(
+                      width: 2,
+                    ),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(
+                      width: 2,
+                      color: Colors.red,
+                    ),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(
+                      width: 2,
+                      color: Colors.red,
+                    ),
+                  ),
+                  floatingLabelStyle: const TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              ConfirmButton(
+                text: "Send link",
+                color: _isValidate ? Colors.grey : Colors.green.shade600,
+                onPressed: _isValidate
+                    ? null
+                    : () {
+                        debugPrint('Send link');
+                      },
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.arrow_back,
+                      color: Colors.black54,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      "Back to sign in",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
