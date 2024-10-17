@@ -10,83 +10,83 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/index'
-import { Route as ResetPasswordTokenImport } from './routes/reset-password/$token'
+import { Route as rootRoute } from './routes/__root';
+import { Route as IndexImport } from './routes/index';
+import { Route as ResetPasswordTokenImport } from './routes/reset-password/$token';
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
-  path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
+	path: '/',
+	getParentRoute: () => rootRoute
+} as any);
 
 const ResetPasswordTokenRoute = ResetPasswordTokenImport.update({
-  path: '/reset-password/$token',
-  getParentRoute: () => rootRoute,
-} as any)
+	path: '/reset-password/$token',
+	getParentRoute: () => rootRoute
+} as any);
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/reset-password/$token': {
-      id: '/reset-password/$token'
-      path: '/reset-password/$token'
-      fullPath: '/reset-password/$token'
-      preLoaderRoute: typeof ResetPasswordTokenImport
-      parentRoute: typeof rootRoute
-    }
-  }
+	interface FileRoutesByPath {
+		'/': {
+			id: '/';
+			path: '/';
+			fullPath: '/';
+			preLoaderRoute: typeof IndexImport;
+			parentRoute: typeof rootRoute;
+		};
+		'/reset-password/$token': {
+			id: '/reset-password/$token';
+			path: '/reset-password/$token';
+			fullPath: '/reset-password/$token';
+			preLoaderRoute: typeof ResetPasswordTokenImport;
+			parentRoute: typeof rootRoute;
+		};
+	}
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/reset-password/$token': typeof ResetPasswordTokenRoute
+	'/': typeof IndexRoute;
+	'/reset-password/$token': typeof ResetPasswordTokenRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/reset-password/$token': typeof ResetPasswordTokenRoute
+	'/': typeof IndexRoute;
+	'/reset-password/$token': typeof ResetPasswordTokenRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/reset-password/$token': typeof ResetPasswordTokenRoute
+	__root__: typeof rootRoute;
+	'/': typeof IndexRoute;
+	'/reset-password/$token': typeof ResetPasswordTokenRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/reset-password/$token'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/reset-password/$token'
-  id: '__root__' | '/' | '/reset-password/$token'
-  fileRoutesById: FileRoutesById
+	fileRoutesByFullPath: FileRoutesByFullPath;
+	fullPaths: '/' | '/reset-password/$token';
+	fileRoutesByTo: FileRoutesByTo;
+	to: '/' | '/reset-password/$token';
+	id: '__root__' | '/' | '/reset-password/$token';
+	fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ResetPasswordTokenRoute: typeof ResetPasswordTokenRoute
+	IndexRoute: typeof IndexRoute;
+	ResetPasswordTokenRoute: typeof ResetPasswordTokenRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ResetPasswordTokenRoute: ResetPasswordTokenRoute,
-}
+	IndexRoute: IndexRoute,
+	ResetPasswordTokenRoute: ResetPasswordTokenRoute
+};
 
 export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+	._addFileChildren(rootRouteChildren)
+	._addFileTypes<FileRouteTypes>();
 
 /* prettier-ignore-end */
 

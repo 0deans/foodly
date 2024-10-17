@@ -1,3 +1,13 @@
+import { Button } from '@/components/ui/button';
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
@@ -24,18 +34,17 @@ const formSchema = z
 	});
 
 function ResetPassword() {
-	const {
-		register,
-		handleSubmit,
-		setError,
-		formState: { errors }
-	} = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema)
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			password: '',
+			confirmPassword: ''
+		}
 	});
 	const { token } = Route.useParams();
 	const [message, setMessage] = useState('');
 
-	const onSubmit = handleSubmit(async ({ password }) => {
+	const onSubmit = form.handleSubmit(async ({ password }) => {
 		setMessage('');
 
 		const url = new URL(`${import.meta.env.VITE_API_URL}/auth/reset-password/${token}`);
@@ -49,7 +58,7 @@ function ResetPassword() {
 
 		if (!response.ok) {
 			const data = await response.json();
-			setError('root', { message: data.error });
+			form.setError('root', { message: data.error });
 			return;
 		}
 
@@ -58,45 +67,44 @@ function ResetPassword() {
 	});
 
 	return (
-		<main className="flex h-full flex-col items-center justify-center space-y-4">
-			<h1 className="text-2xl font-semibold">Reset Password</h1>
-			<p className="max-w-80 text-sm font-medium text-gray-500">
-				Reset your password here. After submitting, you'll be logged out from all devices.
-			</p>
+		<main className="flex h-full flex-col items-center justify-center p-12">
+			<h1 className="mb-8 text-3xl font-semibold">Reset Password</h1>
 
-			<form onSubmit={onSubmit} className="flex w-full max-w-80 flex-col space-y-4">
-				<div className="flex flex-col space-y-1">
-					<label htmlFor="password" className="font-medium">
-						Password
-					</label>
-					<input
-						id="password"
-						type="password"
-						{...register('password')}
-						className="rounded-md border border-gray-700 bg-transparent p-2"
+			<Form {...form}>
+				<form onSubmit={onSubmit} className="flex w-full max-w-sm flex-col space-y-4">
+					<FormField
+						control={form.control}
+						name="password"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Password</FormLabel>
+								<FormControl>
+									<Input type="password" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
 					/>
-					<p className="text-red-500">{errors.password?.message}</p>
-				</div>
-
-				<div className="flex flex-col space-y-1">
-					<label htmlFor="confirmPassword" className="font-medium">
-						Confirm Password
-					</label>
-					<input
-						id="confirmPassword"
-						type="password"
-						{...register('confirmPassword')}
-						className="rounded-md border border-gray-600 bg-transparent p-2"
+					<FormField
+						control={form.control}
+						name="confirmPassword"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Confirm Password</FormLabel>
+								<FormControl>
+									<Input type="password" {...field} />
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
 					/>
-					<p className="text-red-500">{errors.confirmPassword?.message}</p>
-				</div>
-
-				<button type="submit" className="rounded-md bg-white p-2 font-medium text-gray-900">
-					Submit
-				</button>
-				{errors.root && <p className="text-red-500">{errors.root.message}</p>}
-				<p className="text-green-500">{message}</p>
-			</form>
+					<Button type="submit">Reset Password</Button>
+					{form.formState.errors.root && (
+						<p className="text-red-500">{form.formState.errors.root.message}</p>
+					)}
+					<p className="text-green-500">{message}</p>
+				</form>
+			</Form>
 		</main>
 	);
 }
