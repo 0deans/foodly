@@ -10,8 +10,19 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  final TextEditingController _emailContriller = TextEditingController();
-  bool _isValidate = false;
+  final TextEditingController _emailController = TextEditingController();
+  String? _emailError;
+
+  void _sendRecoveryLinkEmail() {
+    final email = _emailController.text;
+    if (emailValidator(email) == null) {
+      debugPrint('Email sent to $email');
+    } else {
+      setState(() {
+        _emailError = emailValidator(email);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,73 +52,47 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(
-                height: 25,
-              ),
+              const SizedBox(height: 25),
               TextField(
                 cursorColor: Colors.black,
                 onChanged: (value) {
                   setState(() {
-                    _isValidate = emailValidator(value) != null;
+                    _emailError = emailValidator(value);
                   });
                 },
-                controller: _emailContriller,
+                controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Enter your email',
-                  errorText: _isValidate
-                      ? emailValidator(_emailContriller.text)
-                      : null,
-                  labelStyle: const TextStyle(
-                    color: Colors.black54,
-                  ),
-                  errorStyle: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 14,
-                  ),
+                  errorText: _emailError,
+                  labelStyle: const TextStyle(color: Colors.black54),
+                  errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                   errorMaxLines: 2,
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                      width: 2,
-                    ),
+                    borderSide: const BorderSide(width: 2),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                      width: 2,
-                    ),
+                    borderSide: const BorderSide(width: 2),
                   ),
                   errorBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                      width: 2,
-                      color: Colors.red,
-                    ),
+                    borderSide: const BorderSide(width: 2, color: Colors.red),
                   ),
                   focusedErrorBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                      width: 2,
-                      color: Colors.red,
-                    ),
+                    borderSide: const BorderSide(width: 2, color: Colors.red),
                   ),
-                  floatingLabelStyle: const TextStyle(
-                    color: Colors.black,
-                  ),
+                  floatingLabelStyle: const TextStyle(color: Colors.black),
                 ),
               ),
               ConfirmButton(
                 text: "Send link",
-                color: _isValidate ? Colors.grey : Colors.green.shade600,
-                onPressed: _isValidate
-                    ? null
-                    : () {
-                        debugPrint('Send link');
-                      },
+                color:
+                    _emailError == null ? Colors.green.shade600 : Colors.grey,
+                onPressed: _sendRecoveryLinkEmail,
               ),
-              const SizedBox(
-                height: 25,
-              ),
+              const SizedBox(height: 25),
               InkWell(
                 onTap: () {
                   Navigator.pop(context);
@@ -117,19 +102,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.arrow_back,
-                      color: Colors.black54,
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
+                    Icon(Icons.arrow_back, color: Colors.black54),
+                    SizedBox(width: 5),
                     Text(
                       "Back to sign in",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black54,
-                      ),
+                      style: TextStyle(fontSize: 16, color: Colors.black54),
                     ),
                   ],
                 ),
