@@ -8,8 +8,10 @@ import {
 	FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import api from '@/lib/api';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
+import { isAxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -44,9 +46,31 @@ function Signup() {
 			confirmPassword: ''
 		}
 	});
+	const router = useRouter();
 
 	const onSubmit = form.handleSubmit(async (data) => {
-		console.log(data);
+		if (data.name === '') data.name = undefined;
+
+		api
+			.post('/auth/signup', data)
+			.then(() => {
+				router.history.push('/login');
+			})
+			.catch((error) => {
+				if (
+					!isAxiosError(error) ||
+					!error.response ||
+					typeof error.response.data !== 'object' ||
+					typeof error.response.data.error !== 'string'
+				) {
+					form.setError('root', {
+						message: 'An error occurred. Please try again later.'
+					});
+					return;
+				}
+
+				form.setError('root', { message: error.response.data.error });
+			});
 	});
 
 	return (
@@ -110,6 +134,11 @@ function Signup() {
 						)}
 					/>
 					<Button type="submit">Sign up</Button>
+					{form.formState.errors.root && (
+						<p className="text-sm font-medium text-destructive">
+							{form.formState.errors.root.message}
+						</p>
+					)}
 				</form>
 			</Form>
 			<div className="mt-4">
