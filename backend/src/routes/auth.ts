@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { Hono } from "hono";
 import {
 	loginSchema,
@@ -19,7 +19,6 @@ import { sha256HexDigest } from "../utils";
 import transporter from "../services/email";
 import prisma from "../services/db";
 import {
-	ArcticFetchError,
 	generateCodeVerifier,
 	generateState,
 	OAuth2RequestError,
@@ -31,7 +30,7 @@ import { GoogleUser } from "../types";
 const app = new Hono();
 
 app.post("/signup", async (c) => {
-	const body = await c.req.parseBody();
+	const body = await c.req.json();
 	const form = signupSchema.safeParse(body);
 
 	if (!form.success) {
@@ -62,7 +61,7 @@ app.post("/signup", async (c) => {
 });
 
 app.post("/login", async (c) => {
-	const body = await c.req.parseBody();
+	const body = await c.req.json();
 	const form = loginSchema.safeParse(body);
 
 	if (!form.success) {
@@ -207,7 +206,7 @@ app.post("/logout", authMiddleware, async (c) => {
 });
 
 app.post("/reset-password", async (c) => {
-	const body = await c.req.parseBody();
+	const body = await c.req.json();
 	const form = resetPasswordRequestSchema.safeParse(body);
 
 	if (!form.success) {
@@ -251,7 +250,7 @@ app.post("/reset-password", async (c) => {
 });
 
 app.post("/reset-password/:token", async (c) => {
-	const body = await c.req.parseBody();
+	const body = await c.req.json();
 	const form = resetPasswordSchema.safeParse(body);
 	const token = c.req.param("token");
 

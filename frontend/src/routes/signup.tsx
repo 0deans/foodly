@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -112,6 +112,14 @@ function Signup() {
 					<Button type="submit">Sign up</Button>
 				</form>
 			</Form>
+			<div className="mt-4">
+				<p className="text-sm">
+					Already have an account?{' '}
+					<Link to="/login" className="font-medium underline underline-offset-4">
+						Log in
+					</Link>
+				</p>
+			</div>
 		</main>
 	);
 }

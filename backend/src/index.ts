@@ -9,7 +9,12 @@ import { cors } from "hono/cors";
 dotenv.config();
 const app = new Hono<Env>();
 
-app.use(cors());
+app.use(
+	cors({
+		origin: "*",
+		exposeHeaders: ["X-New-Session-ExpiresAt"],
+	})
+);
 
 app.route("/auth", auth);
 app.route("/user", user);

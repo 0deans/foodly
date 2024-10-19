@@ -8,13 +8,18 @@ import {
 	FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import api from '@/lib/api';
+import { useAuthStore } from '@/lib/authStore';
+import { Session } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router';
+import { isAxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 export const Route = createFileRoute('/login')({
-	component: Login
+	component: Login,
+	validateSearch: (search: { redirect?: string }) => search
 });
 
 const formSchema = z.object({
@@ -23,6 +28,7 @@ const formSchema = z.object({
 });
 
 function Login() {
+	const setSession = useAuthStore((state) => state.setSession);
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -30,9 +36,31 @@ function Login() {
 			password: ''
 		}
 	});
+	const router = useRouter();
+	const search = Route.useSearch();
 
 	const onSubmit = form.handleSubmit(async (data) => {
-		console.log(data);
+		api
+			.post<{ session: Session }>('/auth/login', data)
+			.then((response) => {
+				setSession(response.data.session);
+				router.history.push(search.redirect || '/');
+			})
+			.catch((error) => {
+				if (
+					!isAxiosError(error) ||
+					!error.response ||
+					typeof error.response.data !== 'object' ||
+					typeof error.response.data.error !== 'string'
+				) {
+					form.setError('root', {
+						message: 'An error occurred. Please try again later.'
+					});
+					return;
+				}
+
+				form.setError('root', { message: error.response.data.error });
+			});
 	});
 
 	return (
@@ -67,7 +95,13 @@ function Login() {
 							</FormItem>
 						)}
 					/>
-					<Button type="submit">Login</Button>
+					<Button type="submit">Log in</Button>
+					{form.formState.errors.root && (
+						<p className="text-sm font-medium text-destructive">
+							{form.formState.errors.root.message}
+						</p>
+					)}
+
 					<div className="my-8 flex w-full items-center space-x-2">
 						<hr className="flex-grow border-t border-gray-400" />
 						<span className="text-gray-400">Or continue with</span>
@@ -79,6 +113,14 @@ function Login() {
 					</Button>
 				</form>
 			</Form>
+			<div className="mt-4">
+				<p className="text-sm">
+					Don't have an account?{' '}
+					<Link to="/signup" className="font-medium underline underline-offset-4">
+						Sign up
+					</Link>
+				</p>
+			</div>
 		</main>
 	);
 }
