@@ -1,15 +1,17 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:foodly/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthProvider with ChangeNotifier {
+  final _apiService = ApiService();
   final _storage = const FlutterSecureStorage();
   String? _token;
   Map<String, String>? user;
   bool? isAuth = false;
-  
+
   Future<void> autoLogin() async {
     final token = await _storage.read(key: 'token');
 
@@ -23,96 +25,90 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> signIn(
       BuildContext context, String email, String password) async {
-    final url = Uri.parse('http://10.0.2.2:3000/auth/login');
+    final response = await _apiService.httpReq(
+      url: "/auth/login",
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+      }),
+    );
 
-    try {
-      var request = http.MultipartRequest('POST', url)
-        ..fields['email'] = email
-        ..fields['password'] = password;
+    final dataJson = await jsonDecode(response);
 
-      final response = await request.send();
+    _token = dataJson['session']['id'];
+    isAuth = true;
+    await _storage.write(key: 'token', value: _token!);
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        final date = await response.stream.bytesToString();
-
-        final dataJson = await jsonDecode(date);
-        _token = dataJson['session']['id'];
-
-        await _storage.write(key: 'token', value: _token!);
-
-        if (context.mounted) Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        throw Exception('Failed to sign in. Try again later');
-      }
-    } catch (error) {
-      rethrow;
-    }
+    if (context.mounted) Navigator.pushReplacementNamed(context, '/home');
   }
 
   Future<void> signUp(
       BuildContext context, String name, String email, String password) async {
-    final url = Uri.parse('http://10.0.2.2:3000/auth/signup');
+    await _apiService.httpReq(
+      url: "/auth/signup",
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'name': name,
+        'email': email,
+        'password': password,
+      }),
+    );
 
-    try {
-      var request = http.MultipartRequest('POST', url);
-      request.fields['name'] = name;
-      request.fields['email'] = email;
-      request.fields['password'] = password;
-
-      final response = await request.send();
-
-      if (response.statusCode >= 200 &&
-          response.statusCode < 300 &&
-          context.mounted) {
-        Navigator.pushReplacementNamed(context, '/signin');
-      } else {
-        throw Exception('Failed to sign up');
-      }
-    } catch (error) {
-      rethrow;
-    }
+    if (context.mounted) Navigator.pushReplacementNamed(context, '/signin');
   }
 
   Future<void> signOut(BuildContext context) async {
-    try {
-      await _storage.delete(key: 'token');
-      _token = null;
-      isAuth = false;
-      user = null;
+    await _apiService.httpReq(
+      url: "/auth/logout",
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer $_token',
+      },
+    );
 
-      if (context.mounted) Navigator.pushReplacementNamed(context, '/signin');
-    } catch (error) {
-      rethrow;
-    }
+    await _storage.delete(key: 'token');
+    _token = null;
+    isAuth = false;
+    user = null;
+
+    if (context.mounted) Navigator.pushReplacementNamed(context, '/signin');
+  }
+  
+  Future<void> sendRecoveryLinkEmail(String email) async {
+    await _apiService.httpReq(
+      url: "/auth/reset-password",
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'email': email,
+      }),
+    );
   }
 
   Future<void> getUser() async {
     if (user != null || _token == null) return;
 
-    final url = Uri.parse('http://10.0.2.2:3000/user');
+    final response =
+        await _apiService.httpReq(url: "/user", method: 'GET', headers: {
+      'Authorization': 'Bearer $_token',
+    });
 
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer $_token',
-        },
-      );
+    final dataJson = await jsonDecode(response);
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        final dataJson = await jsonDecode(response.body);
+    user = {
+      'name': dataJson['user']['name'],
+      'email': dataJson['user']['email'],
+    };
 
-        user = {
-          'name': dataJson['user']['name'],
-          'email': dataJson['user']['email'],
-        };
-
-        notifyListeners();
-      } else {
-        throw Exception('Failed to get user data');
-      }
-    } catch (error) {
-      rethrow;
-    }
+    notifyListeners();
   }
 }

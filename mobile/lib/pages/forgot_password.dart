@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:foodly/providers/auth_provider.dart';
+import 'package:foodly/services/app_exception.dart';
 import 'package:foodly/validators/form_validators.dart';
 import 'package:foodly/widgets/confirm_button.dart';
+import 'package:provider/provider.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
@@ -10,13 +13,27 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
+  late AuthProvider _authProvider;
   final TextEditingController _emailController = TextEditingController();
   String? _emailError;
+  String _error = "";
 
-  void _sendRecoveryLinkEmail() {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _authProvider = Provider.of<AuthProvider>(context);
+  }
+
+  void _sendRecoveryLinkEmail() async {
     final email = _emailController.text;
     if (emailValidator(email) == null) {
-      debugPrint('Email sent to $email');
+      try {
+        await _authProvider.sendRecoveryLinkEmail(email);
+      } on AppException catch (error) {
+        setState(() {
+          _error = error.message;
+        });
+      }
     } else {
       setState(() {
         _emailError = emailValidator(email);
@@ -92,6 +109,20 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     _emailError == null ? Colors.green.shade600 : Colors.grey,
                 onPressed: _sendRecoveryLinkEmail,
               ),
+              if (_error != "")
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                  width: double.infinity,
+                  child: Text(
+                    _error,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
               const SizedBox(height: 25),
               InkWell(
                 onTap: () {

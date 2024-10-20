@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/providers/auth_provider.dart';
+import 'package:foodly/services/app_exception.dart';
 import 'package:foodly/widgets/confirm_button.dart';
 import 'package:foodly/widgets/or_divider.dart';
 import 'package:foodly/widgets/social_buttons.dart';
@@ -15,9 +16,10 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  late AuthProvider _authProvider;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  late AuthProvider _authProvider;
+  String _error = "";
 
   final _formKey = GlobalKey<FormState>();
 
@@ -27,10 +29,16 @@ class _SignInState extends State<SignIn> {
     _authProvider = Provider.of<AuthProvider>(context, listen: false);
   }
 
-  void _handleForm() {
+  void _handleForm() async {
     if (_formKey.currentState!.validate()) {
-      _authProvider.signIn(
-          context, _emailController.text, _passwordController.text);
+      try {
+        await _authProvider.signIn(
+            context, _emailController.text, _passwordController.text);
+      } on AppException catch (error) {
+        setState(() {
+          _error = error.toString();
+        });
+      }
     }
   }
 
@@ -93,9 +101,20 @@ class _SignInState extends State<SignIn> {
                   onPressed: _handleForm,
                   text: 'Sign In',
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                if (_error != "")
+                  Container(
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                    width: double.infinity,
+                    child: Text(
+                      _error,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
                 const SizedBox(
                   height: 20,
                 ),
