@@ -8,8 +8,10 @@ import {
 	FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import api from '@/lib/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createFileRoute } from '@tanstack/react-router';
+import { isAxiosError } from 'axios';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -42,28 +44,30 @@ function ResetPassword() {
 		}
 	});
 	const { token } = Route.useParams();
-	const [message, setMessage] = useState('');
+	const [success, setSuccess] = useState(false);
 
 	const onSubmit = form.handleSubmit(async ({ password }) => {
-		setMessage('');
+		setSuccess(false);
+		api
+			.post(`/auth/reset-password/${token}`, { password })
+			.then(() => {
+				setSuccess(true);
+			})
+			.catch((error) => {
+				if (
+					!isAxiosError(error) ||
+					!error.response ||
+					typeof error.response.data !== 'object' ||
+					typeof error.response.data.error !== 'string'
+				) {
+					form.setError('root', {
+						message: 'An error occurred. Please try again later.'
+					});
+					return;
+				}
 
-		const url = new URL(`${import.meta.env.VITE_API_URL}/auth/reset-password/${token}`);
-		const formData = new FormData();
-		formData.append('password', password);
-
-		const response = await fetch(url.toString(), {
-			method: 'POST',
-			body: formData
-		});
-
-		if (!response.ok) {
-			const data = await response.json();
-			form.setError('root', { message: data.error });
-			return;
-		}
-
-		const data = await response.json();
-		setMessage(data.message);
+				form.setError('root', { message: error.response.data.error });
+			});
 	});
 
 	return (
@@ -102,7 +106,7 @@ function ResetPassword() {
 					{form.formState.errors.root && (
 						<p className="text-red-500">{form.formState.errors.root.message}</p>
 					)}
-					<p className="text-green-500">{message}</p>
+					{success && <p className="text-green-500">Password updated</p>}
 				</form>
 			</Form>
 		</main>
