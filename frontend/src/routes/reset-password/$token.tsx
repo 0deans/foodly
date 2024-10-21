@@ -106,7 +106,7 @@ function ResetPassword() {
 					{form.formState.errors.root && (
 						<p className="text-red-500">{form.formState.errors.root.message}</p>
 					)}
-					{success && <p className="text-green-500">Password updated</p>}
+					{success && <p className="text-sm font-medium text-green-500">Password updated</p>}
 				</form>
 			</Form>
 		</main>
