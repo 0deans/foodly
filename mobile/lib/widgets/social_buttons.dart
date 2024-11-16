@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodly/services/google_service.dart';
 
 class SocialButtons extends StatelessWidget {
   const SocialButtons({Key? key}) : super(key: key);
@@ -12,10 +13,10 @@ class SocialButtons extends StatelessWidget {
         image: const AssetImage(
           'assets/images/google.png',
         ),
-        child: InkWell(
+        child: const InkWell(
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          onTap: () => {},
+          onTap: GoogleService.signIn,
         ),
       ),
     );

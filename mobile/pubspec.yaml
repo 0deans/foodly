@@ -54,6 +54,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_secure_storage: ^9.2.2
+  google_sign_in: ^6.2.2
 
 dev_dependencies:
   flutter_test:
