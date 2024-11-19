@@ -82,7 +82,9 @@ class _ProfileState extends State<Profile> {
                   width: MediaQuery.of(context).size.width * 0.5,
                   height: 45,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/edit_profile');
+                    },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(45),
