@@ -91,6 +91,7 @@ class _SignUpState extends State<SignUp> {
                     labelText: "Enter password",
                     controller: _passwordController,
                     validator: (value) => passwordValidator(value),
+                    type: 'password',
                   ),
                   const SizedBox(
                     height: 15,
@@ -100,6 +101,7 @@ class _SignUpState extends State<SignUp> {
                     controller: _confirmPasswordController,
                     validator: (value) => confirmPasswordValidator(
                         value, _passwordController.text),
+                    type: 'password',
                   ),
                   ConfirmButton(
                     text: "Sign Up",

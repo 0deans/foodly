@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/providers/auth_provider.dart';
-import 'package:foodly/widgets/change_infomation_input.dart';
+import 'package:foodly/widgets/change_information_input.dart';
 import 'package:foodly/widgets/confirm_button.dart';
 import 'package:provider/provider.dart';
+import 'package:foodly/validators/form_validators.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -15,12 +16,25 @@ class _EditProfileState extends State<EditProfile> {
   late AuthProvider authPrivder;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     authPrivder = Provider.of<AuthProvider>(context);
     authPrivder.getUser();
+
+    _nameController.text = authPrivder.user!['name'].toString();
+    _emailController.text = authPrivder.user!['email'].toString();
+  }
+
+  void _handleForm() async {
+    if (_formKey.currentState!.validate()) {
+      print("Edit ok");
+    }
+    else {
+      print("Edit not ok");
+    }
   }
 
   @override
@@ -44,6 +58,7 @@ class _EditProfileState extends State<EditProfile> {
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 40),
         child: Form(
+          key: _formKey,
           child: ListView(
             children: [
               const SizedBox(
@@ -85,18 +100,22 @@ class _EditProfileState extends State<EditProfile> {
                 ],
               ),
               const SizedBox(height: 10),
-              const ChangeInfomationInput(
+              ChangeInfomationInput(
                 title: "Name",
                 labelText: "Enter your name",
+                controller: _nameController,
+                validator: (value) => nameValidator(value),
               ),
               const SizedBox(height: 20),
-              const ChangeInfomationInput(
+              ChangeInfomationInput(
                 title: "Email",
                 labelText: "Enter your email",
+                controller: _emailController,
+                validator: (value) => emailValidator(value),
               ),
               const SizedBox(height: 20),
               ConfirmButton(
-                onPressed: () {},
+                onPressed: _handleForm,
                 text: "Update",
               )
             ],

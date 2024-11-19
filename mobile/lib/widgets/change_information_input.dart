@@ -24,6 +24,7 @@ class _ChangeInfomationInputState extends State<ChangeInfomationInput> {
     return Column(
       children: [
         Container(
+          margin: const EdgeInsets.only(left: 5),
           alignment: Alignment.centerLeft,
           child: Text(
             widget.title,
@@ -38,8 +39,12 @@ class _ChangeInfomationInputState extends State<ChangeInfomationInput> {
         TextFormField(
           controller: widget.controller,
           validator: widget.validator,
+          cursorColor: Colors.black,
           decoration: InputDecoration(
-            labelText: widget.labelText,
+            hintText: widget.labelText,
+            hintStyle: const TextStyle(
+              color: Colors.black54,
+            ),
             labelStyle: const TextStyle(
               color: Colors.black54,
             ),
@@ -49,26 +54,26 @@ class _ChangeInfomationInputState extends State<ChangeInfomationInput> {
             ),
             errorMaxLines: 2,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(5),
               borderSide: const BorderSide(
                 width: 2,
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(5),
               borderSide: const BorderSide(
                 width: 2,
               ),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(5),
               borderSide: const BorderSide(
                 width: 2,
                 color: Colors.red,
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(5),
               borderSide: const BorderSide(
                 width: 2,
                 color: Colors.red,

@@ -76,6 +76,7 @@ class _SignInState extends State<SignIn> {
                   labelText: "Enter your password",
                   controller: _passwordController,
                   validator: (value) => passwordValidator(value),
+                  type: 'password',
                 ),
                 const SizedBox(
                   height: 15,
