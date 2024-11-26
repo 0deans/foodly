@@ -1,6 +1,7 @@
 import { Prisma, User } from "@prisma/client";
 import { Hono } from "hono";
 import {
+	googleIdTokenSchema,
 	loginSchema,
 	resetPasswordRequestSchema,
 	resetPasswordSchema,
@@ -26,8 +27,13 @@ import {
 import { google } from "../services/oauth";
 import { getCookie, setCookie } from "hono/cookie";
 import { GoogleUser } from "../types";
+import { createRemoteJWKSet, jwtVerify } from "jose";
+import { findOrCreateGoogleUser } from "../services/user";
 
 const app = new Hono();
+const JWKS = createRemoteJWKSet(
+	new URL("https://www.googleapis.com/oauth2/v3/certs")
+);
 
 app.post("/signup", async (c) => {
 	const body = await c.req.json();
@@ -124,6 +130,37 @@ app.get("/google", async (c) => {
 	return c.redirect(url.toString(), 302);
 });
 
+app.post("/login/google", async (c) => {
+	const { tokenId } = await c.req.json();
+
+	try {
+		const { payload } = await jwtVerify(tokenId, JWKS, {
+			issuer: ["https://accounts.google.com", "accounts.google.com"],
+			audience: process.env.GOOGLE_ANDROID_CLIENT_ID,
+		});
+
+		const googleIdToken = googleIdTokenSchema.parse(payload);
+		const user = await findOrCreateGoogleUser(googleIdToken);
+
+		const session = await prisma.session.create({
+			data: {
+				userId: user!.id,
+				expiresAt: new Date(Date.now() + SESSION_EXPIRES_IN_MS),
+			},
+		});
+
+		return c.json({ session });
+	} catch (e) {
+		if (e instanceof Prisma.PrismaClientKnownRequestError) {
+			if (e.code === "P2002") {
+				return c.json({ error: "Email already exists" }, 400);
+			}
+		}
+
+		return c.json({ error: "Invalid token" }, 400);
+	}
+});
+
 app.get("/google/callback", async (c) => {
 	const { state, code } = c.req.query();
 	const storedState = getCookie(c, "state");
@@ -148,33 +185,11 @@ app.get("/google/callback", async (c) => {
 			}
 		);
 		const googleUser = (await response.json()) as GoogleUser;
-
-		const existingAccount = await prisma.connection.findFirst({
-			where: {
-				provider: "google",
-				providerUserId: googleUser.sub,
-			},
-		});
-
-		let createdUser: User | null = null;
-		if (!existingAccount) {
-			createdUser = await prisma.user.create({
-				data: {
-					email: googleUser.email,
-					name: googleUser.name,
-					Connections: {
-						create: {
-							provider: "google",
-							providerUserId: googleUser.sub,
-						},
-					},
-				},
-			});
-		}
+		const user = await findOrCreateGoogleUser(googleUser);
 
 		const session = await prisma.session.create({
 			data: {
-				userId: createdUser?.id ?? existingAccount!.userId,
+				userId: user!.id,
 				expiresAt: new Date(Date.now() + SESSION_EXPIRES_IN_MS),
 			},
 		});
