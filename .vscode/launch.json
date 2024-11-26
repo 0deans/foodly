@@ -9,7 +9,7 @@
             "cwd": "mobile",
             "request": "launch",
             "type": "dart",
-            "args": ["--web-port", "3000"]
+            "args": ["--web-port", "3010"]
         },
         {
             "name": "mobile (profile mode)",
