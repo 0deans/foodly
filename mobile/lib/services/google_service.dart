@@ -2,7 +2,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleService {
   static final _googleSignIn = GoogleSignIn(
-    // serverClientId: "your_server_client_id",
+    serverClientId: "905970938369-rbjqlrouqk117qa9g04gnnam21lapk8k.apps.googleusercontent.com",
   );
 
   static Future<GoogleSignInAccount?> signIn() async {
@@ -12,7 +12,7 @@ class GoogleService {
       if (account != null) {
         final authentication = await account.authentication;
 
-        print("Google ID Token: ${authentication.idToken}");
+        print('ID Token: ${authentication.idToken}');
         print(account);
 
         return account;
