@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:foodly/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -46,6 +44,31 @@ class AuthProvider with ChangeNotifier {
     if (context.mounted) Navigator.pushReplacementNamed(context, '/home');
   }
 
+  Future<void> signInWithGoogle(BuildContext context, String tokenId) async {
+    final response = await _apiService.httpReq(
+      url: "/auth/login/google",
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'tokenId': tokenId,
+      }),
+    );
+
+    final dataJson = jsonDecode(response);
+    _token = dataJson['session']['id'];
+    isAuth = true;
+
+    await _storage.write(key: 'token', value: _token!);
+
+    if (context.mounted) {
+      Navigator.pushReplacementNamed(context, '/home');
+    }
+
+    notifyListeners();
+  }
+
   Future<void> signUp(
       BuildContext context, String name, String email, String password) async {
     await _apiService.httpReq(
@@ -80,7 +103,7 @@ class AuthProvider with ChangeNotifier {
 
     if (context.mounted) Navigator.pushReplacementNamed(context, '/signin');
   }
-  
+
   Future<void> sendRecoveryLinkEmail(String email) async {
     await _apiService.httpReq(
       url: "/auth/reset-password",
