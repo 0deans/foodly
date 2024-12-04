@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/widgets/confirm_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});
@@ -11,6 +12,8 @@ class Welcome extends StatefulWidget {
 class _WelcomeState extends State<Welcome> {
   @override
   Widget build(BuildContext context) {
+    final appLocal = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -24,22 +27,22 @@ class _WelcomeState extends State<Welcome> {
             Center(
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.75,
-                child:   const Column(
+                child:  Column(
                   children: [
                     FittedBox(
                       fit: BoxFit.contain,
                       child: Text(
-                        'Welcome to Foodly!',
-                        style: TextStyle(
+                        appLocal.welcome,
+                        style: const TextStyle(
                           fontSize: 100,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     Text(
-                      'Take a photo of your dish, and the app will identify the ingredients. Sign in or sign up to get started!',
+                      appLocal.welcomeInfo,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black54,
                       ),
@@ -53,13 +56,13 @@ class _WelcomeState extends State<Welcome> {
               onPressed: () {
                 Navigator.pushNamed(context, '/signin');
               },
-              text: 'Sign In',
+              text: appLocal.signIn,
             ),
             ConfirmButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/signup');
               },
-              text: 'Sign Up',
+              text: appLocal.signUp,
               color: Colors.blue.shade700,
             ),
             const SizedBox(

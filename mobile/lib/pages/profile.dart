@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodly/providers/auth_provider.dart';
 import 'package:foodly/widgets/button_row.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -17,11 +18,16 @@ class _ProfileState extends State<Profile> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     authPrivder = Provider.of<AuthProvider>(context);
-    authPrivder.getUser();
+
+    if (authPrivder.user == null) {
+      authPrivder.getUser();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final appLocale = AppLocalizations.of(context)!;
+
     if (authPrivder.user == null) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -36,9 +42,9 @@ class _ProfileState extends State<Profile> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        title: const Text(
-          'Profile',
-          style: TextStyle(
+        title: Text(
+          appLocale.profilePage,
+          style: const TextStyle(
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -91,9 +97,9 @@ class _ProfileState extends State<Profile> {
                       ),
                       backgroundColor: Colors.yellow.shade600,
                     ),
-                    child: const Text(
-                      'Edit Profile',
-                      style: TextStyle(
+                    child: Text(
+                      appLocale.editProfile,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: Colors.black,
@@ -108,14 +114,14 @@ class _ProfileState extends State<Profile> {
             ),
             ButtonRow(
               icon: Icons.settings,
-              title: 'Settings',
+              title: appLocale.settings,
               onPressed: () {
                 Navigator.pushNamed(context, '/settings');
               },
             ),
             ButtonRow(
               icon: Icons.logout,
-              title: 'Sign out',
+              title: appLocale.signOut,
               textColor: Colors.red,
               visibleIconLeft: false,
               onPressed: () => authPrivder.signOut(context),

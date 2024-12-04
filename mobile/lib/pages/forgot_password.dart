@@ -4,6 +4,7 @@ import 'package:foodly/services/app_exception.dart';
 import 'package:foodly/validators/form_validators.dart';
 import 'package:foodly/widgets/confirm_button.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   late AuthProvider _authProvider;
+  late AppLocalizations appLocale;
   final TextEditingController _emailController = TextEditingController();
   String? _emailError;
   String _error = "";
@@ -22,11 +24,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _authProvider = Provider.of<AuthProvider>(context);
+    appLocale = AppLocalizations.of(context)!;
   }
 
   void _sendRecoveryLinkEmail() async {
     final email = _emailController.text;
-    if (emailValidator(email) == null) {
+    final isEmailValid = emailValidator(
+        email, appLocale.emailEmptyError, appLocale.emailInvalidError);
+
+    if (isEmailValid == null) {
       try {
         await _authProvider.sendRecoveryLinkEmail(email);
       } on AppException catch (error) {
@@ -36,7 +42,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       }
     } else {
       setState(() {
-        _emailError = emailValidator(email);
+        _emailError = isEmailValid;
       });
     }
   }
@@ -74,7 +80,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 cursorColor: Colors.black,
                 onChanged: (value) {
                   setState(() {
-                    _emailError = emailValidator(value);
+                    _emailError = emailValidator(value,
+                        appLocale.emailEmptyError, appLocale.emailInvalidError);
                   });
                 },
                 controller: _emailController,

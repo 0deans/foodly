@@ -7,6 +7,7 @@ import 'package:foodly/widgets/social_buttons.dart';
 import 'package:foodly/widgets/text_form_field_custom.dart';
 import 'package:provider/provider.dart';
 import 'package:foodly/validators/form_validators.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -44,6 +45,8 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocale = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -54,9 +57,9 @@ class _SignInState extends State<SignIn> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  "Sign In",
-                  style: TextStyle(
+                Text(
+                  appLocale.signInTitle,
+                  style: const TextStyle(
                     fontSize: 34,
                     fontWeight: FontWeight.bold,
                   ),
@@ -65,17 +68,17 @@ class _SignInState extends State<SignIn> {
                   height: 20,
                 ),
                 TextFormFieldCustom(
-                  labelText: "Enter your email",
+                  labelText: appLocale.formEmailPlaceholder,
                   controller: _emailController,
-                  validator: (value) => emailValidator(value),
+                  validator: (value) => emailValidator(value, appLocale.emailEmptyError, appLocale.emailInvalidError),
                 ),
                 const SizedBox(
                   height: 15,
                 ),
                 TextFormFieldCustom(
-                  labelText: "Enter your password",
+                  labelText: appLocale.formPasswordPlaceholder,
                   controller: _passwordController,
-                  validator: (value) => passwordValidator(value),
+                  validator: (value) => passwordValidator(value, appLocale.passwordEmptyError, appLocale.passwordLengthError),
                   type: 'password',
                 ),
                 const SizedBox(
@@ -87,11 +90,11 @@ class _SignInState extends State<SignIn> {
                   },
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
-                  child: const Align(
+                  child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      "Forgot password?",
-                      style: TextStyle(
+                      appLocale.forgotPassword,
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black54,
                       ),
@@ -100,7 +103,7 @@ class _SignInState extends State<SignIn> {
                 ),
                 ConfirmButton(
                   onPressed: _handleForm,
-                  text: 'Sign In',
+                  text: appLocale.signIn,
                 ),
                 if (_error != "")
                   Container(
@@ -130,9 +133,9 @@ class _SignInState extends State<SignIn> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "If you don't have an account?",
-                      style: TextStyle(
+                    Text(
+                      appLocale.noAccount,
+                      style: const TextStyle(
                         fontSize: 16,
                       ),
                     ),
@@ -142,9 +145,9 @@ class _SignInState extends State<SignIn> {
                       },
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
-                      child: const Text(
-                        " Sign Up",
-                        style: TextStyle(
+                      child: Text(
+                        " ${appLocale.signUp}",
+                        style: const TextStyle(
                           color: Colors.blue,
                           fontSize: 16,
                         ),

@@ -49,9 +49,9 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Home',
-          style: TextStyle(
+        title: Text(
+          appLocal.homePage,
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -75,9 +75,6 @@ class _HomeState extends State<Home> {
           buildButton(appLocal.gallery, _loadImageGallery),
           buildButton(appLocal.history, () {
             Navigator.pushNamed(context, '/history');
-          }),
-          buildButton(appLocal.settings, () {
-            Navigator.pushNamed(context, '/settings');
           }),
         ],
       ),

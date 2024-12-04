@@ -4,6 +4,7 @@ import 'package:foodly/widgets/change_information_input.dart';
 import 'package:foodly/widgets/confirm_button.dart';
 import 'package:provider/provider.dart';
 import 'package:foodly/validators/form_validators.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -31,14 +32,15 @@ class _EditProfileState extends State<EditProfile> {
   void _handleForm() async {
     if (_formKey.currentState!.validate()) {
       print("Edit ok");
-    }
-    else {
+    } else {
       print("Edit not ok");
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final appLocale = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -47,9 +49,9 @@ class _EditProfileState extends State<EditProfile> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        title: const Text(
-          'Edit Profile',
-          style: TextStyle(
+        title: Text(
+          appLocale.editProfilePage,
+          style: const TextStyle(
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -87,9 +89,9 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         backgroundColor: Colors.yellow.shade600,
                       ),
-                      child: const Text(
-                        'Change Photo',
-                        style: TextStyle(
+                      child: Text(
+                        appLocale.changePhoto,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: Colors.black,
@@ -101,22 +103,24 @@ class _EditProfileState extends State<EditProfile> {
               ),
               const SizedBox(height: 10),
               ChangeInfomationInput(
-                title: "Name",
-                labelText: "Enter your name",
+                title: appLocale.name,
+                labelText: appLocale.formNamePlaceholder,
                 controller: _nameController,
-                validator: (value) => nameValidator(value),
+                validator: (value) => nameValidator(
+                    value, appLocale.nameEmptyError, appLocale.nameLengthError),
               ),
               const SizedBox(height: 20),
               ChangeInfomationInput(
-                title: "Email",
-                labelText: "Enter your email",
+                title: appLocale.email,
+                labelText: appLocale.formEmailPlaceholder,
                 controller: _emailController,
-                validator: (value) => emailValidator(value),
+                validator: (value) => emailValidator(value,
+                    appLocale.emailEmptyError, appLocale.emailInvalidError),
               ),
               const SizedBox(height: 20),
               ConfirmButton(
                 onPressed: _handleForm,
-                text: "Update",
+                text: appLocale.update,
               )
             ],
           ),

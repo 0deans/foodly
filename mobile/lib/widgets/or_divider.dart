@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OrDivider extends StatelessWidget {
   const OrDivider({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    final appLocale = AppLocalizations.of(context)!;
+
+    return Row(
       children: [
-        Expanded(
+        const Expanded(
           child: Divider(
             thickness: 2,
             color: Colors.black45,
@@ -16,13 +19,13 @@ class OrDivider extends StatelessWidget {
           ),
         ),
         Text(
-          "or continue with",
-          style: TextStyle(
+          appLocale.orContinue,
+          style: const TextStyle(
             fontSize: 16,
             color: Colors.black45,
           ),
         ),
-        Expanded(
+        const Expanded(
           child: Divider(
             thickness: 2,
             color: Colors.black45,
