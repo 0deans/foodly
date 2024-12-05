@@ -23,7 +23,7 @@ class _EditProfileState extends State<EditProfile> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     authPrivder = Provider.of<AuthProvider>(context);
-    authPrivder.getUser();
+    authPrivder.getUser(context);
 
     _nameController.text = authPrivder.user!['name'].toString();
     _emailController.text = authPrivder.user!['email'].toString();

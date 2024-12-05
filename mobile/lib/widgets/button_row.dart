@@ -46,7 +46,7 @@ class ButtonRow extends StatelessWidget {
                     title,
                     style: TextStyle(
                       fontSize: 16,
-                      color: textColor ?? Colors.black,
+                      color: textColor ?? Theme.of(context).textTheme.labelMedium!.color,
                     ),
                   ),
                 ],

@@ -21,6 +21,8 @@ class ChangeInfomationInput extends StatefulWidget {
 class _ChangeInfomationInputState extends State<ChangeInfomationInput> {
   @override
   Widget build(BuildContext context) {
+    final inputDecorationTheme = Theme.of(context).inputDecorationTheme;
+
     return Column(
       children: [
         Container(
@@ -28,8 +30,8 @@ class _ChangeInfomationInputState extends State<ChangeInfomationInput> {
           alignment: Alignment.centerLeft,
           child: Text(
             widget.title,
-            style: const TextStyle(
-              color: Colors.black,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.labelMedium!.color,
               fontSize: 18,
               fontWeight: FontWeight.w600,
             ),
@@ -45,43 +47,14 @@ class _ChangeInfomationInputState extends State<ChangeInfomationInput> {
             hintStyle: const TextStyle(
               color: Colors.black54,
             ),
-            labelStyle: const TextStyle(
-              color: Colors.black54,
-            ),
-            errorStyle: const TextStyle(
-              color: Colors.red,
-              fontSize: 14,
-            ),
-            errorMaxLines: 2,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: const BorderSide(
-                width: 2,
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: const BorderSide(
-                width: 2,
-              ),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: const BorderSide(
-                width: 2,
-                color: Colors.red,
-              ),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: const BorderSide(
-                width: 2,
-                color: Colors.red,
-              ),
-            ),
-            floatingLabelStyle: const TextStyle(
-              color: Colors.black,
-            ),
+            labelStyle: inputDecorationTheme.labelStyle,
+            errorStyle: inputDecorationTheme.errorStyle,
+            errorMaxLines: inputDecorationTheme.errorMaxLines,
+            enabledBorder: inputDecorationTheme.enabledBorder,
+            focusedBorder: inputDecorationTheme.focusedBorder,
+            errorBorder: inputDecorationTheme.errorBorder,
+            focusedErrorBorder: inputDecorationTheme.focusedErrorBorder,
+            floatingLabelStyle: inputDecorationTheme.floatingLabelStyle,
           ),
           autovalidateMode: AutovalidateMode.onUnfocus,
         )

@@ -14,17 +14,17 @@ class _HomeState extends State<Home> {
   final imagePicker = ImagePicker();
   final Map<String, String> menu = {};
 
-  _loadImageGallery() async {
-    await imagePicker.pickImage(source: ImageSource.gallery).then((image) {
-      if (image != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AcceptImage(selectedImage: image),
-          ),
-        );
-      }
-    });
+  Future<void> _loadImageGallery() async {
+    final image = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (image != null && mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AcceptImage(selectedImage: image),
+        ),
+      );
+    }
   }
 
   Widget buildButton(String text, VoidCallback onPressed) {
@@ -34,10 +34,16 @@ class _HomeState extends State<Home> {
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
       child: ElevatedButton(
         onPressed: onPressed,
-        style: Theme.of(context).elevatedButtonTheme.style,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue.shade600,
+        ),
         child: Text(
           text,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
         ),
       ),
     );
@@ -62,7 +68,9 @@ class _HomeState extends State<Home> {
             onPressed: () {
               Navigator.pushNamed(context, '/profile');
             },
-            icon: const Icon(Icons.account_circle,),
+            icon: const Icon(
+              Icons.account_circle,
+            ),
             tooltip: 'Profile',
           ),
         ],

@@ -29,48 +29,21 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
 
   @override
   Widget build(BuildContext context) {
+    final inputDecorationTheme = Theme.of(context).inputDecorationTheme;
+
     if (widget.type == 'text') {
       return TextFormField(
         cursorColor: Colors.black,
         decoration: InputDecoration(
           labelText: widget.labelText,
-          labelStyle: const TextStyle(
-            color: Colors.black54,
-          ),
-          errorStyle: const TextStyle(
-            color: Colors.red,
-            fontSize: 14,
-          ),
-          errorMaxLines: 2,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(
-              width: 2,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(
-              width: 2,
-            ),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(
-              width: 2,
-              color: Colors.red,
-            ),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(
-              width: 2,
-              color: Colors.red,
-            ),
-          ),
-          floatingLabelStyle: const TextStyle(
-            color: Colors.black,
-          ),
+          enabledBorder: inputDecorationTheme.enabledBorder,
+          focusedBorder: inputDecorationTheme.focusedBorder,
+          errorBorder: inputDecorationTheme.errorBorder,
+          focusedErrorBorder: inputDecorationTheme.focusedErrorBorder,
+          labelStyle: inputDecorationTheme.labelStyle,
+          errorStyle: inputDecorationTheme.errorStyle,
+          errorMaxLines: inputDecorationTheme.errorMaxLines,
+          floatingLabelStyle: inputDecorationTheme.floatingLabelStyle,
         ),
         controller: widget.controller,
         validator: widget.validator,
@@ -83,47 +56,18 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
       obscureText: _visiblePassword,
       decoration: InputDecoration(
           labelText: widget.labelText,
-          labelStyle: const TextStyle(
-            color: Colors.black54,
-          ),
-          errorStyle: const TextStyle(
-            color: Colors.red,
-            fontSize: 14,
-          ),
-          errorMaxLines: 2,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(
-              width: 2,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(
-              width: 2,
-            ),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(
-              width: 2,
-              color: Colors.red,
-            ),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(
-              width: 2,
-              color: Colors.red,
-            ),
-          ),
-          floatingLabelStyle: const TextStyle(
-            color: Colors.black,
-          ),
+          enabledBorder: inputDecorationTheme.enabledBorder,
+          focusedBorder: inputDecorationTheme.focusedBorder,
+          errorBorder: inputDecorationTheme.errorBorder,
+          focusedErrorBorder: inputDecorationTheme.focusedErrorBorder,
+          labelStyle: inputDecorationTheme.labelStyle,
+          errorStyle: inputDecorationTheme.errorStyle,
+          errorMaxLines: inputDecorationTheme.errorMaxLines,
+          floatingLabelStyle: inputDecorationTheme.floatingLabelStyle,
           suffixIcon: IconButton(
             icon: Icon(
               _visiblePassword ? Icons.visibility_off : Icons.visibility,
-              color: Colors.black,
+              color: inputDecorationTheme.suffixIconColor,
             ),
             onPressed: _togglePassword,
           )),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:foodly/services/app_exception.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,6 +12,7 @@ class ApiService {
     Map<String, String>? headers,
     String? body,
     int timeoutSeconds = 10,
+    BuildContext? context,
   }) async {
     try {
       http.Response response;
@@ -53,6 +55,10 @@ class ApiService {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return response.body;
       } else if (response.statusCode == 401) {
+        if (context != null && context.mounted) {
+          Navigator.pushReplacementNamed(context, '/signin');
+        }
+        
         throw AppException("Unauthorized");
       } else if (response.statusCode == 400) {
         final data = await jsonDecode(response.body);

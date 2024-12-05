@@ -78,10 +78,14 @@ class _HistoryState extends State<History> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios),
         ),
-        title: Text(appLocal.history),
-        backgroundColor: Colors.black12,
+        title: Text(
+          appLocal.history,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
       ),
       body: SizedBox(

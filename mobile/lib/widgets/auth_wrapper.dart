@@ -11,7 +11,7 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(builder: 
       (context, authProvider, _) {
-        if (authProvider.isAuth!) {
+        if (authProvider.isAuth) {
           return const Home();
         } else {
           return const Welcome();

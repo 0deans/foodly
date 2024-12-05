@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/providers/auth_provider.dart';
+import 'package:foodly/services/google_service.dart';
 import 'package:foodly/widgets/button_row.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,7 +21,7 @@ class _ProfileState extends State<Profile> {
     authPrivder = Provider.of<AuthProvider>(context);
 
     if (authPrivder.user == null) {
-      authPrivder.getUser();
+      authPrivder.getUser(context);
     }
   }
 
@@ -71,16 +72,17 @@ class _ProfileState extends State<Profile> {
                 const SizedBox(height: 10),
                 Text(
                   authPrivder.user!['name'] ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
+                    color: Theme.of(context).textTheme.labelMedium!.color,
                   ),
                 ),
                 Text(
                   authPrivder.user!['email'] ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
-                    color: Colors.black54,
+                    color: Theme.of(context).textTheme.labelSmall!.color,
                   ),
                 ),
                 Container(
@@ -124,7 +126,14 @@ class _ProfileState extends State<Profile> {
               title: appLocale.signOut,
               textColor: Colors.red,
               visibleIconLeft: false,
-              onPressed: () => authPrivder.signOut(context),
+              onPressed: () {
+                if (authPrivder.isGoogleSignIn) {
+                  GoogleService.signOut(context, authPrivder);
+                  debugPrint('Google sign out');
+                } else {
+                  authPrivder.signOut(context);
+                }
+              },
             ),
           ],
         ),

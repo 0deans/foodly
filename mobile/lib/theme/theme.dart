@@ -31,6 +31,48 @@ ThemeData lightMode = ThemeData(
       ),
     ),
   ),
+  inputDecorationTheme: InputDecorationTheme(
+    labelStyle: const TextStyle(
+      color: Colors.black54,
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(
+        width: 2,
+        color: Colors.black,
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(
+        width: 2,
+        color: Colors.black,
+      ),
+    ),
+    errorMaxLines: 2,
+    errorStyle: const TextStyle(
+      color: Colors.red,
+      fontSize: 14,
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(
+        width: 2,
+        color: Colors.red,
+      ),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(
+        width: 2,
+        color: Colors.red,
+      ),
+    ),
+    floatingLabelStyle: const TextStyle(
+      color: Colors.black,
+    ),
+    suffixIconColor: Colors.white,
+  ),
 );
 
 ThemeData darkMode = ThemeData(
@@ -62,5 +104,47 @@ ThemeData darkMode = ThemeData(
         borderRadius: BorderRadius.circular(8),
       ),
     ),
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    labelStyle: const TextStyle(
+      color: Colors.white54,
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(
+        width: 2,
+        color: Colors.white,
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(
+        width: 2,
+        color: Colors.white,
+      ),
+    ),
+    errorMaxLines: 2,
+    errorStyle: const TextStyle(
+      color: Colors.red,
+      fontSize: 14,
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(
+        width: 2,
+        color: Colors.red,
+      ),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(
+        width: 2,
+        color: Colors.red,
+      ),
+    ),
+    floatingLabelStyle: const TextStyle(
+      color: Colors.white,
+    ),
+    suffixIconColor: Colors.white,
   ),
 );

@@ -70,7 +70,8 @@ class _SignInState extends State<SignIn> {
                 TextFormFieldCustom(
                   labelText: appLocale.formEmailPlaceholder,
                   controller: _emailController,
-                  validator: (value) => emailValidator(value, appLocale.emailEmptyError, appLocale.emailInvalidError),
+                  validator: (value) => emailValidator(value,
+                      appLocale.emailEmptyError, appLocale.emailInvalidError),
                 ),
                 const SizedBox(
                   height: 15,
@@ -78,7 +79,10 @@ class _SignInState extends State<SignIn> {
                 TextFormFieldCustom(
                   labelText: appLocale.formPasswordPlaceholder,
                   controller: _passwordController,
-                  validator: (value) => passwordValidator(value, appLocale.passwordEmptyError, appLocale.passwordLengthError),
+                  validator: (value) => passwordValidator(
+                      value,
+                      appLocale.passwordEmptyError,
+                      appLocale.passwordLengthError),
                   type: 'password',
                 ),
                 const SizedBox(
@@ -94,9 +98,9 @@ class _SignInState extends State<SignIn> {
                     alignment: Alignment.centerRight,
                     child: Text(
                       appLocale.forgotPassword,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
-                        color: Colors.black54,
+                        color: Theme.of(context).textTheme.labelMedium!.color,
                       ),
                     ),
                   ),

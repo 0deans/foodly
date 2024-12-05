@@ -16,7 +16,22 @@ class GoogleService {
       if (account != null) {
         final authentication = await account.authentication;
 
-        await authProvider.signInWithGoogle(context, authentication.idToken!);
+        if (context.mounted) {
+          await authProvider.signInWithGoogle(context, authentication.idToken!);
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<void> signOut(
+      BuildContext context, AuthProvider authProvider) async {
+    try {
+      await _googleSignIn.signOut();
+
+      if (context.mounted) {
+        await authProvider.signOut(context);
       }
     } catch (e) {
       print(e);

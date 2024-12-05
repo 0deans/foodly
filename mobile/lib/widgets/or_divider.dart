@@ -10,25 +10,25 @@ class OrDivider extends StatelessWidget {
 
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Divider(
             thickness: 2,
-            color: Colors.black45,
+            color: Theme.of(context).textTheme.labelMedium!.color,
             indent: 20,
             endIndent: 20,
           ),
         ),
         Text(
           appLocale.orContinue,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
-            color: Colors.black45,
+            color: Theme.of(context).textTheme.labelMedium!.color,
           ),
         ),
-        const Expanded(
+        Expanded(
           child: Divider(
             thickness: 2,
-            color: Colors.black45,
+            color: Theme.of(context).textTheme.labelMedium!.color,
             indent: 20,
             endIndent: 20,
           ),

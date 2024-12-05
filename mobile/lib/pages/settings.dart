@@ -48,8 +48,12 @@ class _SettingsState extends State<Settings> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        title: Text(appLocal.settings),
-        backgroundColor: Colors.black12,
+        title: Text(
+          appLocal.settings,
+          style: const TextStyle(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         centerTitle: true,
       ),
       body: ListView(
