@@ -6,6 +6,7 @@
 		"email:build": "email build --dir ./src/emails"
 	},
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.705.0",
 		"@hono/node-server": "^1.13.1",
 		"@node-rs/argon2": "^2.0.0",
 		"@prisma/client": "^5.20.0",

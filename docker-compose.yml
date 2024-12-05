@@ -19,6 +19,20 @@ services:
     ports:
       - "1025:1025" # smtp
       - "8025:8025" # web ui
+  
+  localstack:
+    image: localstack/localstack
+    container_name: localstack
+    environment:
+      SERVICES: s3
+      DEBUG: 1
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./localstack-init.sh:/etc/localstack/init/ready.d/init-aws.sh"
 
 volumes:
   postgres_data:
+  localstack_data:
