@@ -4,6 +4,7 @@ import { Hono } from "hono";
 import { Env } from "./types";
 import auth from "./routes/auth";
 import user from "./routes/user";
+import scans from "./routes/scans";
 import { cors } from "hono/cors";
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(
 
 app.route("/auth", auth);
 app.route("/user", user);
+app.route("/scans", scans);
 
 const port = parseInt(process.env.PORT || "3000", 10);
 console.log(`Server is running on port ${port}`);

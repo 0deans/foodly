@@ -17,12 +17,14 @@ model User {
   id                  String               @id @default(uuid())
   email               String               @unique
   name                String?
+  avatar              String?
   password            String?
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   Sessions            Session[]
   PasswordResetTokens PasswordResetToken[]
   Connections         Connection[]
+  ScanHistory         ScanHistory[]
 }
 
 model Session {
@@ -47,4 +49,12 @@ model Connection {
   user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerUserId])
+}
+
+model ScanHistory {
+  id        String   @id @default(uuid())
+  imageUrl  String
+  scannedAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

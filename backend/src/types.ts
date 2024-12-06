@@ -10,6 +10,7 @@ export type Env = {
 export interface UserResponseDTO {
 	id: string;
 	name: string | null;
+	avatar: string | null;
 	email: string;
 }
 

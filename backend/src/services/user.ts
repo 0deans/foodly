@@ -19,6 +19,7 @@ export const findOrCreateGoogleUser = async (
 	if (!existingAccount) {
 		createdUser = await prisma.user.create({
 			data: {
+				avatar: googleUserData.picture,
 				email: googleUserData.email,
 				name: googleUserData.name,
 				Connections: {
