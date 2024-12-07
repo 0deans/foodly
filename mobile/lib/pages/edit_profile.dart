@@ -14,17 +14,16 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  late AuthProvider authPrivder;
+  late AuthProvider _authPrivder;
   final TextEditingController _nameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    authPrivder = Provider.of<AuthProvider>(context);
-    authPrivder.getUser(context);
+    _authPrivder = Provider.of<AuthProvider>(context);
 
-    _nameController.text = authPrivder.user!.name;
+    _nameController.text = _authPrivder.user!.name;
   }
 
   void _handleForm() async {
@@ -39,7 +38,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     final appLocale = AppLocalizations.of(context)!;
 
-    if (authPrivder.user == null) {
+    if (_authPrivder.user == null) {
       return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -102,9 +101,9 @@ class _EditProfileState extends State<EditProfile> {
                     child: CircleAvatar(
                       radius: MediaQuery.of(context).size.width * 0.20,
                       child: ClipOval(
-                        child: authPrivder.user?.avatar != null
+                        child: _authPrivder.user?.avatar != null
                             ? Image.network(
-                                authPrivder.user!.avatar,
+                                _authPrivder.user!.avatar,
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: double.infinity,

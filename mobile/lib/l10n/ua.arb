@@ -50,5 +50,8 @@
   "changePhoto": "Змінити фото",
   "notAuthenticated": "Ви не автентифіковані",
   "noName": "Без імені",
-  "noEmail": "Без email"
+  "noEmail": "Без email",
+  "deleteAnAccount": "Видалити акаунт",
+  "deleteTitle": "Видалення акаунту",
+  "deleteInfo": "Перед видаленням акаунту вам потрібно ввести код підтвердження. Код підтвердження: "
 }

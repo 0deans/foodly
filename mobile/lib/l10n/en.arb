@@ -50,5 +50,8 @@
   "changePhoto": "Change photo",
   "notAuthenticated": "You are not authenticated",
   "noName": "No name",
-  "noEmail": "No email"
+  "noEmail": "No email",
+  "deleteAnAccount": "Delete an account",
+  "deleteTitle": "Delete account",
+  "deleteInfo": "Before deleting your account, you must enter a verification code. Verification code: "
 }

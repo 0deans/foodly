@@ -13,15 +13,15 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  late AuthProvider authPrivder;
+  late AuthProvider _authPrivder;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    authPrivder = Provider.of<AuthProvider>(context);
+    _authPrivder = Provider.of<AuthProvider>(context);
 
-    if (authPrivder.user == null) {
-      authPrivder.getUser(context);
+    if (_authPrivder.user == null) {
+      _authPrivder.getUser(context);
     }
   }
 
@@ -29,7 +29,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     final appLocale = AppLocalizations.of(context)!;
 
-    if (authPrivder.user == null) {
+    if (_authPrivder.user == null) {
       return const Center(
         child: CircularProgressIndicator(),
       );
@@ -71,9 +71,9 @@ class _ProfileState extends State<Profile> {
                   child: CircleAvatar(
                     radius: MediaQuery.of(context).size.width * 0.20,
                     child: ClipOval(
-                      child: authPrivder.user?.avatar != null
+                      child: _authPrivder.user?.avatar != null
                           ? Image.network(
-                              authPrivder.user!.avatar,
+                              _authPrivder.user!.avatar,
                               fit: BoxFit.cover,
                               width: double.infinity,
                               height: double.infinity,
@@ -89,7 +89,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  authPrivder.user?.name ?? appLocale.noName,
+                  _authPrivder.user?.name ?? appLocale.noName,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -97,7 +97,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 Text(
-                  authPrivder.user?.email ?? appLocale.noEmail,
+                  _authPrivder.user?.email ?? appLocale.noEmail,
                   style: TextStyle(
                     fontSize: 16,
                     color: Theme.of(context).textTheme.labelSmall!.color,
@@ -145,13 +145,22 @@ class _ProfileState extends State<Profile> {
               textColor: Colors.red,
               visibleIconLeft: false,
               onPressed: () {
-                if (authPrivder.isGoogleSignIn) {
-                  GoogleService.signOut(context, authPrivder);
-                  debugPrint('Google sign out');
+                if (_authPrivder.isGoogleSignIn) {
+                  GoogleService.signOut(context, _authPrivder);
                 } else {
-                  authPrivder.signOut(context);
+                  _authPrivder.signOut(context);
                 }
               },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ButtonRow(
+              icon: Icons.delete,
+              title: appLocale.deleteAnAccount,
+              textColor: Colors.red,
+              visibleIconLeft: false,
+              onPressed: () => Navigator.pushNamed(context, '/delete_account'),
             ),
           ],
         ),

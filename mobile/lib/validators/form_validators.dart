@@ -38,3 +38,14 @@ String? confirmPasswordValidator(
 
   return null;
 }
+
+String? validateCode(String codeVerification, String value, String errorEmpty,
+    String errorLength) {
+  if (value.isEmpty) return errorEmpty;
+
+  if (value != codeVerification) {
+    return errorLength;
+  }
+
+  return null;
+}

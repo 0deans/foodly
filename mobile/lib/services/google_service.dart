@@ -29,10 +29,20 @@ class GoogleService {
       BuildContext context, AuthProvider authProvider) async {
     try {
       await _googleSignIn.signOut();
+      await _googleSignIn.disconnect();
 
       if (context.mounted) {
         await authProvider.signOut(context);
       }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<void> deleteAnAccount() async {
+    try {
+      await _googleSignIn.signOut();
+      await _googleSignIn.disconnect();
     } catch (e) {
       print(e);
     }

@@ -5,6 +5,7 @@ class TextFormFieldCustom extends StatefulWidget {
   final String labelText;
   final FormFieldValidator validator;
   final String? type;
+  final TextInputType? keyboardType;
 
   const TextFormFieldCustom({
     super.key,
@@ -12,6 +13,7 @@ class TextFormFieldCustom extends StatefulWidget {
     required this.labelText,
     required this.validator,
     this.type = 'text',
+    this.keyboardType = TextInputType.text,
   });
 
   @override
@@ -48,6 +50,7 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
         controller: widget.controller,
         validator: widget.validator,
         autovalidateMode: AutovalidateMode.onUnfocus,
+        keyboardType: widget.keyboardType,
       );
     }
 
@@ -74,6 +77,7 @@ class _TextFormFieldCustomState extends State<TextFormFieldCustom> {
       controller: widget.controller,
       validator: widget.validator,
       autovalidateMode: AutovalidateMode.onUnfocus,
+      keyboardType: widget.keyboardType,
     );
   }
 }

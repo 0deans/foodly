@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodly/pages/delete_account.dart';
 import 'package:foodly/pages/edit_profile.dart';
 import 'package:foodly/pages/forgot_password.dart';
 import 'package:foodly/pages/profile.dart';
@@ -82,6 +83,7 @@ class MyApp extends StatelessWidget {
         '/history': (context) => const History(),
         '/settings': (context) => const Settings(),
         '/edit_profile': (context) => const EditProfile(),
+        '/delete_account': (context) => const DeleteAccount(),
       },
     );
   }

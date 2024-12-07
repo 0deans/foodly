@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:foodly/classes/user.dart';
 import 'package:foodly/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:foodly/services/google_service.dart';
 
 class AuthProvider with ChangeNotifier {
   final _apiService = ApiService();
@@ -20,7 +21,7 @@ class AuthProvider with ChangeNotifier {
       _token = token;
       isAuth = true;
 
-      if(isGoogleAuth == 'true') {
+      if (isGoogleAuth == 'true') {
         isGoogleSignIn = true;
       }
 
@@ -108,6 +109,7 @@ class AuthProvider with ChangeNotifier {
     );
 
     await _storage.delete(key: 'token');
+    await _storage.delete(key: 'isGoogleAuth');
     _token = null;
     isAuth = false;
     if (isGoogleSignIn) {
@@ -155,5 +157,30 @@ class AuthProvider with ChangeNotifier {
     debugPrint(user!.avatar);
 
     notifyListeners();
+  }
+
+  Future<void> deleteAnAccount(BuildContext context) async {
+    final response = await _apiService.httpReq(
+      url: "/user",
+      method: 'DELETE',
+      headers: {
+        'Authorization': 'Bearer $_token',
+      },
+      context: context,
+    );
+
+    debugPrint(response);
+
+    GoogleService.deleteAnAccount();
+    await _storage.delete(key: 'token');
+    await _storage.delete(key: 'isGoogleAuth');
+    _token = null;
+    isAuth = false;
+    if (isGoogleSignIn) {
+      isGoogleSignIn = false;
+    }
+    user = null;
+
+    if (context.mounted) Navigator.pushReplacementNamed(context, '/signin');
   }
 }
