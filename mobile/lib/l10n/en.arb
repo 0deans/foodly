@@ -47,5 +47,8 @@
   "update": "Update",
   "name": "Name",
   "email": "Email",
-  "changePhoto": "Change photo"
+  "changePhoto": "Change photo",
+  "notAuthenticated": "You are not authenticated",
+  "noName": "No name",
+  "noEmail": "No email"
 }

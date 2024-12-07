@@ -16,7 +16,6 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   late AuthProvider authPrivder;
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -25,8 +24,7 @@ class _EditProfileState extends State<EditProfile> {
     authPrivder = Provider.of<AuthProvider>(context);
     authPrivder.getUser(context);
 
-    _nameController.text = authPrivder.user!['name'].toString();
-    _emailController.text = authPrivder.user!['email'].toString();
+    _nameController.text = authPrivder.user!.name;
   }
 
   void _handleForm() async {
@@ -40,6 +38,31 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     final appLocale = AppLocalizations.of(context)!;
+
+    if (authPrivder.user == null) {
+      return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back_ios),
+          ),
+          title: Text(
+            appLocale.editProfilePage,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Text(
+            appLocale.notAuthenticated,
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -68,12 +91,30 @@ class _EditProfileState extends State<EditProfile> {
               ),
               Column(
                 children: [
-                  CircleAvatar(
-                    radius: MediaQuery.of(context).size.width * 0.20,
-                    child: ClipOval(
-                      child: Image.asset(
-                        'assets/images/avatar.jpg',
-                        fit: BoxFit.cover,
+                  Container(
+                    decoration:
+                        const BoxDecoration(shape: BoxShape.circle, boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 5,
+                      ),
+                    ]),
+                    child: CircleAvatar(
+                      radius: MediaQuery.of(context).size.width * 0.20,
+                      child: ClipOval(
+                        child: authPrivder.user?.avatar != null
+                            ? Image.network(
+                                authPrivder.user!.avatar,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              )
+                            : Image.asset(
+                                'assets/images/avatar.jpg',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
                       ),
                     ),
                   ),
@@ -108,14 +149,6 @@ class _EditProfileState extends State<EditProfile> {
                 controller: _nameController,
                 validator: (value) => nameValidator(
                     value, appLocale.nameEmptyError, appLocale.nameLengthError),
-              ),
-              const SizedBox(height: 20),
-              ChangeInfomationInput(
-                title: appLocale.email,
-                labelText: appLocale.formEmailPlaceholder,
-                controller: _emailController,
-                validator: (value) => emailValidator(value,
-                    appLocale.emailEmptyError, appLocale.emailInvalidError),
               ),
               const SizedBox(height: 20),
               ConfirmButton(

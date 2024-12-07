@@ -47,5 +47,8 @@
   "update": "Оновити",
   "name": "Ім'я",
   "email": "Email",
-  "changePhoto": "Змінити фото"
+  "changePhoto": "Змінити фото",
+  "notAuthenticated": "Ви не автентифіковані",
+  "noName": "Без імені",
+  "noEmail": "Без email"
 }

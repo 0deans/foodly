@@ -60,18 +60,36 @@ class _ProfileState extends State<Profile> {
             ),
             Column(
               children: [
-                CircleAvatar(
-                  radius: MediaQuery.of(context).size.width * 0.20,
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/images/avatar.jpg',
-                      fit: BoxFit.cover,
+                Container(
+                  decoration:
+                      const BoxDecoration(shape: BoxShape.circle, boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 5,
+                    ),
+                  ]),
+                  child: CircleAvatar(
+                    radius: MediaQuery.of(context).size.width * 0.20,
+                    child: ClipOval(
+                      child: authPrivder.user?.avatar != null
+                          ? Image.network(
+                              authPrivder.user!.avatar,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
+                            )
+                          : Image.asset(
+                              'assets/images/avatar.jpg',
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
+                            ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  authPrivder.user!['name'] ?? '',
+                  authPrivder.user?.name ?? appLocale.noName,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -79,7 +97,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 Text(
-                  authPrivder.user!['email'] ?? '',
+                  authPrivder.user?.email ?? appLocale.noEmail,
                   style: TextStyle(
                     fontSize: 16,
                     color: Theme.of(context).textTheme.labelSmall!.color,

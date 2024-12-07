@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:foodly/classes/user.dart';
 import 'package:foodly/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -7,16 +8,21 @@ class AuthProvider with ChangeNotifier {
   final _apiService = ApiService();
   final _storage = const FlutterSecureStorage();
   String? _token;
-  Map<String, String>? user;
+  User? user;
   bool isAuth = false;
   bool isGoogleSignIn = false;
 
   Future<void> autoLogin() async {
     final token = await _storage.read(key: 'token');
+    final isGoogleAuth = await _storage.read(key: 'isGoogleAuth');
 
     if (token != null) {
       _token = token;
       isAuth = true;
+
+      if(isGoogleAuth == 'true') {
+        isGoogleSignIn = true;
+      }
 
       notifyListeners();
     }
@@ -62,6 +68,7 @@ class AuthProvider with ChangeNotifier {
     isAuth = true;
     isGoogleSignIn = true;
 
+    await _storage.write(key: 'isGoogleAuth', value: true.toString());
     await _storage.write(key: 'token', value: _token!);
 
     if (context.mounted) {
@@ -138,10 +145,14 @@ class AuthProvider with ChangeNotifier {
 
     final dataJson = await jsonDecode(response);
 
-    user = {
-      'name': dataJson['user']['name'],
-      'email': dataJson['user']['email'],
-    };
+    user = User(
+      id: dataJson['user']['id'],
+      name: dataJson['user']['name'],
+      email: dataJson['user']['email'],
+      avatar: dataJson['user']['avatar'],
+    );
+
+    debugPrint(user!.avatar);
 
     notifyListeners();
   }
