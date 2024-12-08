@@ -58,8 +58,6 @@ class ApiService {
         if (context != null && context.mounted) {
           Navigator.pushReplacementNamed(context, '/signin');
         }
-        
-        throw AppException("Unauthorized");
       } else if (response.statusCode == 400) {
         final data = await jsonDecode(response.body);
 

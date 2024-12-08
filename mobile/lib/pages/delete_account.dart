@@ -72,19 +72,19 @@ class _DeleteAccountState extends State<DeleteAccount> {
               Form(
                 key: _formKey,
                 child: TextFormFieldCustom(
-                  labelText: 'Enter code',
+                  labelText: appLocal.enterCode,
                   validator: (value) => validateCode(
                     _comfirmCode,
                     value,
-                    "Code is empty",
-                    "Code is incorrect",
+                    appLocal.verifiCodeEmptyError,
+                    appLocal.verifiCodeIncorrectError,
                   ),
                   keyboardType: TextInputType.number,
                 ),
               ),
               ConfirmButton(
                 onPressed: _handleForm,
-                text: "Delete Account",
+                text: appLocal.deleteAccountBtn,
                 color: Colors.red,
               )
             ],

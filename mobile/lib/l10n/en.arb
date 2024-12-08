@@ -53,5 +53,9 @@
   "noEmail": "No email",
   "deleteAnAccount": "Delete an account",
   "deleteTitle": "Delete account",
-  "deleteInfo": "Before deleting your account, you must enter a verification code. Verification code: "
+  "deleteInfo": "Before deleting your account, you must enter a verification code. Verification code: ",
+  "enterCode": "Enter verification code",
+  "deleteAccountBtn": "Delete account",
+  "verifiCodeEmptyError": "Verification code can't be empty.",
+  "verifiCodeIncorrectError": "Verification code is incorrect."
 }

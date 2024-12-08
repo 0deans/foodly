@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/providers/auth_provider.dart';
-import 'package:foodly/services/google_service.dart';
 import 'package:provider/provider.dart';
 
 class SocialButtons extends StatelessWidget {
@@ -21,7 +20,7 @@ class SocialButtons extends StatelessWidget {
           onTap: () async {
             final authProvider =
                 Provider.of<AuthProvider>(context, listen: false);
-            await GoogleService.signIn(context, authProvider);
+            await authProvider.signInWithGoogle(context);
           },
         ),
       ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:foodly/providers/auth_provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleService {
@@ -8,43 +7,34 @@ class GoogleService {
         "905970938369-rbjqlrouqk117qa9g04gnnam21lapk8k.apps.googleusercontent.com",
   );
 
-  static Future<void> signIn(
-      BuildContext context, AuthProvider authProvider) async {
+  static Future<String?> signIn() async {
     try {
       final account = await _googleSignIn.signIn();
 
-      if (account != null) {
-        final authentication = await account.authentication;
+      if (account == null) return null;
 
-        if (context.mounted) {
-          await authProvider.signInWithGoogle(context, authentication.idToken!);
-        }
-      }
+      final authentication = await account.authentication;
+      return authentication.idToken.toString();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
+
+    return null;
   }
 
-  static Future<void> signOut(
-      BuildContext context, AuthProvider authProvider) async {
+  static Future<void> signOut() async {
     try {
       await _googleSignIn.signOut();
-      await _googleSignIn.disconnect();
-
-      if (context.mounted) {
-        await authProvider.signOut(context);
-      }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
   static Future<void> deleteAnAccount() async {
     try {
-      await _googleSignIn.signOut();
       await _googleSignIn.disconnect();
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 }

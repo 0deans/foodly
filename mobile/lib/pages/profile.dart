@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/providers/auth_provider.dart';
-import 'package:foodly/services/google_service.dart';
 import 'package:foodly/widgets/button_row.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -144,13 +143,7 @@ class _ProfileState extends State<Profile> {
               title: appLocale.signOut,
               textColor: Colors.red,
               visibleIconLeft: false,
-              onPressed: () {
-                if (_authPrivder.isGoogleSignIn) {
-                  GoogleService.signOut(context, _authPrivder);
-                } else {
-                  _authPrivder.signOut(context);
-                }
-              },
+              onPressed: () => _authPrivder.signOut(context),
             ),
             const SizedBox(
               height: 20,

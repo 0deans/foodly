@@ -57,6 +57,7 @@ class _ChangeInfomationInputState extends State<ChangeInfomationInput> {
             floatingLabelStyle: inputDecorationTheme.floatingLabelStyle,
           ),
           autovalidateMode: AutovalidateMode.onUnfocus,
+          
         )
       ],
     );

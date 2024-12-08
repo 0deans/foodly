@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:foodly/providers/auth_provider.dart';
 import 'package:foodly/widgets/change_information_input.dart';
 import 'package:foodly/widgets/confirm_button.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:foodly/validators/form_validators.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,20 +20,41 @@ class _EditProfileState extends State<EditProfile> {
   late AuthProvider _authPrivder;
   final TextEditingController _nameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _imagePicker = ImagePicker();
+  XFile? _image;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _authPrivder = Provider.of<AuthProvider>(context);
+  }
 
-    _nameController.text = _authPrivder.user!.name;
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 
   void _handleForm() async {
-    if (_formKey.currentState!.validate()) {
-      print("Edit ok");
-    } else {
-      print("Edit not ok");
+    if (_image != null) {
+      await _authPrivder.updateAvatar(context, File(_image!.path));
+    }
+
+    if (_nameController.text == "") return;
+    if (_formKey.currentState!.validate() && mounted) {
+      FocusScope.of(context).unfocus();
+
+      await _authPrivder.updateUser(context, _nameController.text);
+    }
+  }
+
+  Future<void> _loadImageGallery() async {
+    final pickedImage =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        _image = pickedImage;
+      });
     }
   }
 
@@ -101,19 +125,26 @@ class _EditProfileState extends State<EditProfile> {
                     child: CircleAvatar(
                       radius: MediaQuery.of(context).size.width * 0.20,
                       child: ClipOval(
-                        child: _authPrivder.user?.avatar != null
-                            ? Image.network(
-                                _authPrivder.user!.avatar,
+                        child: _image != null
+                            ? Image.file(
+                                File(_image!.path),
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: double.infinity,
                               )
-                            : Image.asset(
-                                'assets/images/avatar.jpg',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: double.infinity,
-                              ),
+                            : _authPrivder.user?.avatar != null
+                                ? Image.network(
+                                    _authPrivder.user!.avatar,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                  )
+                                : Image.asset(
+                                    'assets/images/avatar.jpg',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                  ),
                       ),
                     ),
                   ),
@@ -122,7 +153,7 @@ class _EditProfileState extends State<EditProfile> {
                     width: 155,
                     height: 45,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: _loadImageGallery,
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
