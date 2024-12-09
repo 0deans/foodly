@@ -26,21 +26,36 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _authPrivder = Provider.of<AuthProvider>(context);
+    _authPrivder = Provider.of<AuthProvider>(context, listen: false);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_authPrivder.user != null) {
+        _nameController.text = _authPrivder.user!.name;
+      }
+    });
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+
     super.dispose();
   }
 
   void _handleForm() async {
     if (_image != null) {
       await _authPrivder.updateAvatar(context, File(_image!.path));
+      setState(() {
+        _image = null;
+      });
     }
 
-    if (_nameController.text == "") return;
+    if (_nameController.text == _authPrivder.user!.name) return;
     if (_formKey.currentState!.validate() && mounted) {
       FocusScope.of(context).unfocus();
 
@@ -60,7 +75,7 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
-    final appLocale = AppLocalizations.of(context)!;
+    final appLocal = AppLocalizations.of(context)!;
 
     if (_authPrivder.user == null) {
       return Scaffold(
@@ -72,7 +87,7 @@ class _EditProfileState extends State<EditProfile> {
             icon: const Icon(Icons.arrow_back_ios),
           ),
           title: Text(
-            appLocale.editProfilePage,
+            appLocal.editProfilePage,
             style: const TextStyle(
               fontWeight: FontWeight.w700,
             ),
@@ -81,7 +96,7 @@ class _EditProfileState extends State<EditProfile> {
         ),
         body: Center(
           child: Text(
-            appLocale.notAuthenticated,
+            appLocal.notAuthenticated,
           ),
         ),
       );
@@ -96,7 +111,7 @@ class _EditProfileState extends State<EditProfile> {
           icon: const Icon(Icons.arrow_back_ios),
         ),
         title: Text(
-          appLocale.editProfilePage,
+          appLocal.editProfilePage,
           style: const TextStyle(
             fontWeight: FontWeight.w700,
           ),
@@ -161,7 +176,7 @@ class _EditProfileState extends State<EditProfile> {
                         backgroundColor: Colors.yellow.shade600,
                       ),
                       child: Text(
-                        appLocale.changePhoto,
+                        appLocal.changePhoto,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -174,16 +189,16 @@ class _EditProfileState extends State<EditProfile> {
               ),
               const SizedBox(height: 10),
               ChangeInfomationInput(
-                title: appLocale.name,
-                labelText: appLocale.formNamePlaceholder,
+                title: appLocal.name,
+                labelText: appLocal.formNamePlaceholder,
                 controller: _nameController,
                 validator: (value) => nameValidator(
-                    value, appLocale.nameEmptyError, appLocale.nameLengthError),
+                    value, appLocal.nameEmptyError, appLocal.nameLengthError),
               ),
               const SizedBox(height: 20),
               ConfirmButton(
                 onPressed: _handleForm,
-                text: appLocale.update,
+                text: appLocal.update,
               )
             ],
           ),

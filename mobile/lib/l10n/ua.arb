@@ -28,6 +28,7 @@
   "orContinue": "або продовжити з",
   "signInTitle": "Вхід",
   "forgotPassword": "Забули пароль?",
+  "forgotPasswordInfo": "Не хвилюйтеся, ми надішлемо вам посилання для скидання пароля.",
   "noAccount": "Не маєте акаунту?",
   "formEmailPlaceholder": "Введіть свій email",
   "formPasswordPlaceholder": "Введіть свій пароль",
@@ -57,5 +58,7 @@
   "enterCode": "Введіть код підтвердження",
   "deleteAccountBtn": "Видалити акаунт",
   "verifiCodeEmptyError": "Код підтвердження не може бути порожнім.",
-  "verifiCodeIncorrectError": "Код підтвердження невірний."
+  "verifiCodeIncorrectError": "Код підтвердження невірний.",
+  "sendLink": "Надіслати посилання",
+  "backToSignIn": "Повернутися до входу"
 }

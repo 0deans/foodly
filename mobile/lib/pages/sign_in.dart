@@ -25,7 +25,16 @@ class _SignInState extends State<SignIn> {
   @override
   void initState() {
     super.initState();
+
     _authProvider = Provider.of<AuthProvider>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+
+    super.dispose();
   }
 
   void _handleForm() async {
@@ -37,7 +46,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    final appLocale = AppLocalizations.of(context)!;
+    final appLocal = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Form(
@@ -50,7 +59,7 @@ class _SignInState extends State<SignIn> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  appLocale.signInTitle,
+                  appLocal.signInTitle,
                   style: const TextStyle(
                     fontSize: 34,
                     fontWeight: FontWeight.bold,
@@ -60,21 +69,21 @@ class _SignInState extends State<SignIn> {
                   height: 20,
                 ),
                 TextFormFieldCustom(
-                  labelText: appLocale.formEmailPlaceholder,
+                  labelText: appLocal.formEmailPlaceholder,
                   controller: _emailController,
                   validator: (value) => emailValidator(value,
-                      appLocale.emailEmptyError, appLocale.emailInvalidError),
+                      appLocal.emailEmptyError, appLocal.emailInvalidError),
                 ),
                 const SizedBox(
                   height: 15,
                 ),
                 TextFormFieldCustom(
-                  labelText: appLocale.formPasswordPlaceholder,
+                  labelText: appLocal.formPasswordPlaceholder,
                   controller: _passwordController,
                   validator: (value) => passwordValidator(
                       value,
-                      appLocale.passwordEmptyError,
-                      appLocale.passwordLengthError),
+                      appLocal.passwordEmptyError,
+                      appLocal.passwordLengthError),
                   type: 'password',
                 ),
                 const SizedBox(
@@ -89,7 +98,7 @@ class _SignInState extends State<SignIn> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      appLocale.forgotPassword,
+                      appLocal.forgotPassword,
                       style: TextStyle(
                         fontSize: 16,
                         color: Theme.of(context).textTheme.labelMedium!.color,
@@ -99,7 +108,7 @@ class _SignInState extends State<SignIn> {
                 ),
                 ConfirmButton(
                   onPressed: _handleForm,
-                  text: appLocale.signIn,
+                  text: appLocal.signIn,
                 ),
                 const SizedBox(
                   height: 20,
@@ -116,7 +125,7 @@ class _SignInState extends State<SignIn> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      appLocale.noAccount,
+                      appLocal.noAccount,
                       style: const TextStyle(
                         fontSize: 16,
                       ),
@@ -128,7 +137,7 @@ class _SignInState extends State<SignIn> {
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
                       child: Text(
-                        " ${appLocale.signUp}",
+                        " ${appLocal.signUp}",
                         style: const TextStyle(
                           color: Colors.blue,
                           fontSize: 16,

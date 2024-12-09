@@ -28,6 +28,7 @@
   "orContinue": "or continue with",
   "signInTitle": "Sign in",
   "forgotPassword": "Forgot password?",
+  "forgotPasswordInfo": "No worries, we'll send you a link to reset your password.",
   "noAccount": "Don't have an account?",
   "formEmailPlaceholder": "Enter your email",
   "formPasswordPlaceholder": "Enter your password",
@@ -57,5 +58,7 @@
   "enterCode": "Enter verification code",
   "deleteAccountBtn": "Delete account",
   "verifiCodeEmptyError": "Verification code can't be empty.",
-  "verifiCodeIncorrectError": "Verification code is incorrect."
+  "verifiCodeIncorrectError": "Verification code is incorrect.",
+  "sendLink": "Send link",
+  "backToSignIn": "Back to sign in"
 }

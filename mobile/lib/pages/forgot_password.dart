@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/providers/auth_provider.dart';
-import 'package:foodly/services/app_exception.dart';
 import 'package:foodly/validators/form_validators.dart';
 import 'package:foodly/widgets/confirm_button.dart';
 import 'package:provider/provider.dart';
@@ -15,31 +14,31 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   late AuthProvider _authProvider;
-  late AppLocalizations appLocale;
+  late AppLocalizations appLocal;
   final TextEditingController _emailController = TextEditingController();
   String? _emailError;
-  String _error = "";
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _authProvider = Provider.of<AuthProvider>(context);
-    appLocale = AppLocalizations.of(context)!;
+    appLocal = AppLocalizations.of(context)!;
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+
+    super.dispose();
   }
 
   void _sendRecoveryLinkEmail() async {
     final email = _emailController.text;
     final isEmailValid = emailValidator(
-        email, appLocale.emailEmptyError, appLocale.emailInvalidError);
+        email, appLocal.emailEmptyError, appLocal.emailInvalidError);
 
     if (isEmailValid == null) {
-      try {
-        await _authProvider.sendRecoveryLinkEmail(context, email);
-      } on AppException catch (error) {
-        setState(() {
-          _error = error.message;
-        });
-      }
+      await _authProvider.sendRecoveryLinkEmail(context, email);
     } else {
       setState(() {
         _emailError = isEmailValid;
@@ -57,18 +56,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text(
-                "Forgot password?",
-                style: TextStyle(
+              Text(
+                appLocal.forgotPassword,
+                style: const TextStyle(
                   fontSize: 34,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.8,
-                child: const Text(
-                  "No worries, we'll send you a link to reset your password.",
-                  style: TextStyle(
+                child: Text(
+                  appLocal.forgotPasswordInfo,
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black54,
                   ),
@@ -81,12 +80,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 onChanged: (value) {
                   setState(() {
                     _emailError = emailValidator(value,
-                        appLocale.emailEmptyError, appLocale.emailInvalidError);
+                        appLocal.emailEmptyError, appLocal.emailInvalidError);
                   });
                 },
                 controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Enter your email',
+                  labelText: appLocal.formEmailPlaceholder,
                   errorText: _emailError,
                   labelStyle: const TextStyle(color: Colors.black54),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
@@ -111,25 +110,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 ),
               ),
               ConfirmButton(
-                text: "Send link",
+                text: appLocal.sendLink,
                 color:
                     _emailError == null ? Colors.green.shade600 : Colors.grey,
                 onPressed: _sendRecoveryLinkEmail,
               ),
-              if (_error != "")
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                  width: double.infinity,
-                  child: Text(
-                    _error,
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 14,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
               const SizedBox(height: 25),
               InkWell(
                 onTap: () {
@@ -137,14 +122,20 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 },
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.arrow_back, color: Colors.black54),
-                    SizedBox(width: 5),
+                    const Icon(
+                      Icons.arrow_back,
+                      color: Colors.black54,
+                    ),
+                    const SizedBox(width: 5),
                     Text(
-                      "Back to sign in",
-                      style: TextStyle(fontSize: 16, color: Colors.black54),
+                      appLocal.backToSignIn,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54,
+                      ),
                     ),
                   ],
                 ),

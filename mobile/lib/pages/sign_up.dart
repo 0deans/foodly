@@ -31,6 +31,16 @@ class _SignUpState extends State<SignUp> {
     _authProvider = Provider.of<AuthProvider>(context, listen: false);
   }
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailContriller.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+
+    super.dispose();
+  }
+
   void _handleForm() async {
     if (_formKey.currentState!.validate()) {
       await _authProvider.signUp(context, _nameController.text,
@@ -40,7 +50,7 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    final appLocale = AppLocalizations.of(context)!;
+    final appLocal = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Form(
@@ -56,7 +66,7 @@ class _SignUpState extends State<SignUp> {
                     height: 20,
                   ),
                   Text(
-                    appLocale.signUpTitle,
+                    appLocal.signUpTitle,
                     style: const TextStyle(
                       fontSize: 34,
                       fontWeight: FontWeight.bold,
@@ -67,44 +77,44 @@ class _SignUpState extends State<SignUp> {
                     height: 20,
                   ),
                   TextFormFieldCustom(
-                    labelText: appLocale.formNamePlaceholder,
+                    labelText: appLocal.formNamePlaceholder,
                     controller: _nameController,
                     validator: (value) => nameValidator(value,
-                        appLocale.nameEmptyError, appLocale.nameLengthError),
+                        appLocal.nameEmptyError, appLocal.nameLengthError),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
                   TextFormFieldCustom(
-                    labelText: appLocale.formEmailPlaceholder,
+                    labelText: appLocal.formEmailPlaceholder,
                     controller: _emailContriller,
                     validator: (value) => emailValidator(value,
-                        appLocale.emailEmptyError, appLocale.emailInvalidError),
+                        appLocal.emailEmptyError, appLocal.emailInvalidError),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
                   TextFormFieldCustom(
-                    labelText: appLocale.formPasswordPlaceholder,
+                    labelText: appLocal.formPasswordPlaceholder,
                     controller: _passwordController,
                     validator: (value) => passwordValidator(
                         value,
-                        appLocale.passwordEmptyError,
-                        appLocale.passwordLengthError),
+                        appLocal.passwordEmptyError,
+                        appLocal.passwordLengthError),
                     type: 'password',
                   ),
                   const SizedBox(
                     height: 15,
                   ),
                   TextFormFieldCustom(
-                    labelText: appLocale.formComfirmPasswordPlaceholder,
+                    labelText: appLocal.formComfirmPasswordPlaceholder,
                     controller: _confirmPasswordController,
                     validator: (value) => confirmPasswordValidator(value,
-                        _passwordController.text, appLocale.passwordMatchError),
+                        _passwordController.text, appLocal.passwordMatchError),
                     type: 'password',
                   ),
                   ConfirmButton(
-                    text: appLocale.signUp,
+                    text: appLocal.signUp,
                     onPressed: _handleForm,
                   ),
                   const SizedBox(
@@ -122,7 +132,7 @@ class _SignUpState extends State<SignUp> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        appLocale.haveAccount,
+                        appLocal.haveAccount,
                         style: const TextStyle(
                           fontSize: 16,
                         ),
@@ -134,7 +144,7 @@ class _SignUpState extends State<SignUp> {
                         highlightColor: Colors.transparent,
                         splashColor: Colors.transparent,
                         child: Text(
-                          "  ${appLocale.signIn}",
+                          "  ${appLocal.signIn}",
                           style: const TextStyle(
                             color: Colors.blue,
                             fontSize: 16,

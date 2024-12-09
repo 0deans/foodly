@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 void showSnackBar(BuildContext context, String text, Color color,
-    {int seconds = 8}) {
+    {int seconds = 6}) {
   final snackBar = SnackBar(
     content: Text(
       text,

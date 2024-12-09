@@ -26,7 +26,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    final appLocale = AppLocalizations.of(context)!;
+    final appLocal = AppLocalizations.of(context)!;
 
     if (_authPrivder.user == null) {
       return const Center(
@@ -43,7 +43,7 @@ class _ProfileState extends State<Profile> {
           icon: const Icon(Icons.arrow_back_ios),
         ),
         title: Text(
-          appLocale.profilePage,
+          appLocal.profilePage,
           style: const TextStyle(
             fontWeight: FontWeight.w700,
           ),
@@ -88,7 +88,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  _authPrivder.user?.name ?? appLocale.noName,
+                  _authPrivder.user?.name ?? appLocal.noName,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -96,7 +96,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 Text(
-                  _authPrivder.user?.email ?? appLocale.noEmail,
+                  _authPrivder.user?.email ?? appLocal.noEmail,
                   style: TextStyle(
                     fontSize: 16,
                     color: Theme.of(context).textTheme.labelSmall!.color,
@@ -117,7 +117,7 @@ class _ProfileState extends State<Profile> {
                       backgroundColor: Colors.yellow.shade600,
                     ),
                     child: Text(
-                      appLocale.editProfile,
+                      appLocal.editProfile,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -133,14 +133,14 @@ class _ProfileState extends State<Profile> {
             ),
             ButtonRow(
               icon: Icons.settings,
-              title: appLocale.settings,
+              title: appLocal.settings,
               onPressed: () {
                 Navigator.pushNamed(context, '/settings');
               },
             ),
             ButtonRow(
               icon: Icons.logout,
-              title: appLocale.signOut,
+              title: appLocal.signOut,
               textColor: Colors.red,
               visibleIconLeft: false,
               onPressed: () => _authPrivder.signOut(context),
@@ -150,7 +150,7 @@ class _ProfileState extends State<Profile> {
             ),
             ButtonRow(
               icon: Icons.delete,
-              title: appLocale.deleteAnAccount,
+              title: appLocal.deleteAnAccount,
               textColor: Colors.red,
               visibleIconLeft: false,
               onPressed: () => Navigator.pushNamed(context, '/delete_account'),
