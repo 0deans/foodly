@@ -34,7 +34,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
     if (isEmailValid == null) {
       try {
-        await _authProvider.sendRecoveryLinkEmail(email);
+        await _authProvider.sendRecoveryLinkEmail(context, email);
       } on AppException catch (error) {
         setState(() {
           _error = error.message;

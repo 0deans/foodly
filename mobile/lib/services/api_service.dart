@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:foodly/services/app_exception.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -18,53 +18,46 @@ class ApiService {
       http.Response response;
       final uri = Uri.parse("http://10.0.2.2:3000$url");
 
-      if (method == "GET") {
-        response = await http
-            .get(
-              uri,
-              headers: headers,
-            )
-            .timeout(Duration(seconds: timeoutSeconds));
-      } else if (method == "POST") {
-        response = await http
-            .post(
-              uri,
-              headers: headers,
-              body: body,
-            )
-            .timeout(Duration(seconds: timeoutSeconds));
-      } else if (method == "PUT") {
-        response = await http
-            .put(
-              uri,
-              headers: headers,
-              body: body,
-            )
-            .timeout(Duration(seconds: timeoutSeconds));
-      } else if (method == "DELETE") {
-        response = await http
-            .delete(
-              uri,
-              headers: headers,
-            )
-            .timeout(Duration(seconds: timeoutSeconds));
-      } else {
-        throw AppException("Invalid method");
+      switch (method) {
+        case 'GET':
+          response = await http
+              .get(
+                uri,
+                headers: headers,
+              )
+              .timeout(Duration(seconds: timeoutSeconds));
+          break;
+        case 'POST':
+          response = await http
+              .post(
+                uri,
+                headers: headers,
+                body: body,
+              )
+              .timeout(Duration(seconds: timeoutSeconds));
+          break;
+        case 'PUT':
+          response = await http
+              .put(
+                uri,
+                headers: headers,
+                body: body,
+              )
+              .timeout(Duration(seconds: timeoutSeconds));
+          break;
+        case 'DELETE':
+          response = await http
+              .delete(
+                uri,
+                headers: headers,
+              )
+              .timeout(Duration(seconds: timeoutSeconds));
+          break;
+        default:
+          throw AppException('Invalid method');
       }
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return response.body;
-      } else if (response.statusCode == 401) {
-        if (context != null && context.mounted) {
-          Navigator.pushReplacementNamed(context, '/signin');
-        }
-      } else if (response.statusCode == 400) {
-        final data = await jsonDecode(response.body);
-
-        throw AppException(data['error']);
-      } else {
-        throw AppException("Failed to load data");
-      }
+      return _handleResponse(response, context);
     } on TimeoutException {
       throw AppException("Request timed out. Please try again!");
     } on SocketException {
@@ -73,6 +66,30 @@ class ApiService {
       throw AppException("Invalid response from server.");
     } catch (error) {
       throw AppException(error.toString());
+    }
+  }
+
+  dynamic _handleResponse(http.Response response, BuildContext? context) {
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        return response.body;
+      case 400:
+        final data = jsonDecode(response.body);
+        throw AppException(data['error']);
+      case 401:
+        if (context != null) {
+          Navigator.pushReplacementNamed(context, '/signin');
+        }
+        throw AppException("Unauthorized");
+      case 403:
+        throw AppException("Forbidden");
+      case 404:
+        throw AppException("Not Found");
+      case 500:
+        throw AppException("Internal Server Error");
+      default:
+        throw AppException("Failed to load data: ${response.statusCode}");
     }
   }
 }

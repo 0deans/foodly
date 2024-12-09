@@ -71,7 +71,7 @@ ThemeData lightMode = ThemeData(
     floatingLabelStyle: const TextStyle(
       color: Colors.black,
     ),
-    suffixIconColor: Colors.white,
+    suffixIconColor: Colors.black,
   ),
 );
 

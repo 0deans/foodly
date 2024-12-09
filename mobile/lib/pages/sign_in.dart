@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:foodly/providers/auth_provider.dart';
-import 'package:foodly/services/app_exception.dart';
 import 'package:foodly/widgets/confirm_button.dart';
 import 'package:foodly/widgets/or_divider.dart';
 import 'package:foodly/widgets/social_buttons.dart';
@@ -20,7 +19,6 @@ class _SignInState extends State<SignIn> {
   late AuthProvider _authProvider;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String _error = "";
 
   final _formKey = GlobalKey<FormState>();
 
@@ -32,14 +30,8 @@ class _SignInState extends State<SignIn> {
 
   void _handleForm() async {
     if (_formKey.currentState!.validate()) {
-      try {
-        await _authProvider.signIn(
-            context, _emailController.text, _passwordController.text);
-      } on AppException catch (error) {
-        setState(() {
-          _error = error.toString();
-        });
-      }
+      await _authProvider.signIn(
+          context, _emailController.text, _passwordController.text);
     }
   }
 
@@ -109,20 +101,6 @@ class _SignInState extends State<SignIn> {
                   onPressed: _handleForm,
                   text: appLocale.signIn,
                 ),
-                if (_error != "")
-                  Container(
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                    width: double.infinity,
-                    child: Text(
-                      _error,
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
                 const SizedBox(
                   height: 20,
                 ),
