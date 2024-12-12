@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:foodly/providers/auth_provider.dart';
+import 'package:foodly/utils/snackbar_util.dart';
 import 'package:foodly/widgets/change_information_input.dart';
 import 'package:foodly/widgets/confirm_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -66,11 +68,20 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _loadImageGallery() async {
     final pickedImage =
         await _imagePicker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      setState(() {
-        _image = pickedImage;
-      });
+
+    if (pickedImage == null) return;
+    Uint8List bytes = await pickedImage.readAsBytes();
+
+    if (bytes.lengthInBytes > 1024 * 1024) {
+      if (mounted) {
+        showSnackBar(context, 'Image size must be less than 1MB', Colors.red);
+      }
+      return;
     }
+
+    setState(() {
+      _image = pickedImage;
+    });
   }
 
   @override
