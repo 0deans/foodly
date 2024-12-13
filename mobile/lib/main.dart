@@ -8,6 +8,7 @@ import 'package:foodly/pages/sign_up.dart';
 import 'package:foodly/pages/history.dart';
 import 'package:foodly/pages/settings.dart';
 import 'package:foodly/providers/auth_provider.dart';
+import 'package:foodly/providers/history_provider.dart';
 import 'package:foodly/providers/locale_provider.dart';
 import 'package:foodly/theme/theme_provider.dart';
 import 'package:foodly/utils/database_service.dart';
@@ -24,6 +25,7 @@ void main() async {
   late ThemeProvider themeProvider;
   late LocaleProvider localeProvider;
   final authProvider = AuthProvider();
+  final historyProvider = HistoryProvider();
 
   final result = await db.query('settings');
   if (result.isNotEmpty) {
@@ -55,6 +57,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => themeProvider),
         ChangeNotifierProvider(create: (context) => localeProvider),
         ChangeNotifierProvider(create: (context) => authProvider),
+        ChangeNotifierProvider(create: (context) => historyProvider),
       ],
       child: const MyApp(),
     ),
@@ -76,7 +79,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/signin': (context) => const SignIn(),
         '/signup': (context) => const SignUp(),
-        '/forgot_password': (context) => const ForgotPassword(), 
+        '/forgot_password': (context) => const ForgotPassword(),
         '/home': (context) => const Home(),
         '/profile': (context) => const Profile(),
         '/camera': (context) => const Camera(),

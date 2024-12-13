@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:foodly/providers/history_provider.dart';
 import 'package:foodly/providers/locale_provider.dart';
 import 'package:foodly/theme/theme_provider.dart';
 import 'package:foodly/utils/colors.dart';
@@ -10,17 +11,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
-import 'package:foodly/utils/database_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:http/http.dart' as http;
 
 class MealDetails extends StatefulWidget {
-  final String imagePath;
-  final bool? saveToHistory;
+  final String? imagePath;
+  final String? imageUrl;
+  final bool saveImageToHistory;
 
   const MealDetails({
     super.key,
-    required this.imagePath,
-    this.saveToHistory,
+    this.imagePath,
+    required this.saveImageToHistory,
+    this.imageUrl,
   });
 
   @override
@@ -34,8 +37,18 @@ class _MealDetailsState extends State<MealDetails> {
   late bool _isLoading;
   late bool _isEnglish;
   bool _showMask = false;
+  late HistoryProvider _historyProvider;
 
   _initialize() async {
+    Uint8List imageBytes;
+
+    if (widget.imageUrl != null) {
+      final response = await http.get(Uri.parse(widget.imageUrl!));
+      imageBytes = response.bodyBytes;
+    } else {
+      imageBytes = File(widget.imagePath!).readAsBytesSync();
+    }
+
     final interpreter = await Interpreter.fromAsset(
       'assets/model.tflite',
       options: InterpreterOptions()..threads = Platform.numberOfProcessors,
@@ -50,7 +63,7 @@ class _MealDetailsState extends State<MealDetails> {
 
     ReceivePort responsePort = ReceivePort();
     final isolateData = IsolateData(
-      imageBytes: File(widget.imagePath).readAsBytesSync(),
+      imageBytes: imageBytes,
       interpreterAddress: interpreter.address,
       labels: labels,
       responsePort: responsePort.sendPort,
@@ -62,8 +75,8 @@ class _MealDetailsState extends State<MealDetails> {
       img.Image,
     );
 
-    List<int> imageBytes = img.encodePng(image);
-    _image = Uint8List.fromList(imageBytes);
+    List<int> imageBytesMask = img.encodePng(image);
+    _image = Uint8List.fromList(imageBytesMask);
 
     interpreter.close();
     _isolateUtils.dispose();
@@ -81,20 +94,23 @@ class _MealDetailsState extends State<MealDetails> {
         }),
     );
 
-    if (widget.saveToHistory ?? false) {
-      final db = await DatabaseService().database;
-      db.insert(
-        'scan_history',
-        {
-          'imagePath': widget.imagePath,
-          'createdAt': DateTime.now().toIso8601String(),
-        },
-      );
+    if (widget.saveImageToHistory) {
+      if (mounted) {
+        debugPrint('Adding scan to history');
+        _historyProvider.addScan(context, File(widget.imagePath!));
+      }
     }
 
     setState(() {
       _isLoading = false;
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _historyProvider = Provider.of<HistoryProvider>(context, listen: false);
   }
 
   @override
@@ -107,7 +123,9 @@ class _MealDetailsState extends State<MealDetails> {
       listen: false,
     ).getLocale();
 
-    _initialize();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initialize();
+    });
   }
 
   @override
@@ -156,10 +174,15 @@ class _MealDetailsState extends State<MealDetails> {
                 child: Stack(
                   children: [
                     Positioned.fill(
-                      child: Image.file(
-                        File(widget.imagePath),
-                        fit: BoxFit.cover,
-                      ),
+                      child: widget.imagePath != null
+                          ? Image.file(
+                              File(widget.imagePath!),
+                              fit: BoxFit.cover,
+                            )
+                          : Image.network(
+                              widget.imageUrl!,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                     if (_showMask)
                       Positioned.fill(

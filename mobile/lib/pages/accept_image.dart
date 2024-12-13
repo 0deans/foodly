@@ -86,7 +86,7 @@ class _AcceptImageState extends State<AcceptImage> {
                             MaterialPageRoute(
                               builder: (context) => MealDetails(
                                 imagePath: path,
-                                saveToHistory: true,
+                                saveImageToHistory: true,
                               ),
                             ),
                           ).then((_) => Navigator.pop(context));

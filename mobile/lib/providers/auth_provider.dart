@@ -324,6 +324,9 @@ class AuthProvider with ChangeNotifier {
 
         user!.avatar = dataJson['avatar'].toString().replaceFirst(
             "http://s3.localhost.localstack.cloud", "http://10.0.2.2");
+      } else if (response.statusCode == 401) {
+        if (context.mounted) Navigator.pushReplacementNamed(context, '/signin');
+        throw Exception('Unauthorized');
       }
 
       notifyListeners();
@@ -338,5 +341,9 @@ class AuthProvider with ChangeNotifier {
         showSnackBar(context, e.toString(), Colors.red);
       }
     }
+  }
+
+  String? getToken() {
+    return _token;
   }
 }

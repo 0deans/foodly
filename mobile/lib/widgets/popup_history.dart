@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:foodly/models/scan_history.dart';
+import 'package:foodly/classes/scan_history.dart';
 import 'package:foodly/utils/database_service.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:popover/popover.dart';
@@ -35,7 +35,7 @@ class _PopupButtonState extends State<PopupButton> {
               GestureDetector(
                 onTap: () {
                   GallerySaver.saveImage(
-                    widget.item.imagePath,
+                    widget.item.imageUrl,
                     albumName: 'foodly',
                   );
                   Navigator.pop(context);
@@ -61,7 +61,7 @@ class _PopupButtonState extends State<PopupButton> {
                       whereArgs: [widget.item.id],
                     );
 
-                    final file = File(widget.item.imagePath);
+                    final file = File(widget.item.imageUrl);
                     if (file.existsSync()) {
                       file.deleteSync();
                     }
