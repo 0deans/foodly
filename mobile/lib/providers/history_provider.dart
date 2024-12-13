@@ -9,9 +9,11 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
+import "package:foodly/services/api_service.dart";
 
 class HistoryProvider with ChangeNotifier {
   String? _token;
+  final _apiService = ApiService();
 
   Future<void> fetchHistory(BuildContext context,
       PagingController<int, ScanHistory> pagingController) async {
@@ -72,5 +74,21 @@ class HistoryProvider with ChangeNotifier {
         showSnackBar(context, e.toString(), Colors.red);
       }
     }
+  }
+
+  Future<void> deleteScan(BuildContext context, String id) async {
+    if (_token == null) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      _token = authProvider.getToken();
+    }
+
+    await _apiService.httpReq(
+      url: "/scans/$id",
+      method: 'DELETE',
+      headers: {
+        'Authorization': 'Bearer $_token',
+      },
+      context: context,
+    );
   }
 }
