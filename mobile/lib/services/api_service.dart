@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:foodly/services/app_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
 
 class ApiService {
   Future<dynamic> httpReq({
@@ -64,6 +65,38 @@ class ApiService {
       throw AppException("No internet connection or server is anavailable.");
     } on FormatException {
       throw AppException("Invalid response from server.");
+    } catch (error) {
+      throw AppException(error.toString());
+    }
+  }
+
+  Future<dynamic> httpReqWithFile({
+    required String url,
+    required String method,
+    required Map<String, String> headers,
+    required File file,
+    required String field,
+    int timeoutSeconds = 10,
+    BuildContext? context,
+  }) async {
+    try {
+      final uri = Uri.parse("http://10.0.2.2:3000$url");
+
+      final request = http.MultipartRequest(method, uri)
+        ..headers.addAll(headers)
+        ..files.add(
+          await http.MultipartFile.fromPath(
+            field,
+            file.path,
+            filename: path.basename(file.path),
+          ),
+        );
+
+      final streamedResponse =
+          await request.send().timeout(Duration(seconds: timeoutSeconds));
+      final response = await http.Response.fromStream(streamedResponse);
+
+      return _handleResponse(response, context);
     } catch (error) {
       throw AppException(error.toString());
     }

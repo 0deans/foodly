@@ -8,7 +8,6 @@ import 'package:foodly/utils/snackbar_util.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as path;
 import "package:foodly/services/api_service.dart";
 
 class HistoryProvider with ChangeNotifier {
@@ -57,16 +56,15 @@ class HistoryProvider with ChangeNotifier {
     }
 
     try {
-      final request =
-          http.MultipartRequest('POST', Uri.parse("http://10.0.2.2:3000/scans"))
-            ..headers['Authorization'] = 'Bearer $_token'
-            ..files.add(await http.MultipartFile.fromPath(
-              'image',
-              image.path,
-              filename: path.basename(image.path),
-            ));
-
-      await request.send();
+      _apiService.httpReqWithFile(
+        url: "/scans",
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer $_token',
+        },
+        file: image,
+        field: 'image',
+      );
     } catch (e) {
       debugPrint(e.toString());
 

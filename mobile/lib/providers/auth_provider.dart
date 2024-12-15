@@ -5,8 +5,6 @@ import 'package:foodly/classes/user.dart';
 import 'package:foodly/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:foodly/services/google_service.dart';
-import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as path;
 import 'package:foodly/utils/snackbar_util.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -307,27 +305,19 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> updateAvatar(BuildContext context, File image) async {
     try {
-      final request = http.MultipartRequest(
-          'PUT', Uri.parse("http://10.0.2.2:3000/user/avatar"))
-        ..headers['Authorization'] = 'Bearer $_token'
-        ..files.add(await http.MultipartFile.fromPath(
-          'avatar',
-          image.path,
-          filename: path.basename(image.path),
-        ));
+      final response = await _apiService.httpReqWithFile(
+        url: "/user/avatar",
+        method: 'PUT',
+        headers: {
+          "Authorization": 'Bearer $_token',
+        },
+        file: image,
+        field: 'avatar',
+      );
 
-      final response = await request.send();
-
-      if (response.statusCode == 200) {
-        final dataJson =
-            await jsonDecode(await response.stream.bytesToString());
-
-        user!.avatar = dataJson['avatar'].toString().replaceFirst(
-            "http://s3.localhost.localstack.cloud", "http://10.0.2.2");
-      } else if (response.statusCode == 401) {
-        if (context.mounted) Navigator.pushReplacementNamed(context, '/signin');
-        throw Exception('Unauthorized');
-      }
+      final dataJson = await jsonDecode(response);
+      user!.avatar = dataJson['avatar'].toString().replaceFirst(
+          "http://s3.localhost.localstack.cloud", "http://10.0.2.2");
 
       notifyListeners();
 
