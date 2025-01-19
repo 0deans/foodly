@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: supersecret
+      POSTGRES_DB: foodly
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: 'mailhog'
+    ports:
+      - "1025:1025" # smtp
+      - "8025:8025" # web ui
+  
+  localstack:
+    image: localstack/localstack
+    container_name: localstack
+    environment:
+      SERVICES: s3
+      DEBUG: 1
+      DEFAULT_REGION: us-east-1
+      DISABLE_CORS_CHECKS: 1
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./localstack-init.sh:/etc/localstack/init/ready.d/init-aws.sh"
+
+volumes:
+  postgres_data:
+  localstack_data:

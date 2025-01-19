@@ -1,0 +1,29 @@
+{
+	"name": "backend",
+	"scripts": {
+		"dev": "tsx watch src/index.ts",
+		"email": "email dev --dir ./src/emails --port 3050",
+		"email:build": "email build --dir ./src/emails"
+	},
+	"dependencies": {
+		"@aws-sdk/client-s3": "^3.705.0",
+		"@hono/node-server": "^1.13.1",
+		"@node-rs/argon2": "^2.0.0",
+		"@prisma/client": "^5.20.0",
+		"@react-email/components": "^0.0.25",
+		"arctic": "^2.0.0-next.9",
+		"dotenv": "^16.4.5",
+		"hono": "^4.6.3",
+		"jose": "^5.9.6",
+		"nodemailer": "^6.9.15",
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"@types/node": "^20.11.17",
+		"@types/nodemailer": "^6.4.16",
+		"@types/react": "^18.3.11",
+		"prisma": "^5.20.0",
+		"react-email": "^1.10.1",
+		"tsx": "^4.7.1"
+	}
+}
