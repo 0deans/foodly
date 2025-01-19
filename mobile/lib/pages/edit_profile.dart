@@ -158,7 +158,7 @@ class _EditProfileState extends State<EditProfile> {
                                 width: double.infinity,
                                 height: double.infinity,
                               )
-                            : _authPrivder.user?.avatar != null
+                            : _authPrivder.user!.avatar != "null"
                                 ? Image.network(
                                     _authPrivder.user!.avatar,
                                     fit: BoxFit.cover,

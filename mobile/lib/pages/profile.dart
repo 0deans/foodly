@@ -20,7 +20,9 @@ class _ProfileState extends State<Profile> {
     _authPrivder = Provider.of<AuthProvider>(context);
 
     if (_authPrivder.user == null) {
-      _authPrivder.getUser(context);
+      _authPrivder.getUser(context).then((_){
+        debugPrint('avatar: ${_authPrivder.user?.avatar}');
+      });
     }
   }
 
@@ -70,7 +72,7 @@ class _ProfileState extends State<Profile> {
                   child: CircleAvatar(
                     radius: MediaQuery.of(context).size.width * 0.20,
                     child: ClipOval(
-                      child: _authPrivder.user?.avatar != null
+                      child: _authPrivder.user!.avatar != "null"
                           ? Image.network(
                               _authPrivder.user!.avatar,
                               fit: BoxFit.cover,
@@ -88,7 +90,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  _authPrivder.user?.name ?? appLocal.noName,
+                  _authPrivder.user!.name,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -96,7 +98,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 Text(
-                  _authPrivder.user?.email ?? appLocal.noEmail,
+                  _authPrivder.user!.email,
                   style: TextStyle(
                     fontSize: 16,
                     color: Theme.of(context).textTheme.labelSmall!.color,
