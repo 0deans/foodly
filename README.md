@@ -95,10 +95,10 @@ flutter run
 ## Demo Images
 
 ### Mobile Application
-![Mobile Application](demo/mobile.png)
+![Mobile Application]( https://i.imgur.com/hhMVztz.png )
 
 ### Frontend
-![Frontend](demo/frontend.png)
+![Frontend](https://i.imgur.com/60DVUd7.png)
 
 ## Project Status
 
